@@ -15,14 +15,15 @@ class Game():
         """Train an agent over n_games"""
         for i in range(n_games):
             self.reset_game()
+            agent.reset()
             
             state = -1
                 
             while True:
                 state += 1
-                action = agent.get_action(state)
+                action = agent.get_action(state, self.states[state])
 
-                if (action == 0) or (state == self.n_states):
+                if (action == 0) or (state == self.n_states-1):
                     if state == self.max_state:
                         reward = self.reward_fn(True)
                         agent.wins += 1
@@ -32,7 +33,7 @@ class Game():
                 else:
                     reward = 0
 
-                action_ = agent.get_action(state+1)
+                action_ = agent.get_action(state+1, self.states[state])
 
                 agent.update(state, action, state+1, action_, reward)
 
