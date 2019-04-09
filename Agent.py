@@ -11,7 +11,8 @@ class BasicAgent:
         #0 - stop, 1 - switch
         self.Q = defaultdict(lambda: {0:0, 1:0})
         self.Q[0] = {0:0, 1:0}
-        self.final_state, self.rewards, self.wins = [], [], []
+        self.final_state, self.rewards = [], []
+        self.wins = 0
 
     def get_action(self, s):
         #Epsilon Greedy Strategy
