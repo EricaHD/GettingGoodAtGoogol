@@ -4,34 +4,49 @@ import numpy as np
 class Game():
     def __init__(self, lo, hi, n_states, replace, reward):            
         self.validateInput(lo, hi, n_states, replace, reward)
-        
-        self.states = np.random.choice(np.arange(lo, hi+1), size=n_states, replace=replace)
-        self.max_val, self.max_state = self.states.max(), self.states.argmax()
-        
         ###FIX REPLAECEMENT MAX STATE
         
-    def autoTrain(self, agent):
+    def reset_game(self):
+        self.states = np.random.choice(np.arange(self.lo, self.hi+1), size=self.n_states, replace=self.replace)
+        self.max_val, self.max_state = self.states.max(), self.states.argmax()
         
-        state = -1
-        
-        while True:
-            state += 1
-            action = agent.get_action(state)
+    def autoTrain(self, agent, n_epochs):        
+        for i in range(n_epochs):
+            self.reset_game()
             
-            if (action == 0) or (state == self.n_states):
-                reward = self.reward * (state == self.max_state) 
-                break
-            else:
-                reward = 0
-        
-            action_ = agent.get_action(state+1)
-            
-            agent.update(state, action, state+1, action_, reward)
-            #agent.rewards.append(reward)
-            
-        agent.rewards.append(reward)
-        agent.final_state.append(state)
-        agent.update(state, action, None, None, reward)
+            state = -1
+                
+            while True:
+                state += 1
+                action = agent.get_action(state)
+
+                if (action == 0) or (state == self.n_states):
+                    #HARDCODED REWARD FUNCTION
+                    #if state == self.max_state:
+                    #    reward = 2 * self.reward
+                    #    win = 1
+                    #else:
+                    #    reward = self.reward- np.argsort(self.states)[::-1][state]
+                    #    win = 0
+                    if state == self.max_state:
+                        reward = self.reward
+                        win = 1
+                    else:
+                        reward = 0
+                        win = 0
+                    break
+                else:
+                    reward = 0
+
+                action_ = agent.get_action(state+1)
+
+                agent.update(state, action, state+1, action_, reward)
+                #agent.rewards.append(reward)
+
+            agent.rewards.append(reward)
+            agent.final_state.append(state)
+            agent.wins.append(win)
+            agent.update(state, action, None, None, reward)
                 
         
     def validateInput(self, lo, hi, n_states, replace, reward):
