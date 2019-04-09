@@ -9,10 +9,9 @@ class BasicAgent:
         
         self.actions = [0, 1]
         #0 - stop, 1 - switch
-        self.Q = defaultdict(lambda: {0:0, 1:0.1})
+        self.Q = defaultdict(lambda: {0:0, 1:0})
         self.Q[0] = {0:0, 1:0}
-        self.rewards = []
-        self.final_state = []
+        self.final_state, self.rewards, self.wins = [], [], []
 
     def get_action(self, s):
         #Epsilon Greedy Strategy
@@ -24,4 +23,15 @@ class BasicAgent:
         #epsilon decay
         self.eps *= (1 - self.eps_decay)
         return action
+
+class SarsaAgent(BasicAgent):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        
+    def update(self, s, a, s_, a_, r):
+        if s_ is not None:
+            self.Q[s][a] += self.alpha * (r + self.gamma * self.Q[s_][a_] - self.Q[s][a] - self.s_cost)
+        else:
+            self.Q[s][a] += self.alpha * (r - self.Q[s][a])
+        
         
