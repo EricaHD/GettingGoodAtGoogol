@@ -1,49 +1,46 @@
 import numpy as np
 
+
 class Game():
-    def __init__(self, lo, hi, n_cards, replace, verbose):            
-        self.validateInput(lo, hi, n_cards, replace, verbose)
+    def __init__(self, lo, hi, n_states, replace, reward):            
+        self.validateInput(lo, hi, n_states, replace, reward)
         
-        self.cards = np.random.choice(np.arange(lo, hi+1), size=n_cards, replace=replace)
-        self.max_card, self.max_pos = self.cards.max(), self.cards.argmax()
+        self.states = np.random.choice(np.arange(lo, hi+1), size=n_states, replace=replace)
+        self.max_val, self.max_state = self.states.max(), self.states.argmax()
         
-        self.pos = -1
+        ###FIX REPLAECEMENT MAX STATE
         
-        self.verbose = verbose
-        self.game_over = False
+    def autoTrain(self, agent):
         
-    def step(self, action):
-        assert(type(action) == bool), "action must be a boolean"
-        if self.game_over: return 
+        state = -1
         
-        if action:
-            self.pos += 1
-            return self.cards[self.pos]
-        else:
-            reward = self.pos == self.max_pos
-            if self.verbose & reward:
-                print("Winner!")
-            elif self.verbose & ~reward:
-                print("Winning Card position: {} | value: {}".format(self.max_pos, self.max_card))
+        while True:
+            state += 1
+            action = agent.get_action(state)
             
-            self.game_over = True
+            if (action == 0) or (state == self.n_states):
+                reward = self.reward * (state == self.max_state) 
+                break
+            else:
+                reward = 0
+        
+            action_ = agent.get_action(state+1)
             
-            return reward, self.max_pos, self.max_card
+            agent.update(state, action, state+1, action_, reward)
+            #agent.rewards.append(reward)
+            
+        agent.rewards.append(reward)
+        agent.final_state.append(state)
+        agent.update(state, action, None, None, reward)
+                
         
-    def reset(self):
-        self.cards = np.random.choice(np.arange(self.lo, self.hi+1), size=self.n_cards, replace=self.replace)
-        self.max_card, self.max_pos = self.cards.max(), self.cards.argmax()
-        
-        self.pos = -1
-        self.game_over = False
-        
-    def validateInput(self, lo, hi, n_cards, replace, verbose):
+    def validateInput(self, lo, hi, n_states, replace, reward):
         assert(type(lo) == int), "lo must be an int"
         assert(type(hi) == int), "hi must be an int"
-        assert(type(n_cards) == int), "n_cards must be an int"
+        assert(type(n_states) == int), "n_states must be an int"
         assert(type(replace) == bool), "replace must be a bool"
-        assert(type(verbose) == bool), "verbose must be a bool"
+        assert(type(reward) == int), "verbose must be a int"
         assert(lo < hi), "lo must be strictly smaller than hi"
-        assert((hi + 1 - lo) >= n_cards), "n_cards must be less than or equal to the range from lo to hi"
+        assert((hi + 1 - lo) >= n_states), "n_cards must be less than or equal to the range from lo to hi"
         
-        self.lo, self.hi, self.n_cards, self.replace, self.verbose = lo, hi, n_cards, replace, verbose
+        self.lo, self.hi, self.n_states, self.replace, self.reward  = lo, hi, n_states, replace, reward

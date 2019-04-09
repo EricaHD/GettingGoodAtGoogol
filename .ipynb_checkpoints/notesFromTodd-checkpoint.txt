@@ -24,4 +24,5 @@ Agents
         - Hashed values    
     - SARSA
     - Deep Q-learning
+    - Monte Carlo
         
