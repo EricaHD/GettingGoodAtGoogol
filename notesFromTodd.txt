@@ -25,4 +25,26 @@ Agents
     - SARSA
     - Deep Q-learning
     - Monte Carlo
-        
+
+============================================================
+
+Transfer Learning Test Cases
+Default: 50 cards, range [1, 1000], uniform distribution, no replacement, search cost 0
+
+Altering Number of Cards
+    - Default -> 5 cards, range [1, 1000], uniform distribution, no replacement, search cost 0
+    - Default -> 51 cards, range [1, 1000], uniform distribution, no replacement, search cost 0
+    - Default -> 500 cards, range [1, 1000], uniform distribution, no replacement, search cost 0
+
+Altering Range
+    - Default -> 50 cards, range [1, 100], uniform distribution, no replacement, search cost 0
+    - Default -> 50 cards, range [1, 1001], uniform distribution, no replacement, search cost 0
+    - Default -> 50 cards, range [1, 10000], uniform distribution, no replacement, search cost 0
+
+Altering Replacement
+    - Default -> 50 cards, range [1, 1000], uniform distribution, with replacement, search cost 0
+
+Altering Search Cost
+    - Default -> 50 cards, range [1, 1000], uniform distribution, no replacement, search cost 1
+
+Altering Distribution
