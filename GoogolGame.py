@@ -4,7 +4,7 @@ import numpy as np
 class Game():
     def __init__(self, lo, hi, n_states, replace, reward_fn):            
         self.validateInput(lo, hi, n_states, replace, reward_fn)
-        ###FIX REPLAECEMENT MAX STATE
+        ###FIX REPLACEMENT MAX STATE
         
     def reset_game(self):
         """Reset the game states """
@@ -21,7 +21,8 @@ class Game():
                 
             while True:
                 state += 1
-                action = agent.get_action(state, self.states[state])
+        
+                action = agent.get_action(state, self.states[state]) if state != self.n_states-1 else 0
 
                 if (action == 0) or (state == self.n_states-1):
                     if state == self.max_state:
@@ -33,7 +34,7 @@ class Game():
                 else:
                     reward = 0
 
-                action_ = agent.get_action(state+1, self.states[state])
+                action_ = agent.get_action(state+1, self.states[state+1])
 
                 agent.update(state, action, state+1, action_, reward)
 
