@@ -6,23 +6,23 @@ class Game():
         self.validateInput(lo, hi, n_states, replace, reward_fn)
         ###FIX REPLACEMENT MAX STATE
         
-    def reset_game(self):
+    def resetGame(self):
         """Reset the game states """
         self.states = np.random.choice(np.arange(self.lo, self.hi+1), size=self.n_states, replace=self.replace)
         self.max_val, self.max_state = self.states.max(), self.states.argmax()
         
-    def autoTrain(self, agent, n_games):  
+    def autoTrain(self, agent, n_games, save_results):  
         """Train an agent over n_games"""
         for i in range(n_games):
-            self.reset_game()
-            agent.reset()
+            self.resetGame()
+            agent.gameReset()
             
             state = -1
                 
             while True:
                 state += 1
         
-                action = agent.get_action(state, self.states[state]) if state != self.n_states-1 else 0
+                action = agent.getAction(state, self.states[state]) if state != self.n_states-1 else 0
 
                 if (action == 0) or (state == self.n_states-1):
                     if state == self.max_state:
@@ -34,12 +34,13 @@ class Game():
                 else:
                     reward = 0
 
-                action_ = agent.get_action(state+1, self.states[state+1])
+                action_ = agent.getAction(state+1, self.states[state+1])
 
                 agent.update(state, action, state+1, action_, reward)
-
-            agent.rewards.append(reward)
-            agent.final_state.append(state)
+            
+            if save_results:
+                agent.rewards.append(reward)
+                agent.final_state.append(state)
             agent.update(state, action, None, None, reward)
                 
         
