@@ -1,18 +1,18 @@
 import numpy as np
-
+from tqdm import tqdm
 
 class Game():
     def __init__(self, lo, hi, n_states, replace, reward_fn):            
         self.validateInput(lo, hi, n_states, replace, reward_fn)
         
-    def autoTrain(self, agent, n_games, save_results):  
+    def autoTrain(self, agent, n_games=10_000, save_results=False, teacher=False):  
         """Train an agent over n_games"""
-        
+
         agent_wins = 0
         final_states, final_values = [], []
         
         #Iterate through games
-        for i in range(n_games):
+        for i in tqdm(range(n_games)):
             #Reset game state and agent state
             self.resetGame()
             agent.resetGame()
@@ -22,91 +22,62 @@ class Game():
             #Iterate through game
             while True:
                 state += 1
-        
+                self.params['state'] = state
+                self.params['val'] = self.states[state]
+                
                 #Get action, if at end, only allow one action
-                action = agent.getAction(state, self.states[state]) if state != self.n_states-1 else 0
+                if not teacher:
+                    action = agent.getAction(self.params) 
+                else:
+                    action = teacher.getAction(self.params) 
+                    agent.observe(self.params)
+                      
+                self.params['action'] = action
 
                 #Check for stop
-                if (action == 0) or (state == self.n_states-1):
+                if (action == 0) or (state == self.params['n_states']-1):
                     #Check for win
-                    if self.states[state] == self.max_val:
-                        reward = self.reward_fn(True)
-                        agent.wins += 1
+                    if self.states[state] == self.params['max_val']:
+                        self.params['reward'] = self.reward_fn(True)
+                        win = 1
                     else:
-                        reward = self.reward_fn(False)
+                        self.params['reward'] = self.reward_fn(False)
+                        win = 0
                     break
                 else:
-                    reward = 0
+                    self.params['reward'] = 0
                 
                 #Get next action
-                action_ = agent.getAction(state+1, self.states[state])
+                if not teacher:
+                    action_ = agent.getAction(self.params)
+                else:
+                    action_ = teacher.getAction(self.params) 
+                    agent.observe(self.params)
 
                 #Update Q-values
-                agent.update(state, action, state+1, action_, reward)
+                self.params['action_'] = self.params['action']
+                agent.update(self.params)
             
             #Update Q-values 
-            agent.update(state, action, None, None, reward)
+            self.params['state_'], self.params['action_'] = None, None
+            agent.update(self.params)
             
             if save_results:
                 agent_wins += win
-                final_states.append((state, self.max_state))
-                final_values.append((self.states[state], self.max_val))
+                final_states.append((state, self.params['max_state']))
+                final_values.append((self.states[state], self.params['max_val']))
             
         if save_results:
-            return agent_wins, final_states, final_values
+            return agent_wins, final_states, final_values        
             
-    def autoTeach(self, agent, teacher, n_games):  
-        """Teach a learning agent over n_games"""
-        
-        #Iterate through games
-        for i in range(n_games):
-            #Reset game state, agent state and teacher state
-            self.resetGame()
-            agent.resetGame()
-            teacher.resetGame()
-            
-            state = -1
-                
-            #Iterate through games
-            while True:
-                state += 1
-        
-                #Get teacher actions
-                action = teacher.getAction(state, self.states[state])
-                #Add key to agent 
-                agent.observe(state, self.states[state])
-
-                #Check for stop
-                if (action == 0) or (state == self.n_states-1):
-                    #Check for victory
-                    if state == self.max_state:
-                        reward = self.reward_fn(True)
-                    else:
-                        reward = self.reward_fn(False)
-                    break
-                else:
-                    reward = 0
-
-                #Get teachers next action
-                action_ = teacher.getAction(state+1, self.states[state])
-                #Add key to agent 
-                agent.observe(state+1, self.states[state])
-        
-                #Update agent
-                agent.update(state, action, state+1, action_, reward)
-            
-            #Update agent
-            agent.update(state, action, None, None, reward)
-        
-            
-    def autoPlay(self, agent, n_games):  
+    def autoTest(self, agent, n_games):  
         """Let agent play without training"""
         
         agent_wins = 0
         final_states, final_values = [], []
         
         #Iterate through games
-        for i in range(n_games):
+        for i in tqdm(range(n_games)):
             #Reset game state and agent state
             self.resetGame()
             agent.resetGame()
@@ -116,28 +87,30 @@ class Game():
             #Iterate through game
             while True:
                 state += 1
-        
+                self.params['state'] = state
+                self.params['c_val'] = self.states[state]
+                
                 #Get action, if at end, only allow one action
-                action = agent.getAction(state, self.states[state]) if state != self.n_states-1 else 0
+                action = agent.getAction(self.params) 
 
                 #Check for stop
-                if (action == 0) or (state == self.n_states-1):
+                if (action == 0) or (state == self.params['n_states']-1):
                     #Check for win
-                    if self.states[state] == self.max_val:
-                        reward = self.reward_fn(True)
+                    if self.states[state] == self.params['max_val']:
+                        self.params['reward'] = self.reward_fn(True)
                         win = 1
                     else:
-                        reward = self.reward_fn(False)
+                        self.params['reward'] = self.reward_fn(False)
                         win = 0
                     break
                 else:
-                    reward = 0
+                    self.params['reward'] = 0
             
             agent_wins += win
-            final_states.append((state, self.max_state))
-            final_values.append((self.states[state], self.max_val))
+            final_states.append((state, self.params['max_state']))
+            final_values.append((self.states[state], self.params['max_val']))
             
-        return agent_wins, final_states, final_values
+        return agent_wins, final_states, final_values        
         
     def validateInput(self, lo, hi, n_states, replace, reward_fn):
         assert(type(lo) == int), "lo must be an int"
@@ -148,10 +121,22 @@ class Game():
         assert(lo < hi), "lo must be strictly smaller than hi"
         assert((hi + 1 - lo) >= n_states), "n_cards must be less than or equal to the range from lo to hi"
         
-        self.lo, self.hi, self.n_states, self.replace, self.reward_fn  = lo, hi, n_states, replace, reward_fn
+        self.reward_fn  = reward_fn
+                      
+        self.params = {'lo':lo,
+                       'hi':hi,
+                       'n_states':n_states,
+                       'replace':replace,
+                       'state':None,
+                       'action':None,
+                       'state_':None,
+                       'action_':None}              
         
     def resetGame(self):
         """Reset the game states """
-        self.states = np.random.choice(np.arange(self.lo, self.hi+1), size=self.n_states, replace=self.replace)
-        self.max_val, self.max_state = self.states.max(), self.states.argmax()
-        
+        self.states = np.random.choice(np.arange(self.params['lo'], self.params['hi']+1), 
+                                       size=self.params['n_states'], 
+                                       replace=self.params['replace'])
+                      
+        self.params['max_val'] = self.states.max()
+        self.params['max_state'] = self.states.argmax()
