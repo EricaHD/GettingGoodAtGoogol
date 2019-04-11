@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 
-def setDefault(figsize=(10, 10)):
+def setDefault(figsize=(20, 10)):
     plt.style.use(['dark_background', 'bmh'])
     plt.rc('axes', facecolor='k')
     plt.rc('figure', facecolor='k')
