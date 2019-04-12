@@ -46,7 +46,7 @@ if __name__ == '__main__':
                     help="Search Cost")
     ap.add_argument("-ql", "--q_learn", default=False,
                     help="SARSA")
-    ap.add_argument("-qkf", "--q_key_fn", default=:"bin12",
+    ap.add_argument("-qkf", "--q_key_fn", default="bin12",
                     help="Q-Key Fn")
     ap.add_argument("-qk", "--q_key", default="0_0",
                     help="Q-Key")
@@ -61,32 +61,33 @@ if __name__ == '__main__':
     if args['reward'] == "simpleReward":
         reward_fn = simpleReward
     
-    game = Game(lo=args['lo'], hi=args['hi'], n_states=args['n_states'], replace=args['replace'], reward_fn=reward_fn)
+    game = Game(lo=int(args['lo']), hi=int(args['hi']), n_states=int(args['n_states']), replace=bool(args['replace']), reward_fn=reward_fn)
     
     if args['agent'] == "q_learn":
         if args['q_key_fn'] == "bin22":
             q_key_fn = lambda s, u, p, q: qKeyMaxBin(s, u, p, q, 2, 2)
         elif args['q_key_fn'] == "bin12":
             q_key_fn = lambda s, u, p, q: qKeyMaxBin(s, u, p, q, 1, 2)
-        elif args['q_key_fn'] = "bin21":
+        elif args['q_key_fn'] == "bin21":
             q_key_fn = lambda s, u, p, q: qKeyMaxBin(s, u, p, q, 2, 1)
-        eli args['q_key_fn'] == "bin22":
-            q_key_fn = lambda s, u, p, q: qKeyMaxBin(s, u, p, q, 2, 2)
-            
-        agent_params = {'alpha':args['alpha'],
-                      'gamma':args['gamma'],
-                      'eps':args['epsilon'], 
-                      'eps_decay':args['eps_decay'], 
-                      's_cost':args['s_cost'],
-                      'sarsa':args['q_learn'],
-                      'q_key_fn':q_key_fn,
-                      'q_key':args['q_key']}
+        elif args['q_key_fn'] == "bin11":
+            q_key_fn = lambda s, u, p, q: qKeyMaxBin(s, u, p, q, 1, 1)
+ 
+        agent_params = {'alpha':float(args['alpha']),
+                      	'gamma':float(args['gamma']),
+                      	'eps':float(args['epsilon']), 
+                      	'eps_decay':float(args['eps_decay']), 
+                      	's_cost':float(args['s_cost']),
+                      	'sarsa':bool(args['q_learn']),
+                      	'q_key_fn':q_key_fn,
+                      	'q_key':args['q_key']}
         
         agent = QAgent(**agent_params)
-                
-    agent_wins, _, _ = game.autoTrain(agent, args['n_games'], True, False)
     
-    print("Training complete, winning percentage: {:.2}".format(agent_wins/args['n_games']))
+    print("Beginning training")            
+    agent_wins, _, _ = game.autoTrain(agent, int(args['n_games']), True, False)
+    
+    print("Training complete, winning percentage: {:.2}".format(agent_wins/int(args['n_games'])))
     
     with open(args['file_path'], 'wb') as file:
         pkl.dump(dict(agent.Q), file)
