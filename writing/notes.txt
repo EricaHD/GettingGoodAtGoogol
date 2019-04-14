@@ -25,11 +25,7 @@ Agents
         - Hashed values    
     - SARSA
     - Deep Q-learning
-    - Monte Carlo
-
-============================================================
-
-Transfer Learning Test Cases
+    - Monte Carlo===Transfer Learning Test Cases
 Default: 50 cards, range [1, 1000], uniform distribution, no replacement, search cost 0
 
 Altering Number of Cards
