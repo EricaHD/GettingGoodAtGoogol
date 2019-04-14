@@ -1,8 +1,9 @@
 Papers
-    - Searching for the next best mate: Peter Todd
-    - Should I stay or should I go: ANgela Wu? & Peter Dan
-    - Don't stop till you get enough: Guerickis & Maloney
-    - The value of approaching best things: Rich & Gureckis
+    - Searching for the Next Best Mate (Todd)
+    - Should I Stay or Should I Go? How the Human Brain Manages the Trade-off Between Exploitation and Exploration: (Cohen, McClure, Yu)
+    - Don't Stop Til You Get Enough: Adaptive Information Sampling in a Visuomotor Estimation Task (Guerickis, Maloney, Juni)
+    - The Value of Approaching Bad Things (Rich, Gureckis)
+    - Information Sampling Behavior with Explicit Sampling Costs (Gureckis, Maloney, Juni)
         
 Game Parameters
     - Number of cards 
