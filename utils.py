@@ -19,8 +19,14 @@ def qKeyMaxBin(s, update, params, q_key, s_d, v_d):
     else:
         return "{}_{}".format(s_key, int(q_key.split("_")[1]))
     
-def simpleReward(win):
-    if win: 
-        return 10
+def simpleReward(val_rank):
+    if val_rank == 0:
+	return 10, 1
     else:
-        return -1
+	return -1, 0 
+
+def topTenReward(val_rank):
+    if val_rank < 10:
+	return 10 - val_rank
+    else:
+        return -val_rank

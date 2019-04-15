@@ -5,7 +5,7 @@ import numpy as np
 
 from game import Game
 from agent import QAgent, OptimalAgent
-from utils import qKeyMaxBin, simpleReward
+from utils import qKeyMaxBin, simpleReward, topTenReward
 
 import pickle as pkl
 
@@ -26,7 +26,7 @@ if __name__ == '__main__':
                     help="N-States")
     ap.add_argument("-rp", "--replace", default=False,
                     help="SARSA")
-    ap.add_argument("-r", "--reward", default="simpleReward",
+    ap.add_argument("-r", "--reward", default="simple",
                     help="Reward Fn")
     
     #Training Parameters
@@ -58,8 +58,11 @@ if __name__ == '__main__':
     
     args = vars(ap.parse_args())
     
-    if args['reward'] == "simpleReward":
-        reward_fn = simpleReward
+    if args['reward'] == "simple":
+        reward_fn = simpleReward 
+    elif args['reward'] == 'topTen':
+        reward_fn = topTenReward
+
     
     game = Game(lo=int(args['lo']), hi=int(args['hi']), n_states=int(args['n_states']), replace=bool(args['replace']), reward_fn=reward_fn)
     
@@ -85,7 +88,7 @@ if __name__ == '__main__':
         agent = QAgent(**agent_params)
     
     print("Beginning training")            
-    agent_wins, _, _ = game.autoTrain(agent, int(args['n_games']), True, False)
+    agent_wins, _, _ = game.train(agent, int(args['n_games']), True, False)
     
     print("Training complete, winning percentage: {:.2}".format(agent_wins/int(args['n_games'])))
     

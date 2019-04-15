@@ -5,7 +5,7 @@ class Game():
     def __init__(self, lo, hi, n_states, replace, reward_fn):            
         self.validateInput(lo, hi, n_states, replace, reward_fn)
         
-    def autoTrain(self, agent, n_games=10_000, save_results=False, teacher=False):  
+    def train(self, agent, n_games=10_000, save_results=False, teacher=False):  
         """Train an agent over n_games"""
 
         agent_wins = 0
@@ -37,12 +37,8 @@ class Game():
                 #Check for stop
                 if (action == 0) or (state == self.params['n_states']-1):
                     #Check for win
-                    if self.states[state] == self.params['max_val']:
-                        self.params['reward'] = self.reward_fn(True)
-                        win = 1
-                    else:
-                        self.params['reward'] = self.reward_fn(False)
-                        win = 0
+	            val_rank = np.where(self.params['val'] == self.states_sorted)[0][0]
+	            self.params['reward'], win = self.reward_fn(val_rank)
                     break
                 else:
                     self.params['reward'] = 0
@@ -70,7 +66,7 @@ class Game():
         if save_results:
             return agent_wins, final_states, final_values        
             
-    def autoTest(self, agent, n_games):  
+    def eval(self, agent, n_games):  
         """Let agent play without training"""
         
         agent_wins = 0
@@ -88,20 +84,16 @@ class Game():
             while True:
                 state += 1
                 self.params['state'] = state
-                self.params['c_val'] = self.states[state]
+                self.params['val'] = self.states[state]
                 
                 #Get action, if at end, only allow one action
                 action = agent.getAction(self.params) 
 
                 #Check for stop
                 if (action == 0) or (state == self.params['n_states']-1):
-                    #Check for win
-                    if self.states[state] == self.params['max_val']:
-                        self.params['reward'] = self.reward_fn(True)
-                        win = 1
-                    else:
-                        self.params['reward'] = self.reward_fn(False)
-                        win = 0
+		    #Check for win
+                    val_rank = np.where(self.params['val'] == self.states_sorted())[0][0]
+		    reward, win = self.reward_fn(val_rank)
                     break
                 else:
                     self.params['reward'] = 0
@@ -137,6 +129,7 @@ class Game():
         self.states = np.random.choice(np.arange(self.params['lo'], self.params['hi']+1), 
                                        size=self.params['n_states'], 
                                        replace=self.params['replace'])
-                      
-        self.params['max_val'] = self.states.max()
+        self.states_sorted = np.sort(states) 
+        
+	self.params['max_val'] = self.states.max()
         self.params['max_state'] = self.states.argmax()

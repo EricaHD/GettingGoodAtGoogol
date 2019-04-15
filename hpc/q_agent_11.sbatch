@@ -5,7 +5,7 @@
 #SBATCH --cpus-per-task=2
 #SBATCH --mem=12GB
 #SBATCH --time=24:00:00
-#SBATCH --output=slurm_q_22_%j.out
+#SBATCH --output=slurm_qAgent%j.out
 
 #Run.A
 PYTHONPATH=$PYTHONPATH:. python agent_training.py \
@@ -13,7 +13,6 @@ PYTHONPATH=$PYTHONPATH:. python agent_training.py \
         --lo 1 \
         --hi 100 \
         --n_states 25 \
-        --n_games 100 \
-	--q_key_fn bin22 \
-        --reward topTen \
-	--file_path agent_values/q_agent_bin22.pkl
+        --n_games 1_000_000_000 \
+	--q_key_fn bin11 \
+	--file_path agent_values/agent_0.pkl
