@@ -37,8 +37,8 @@ class Game():
                 #Check for stop
                 if (action == 0) or (state == self.params['n_states']-1):
                     #Check for win
-	            val_rank = np.where(self.params['val'] == self.states_sorted)[0][0]
-	            self.params['reward'], win = self.reward_fn(val_rank)
+                    val_rank = np.where(self.params['val'] == self.states_sorted)[0][0]
+                    self.params['reward'], win = self.reward_fn(val_rank)
                     break
                 else:
                     self.params['reward'] = 0
@@ -91,9 +91,9 @@ class Game():
 
                 #Check for stop
                 if (action == 0) or (state == self.params['n_states']-1):
-		    #Check for win
-                    val_rank = np.where(self.params['val'] == self.states_sorted())[0][0]
-		    reward, win = self.reward_fn(val_rank)
+                    #Check for win
+                    val_rank = np.where(self.params['val'] == self.states_sorted)[0][0]
+                    reward, win = self.reward_fn(val_rank)
                     break
                 else:
                     self.params['reward'] = 0
