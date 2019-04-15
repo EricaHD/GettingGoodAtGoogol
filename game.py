@@ -131,5 +131,5 @@ class Game():
                                        replace=self.params['replace'])
         self.states_sorted = np.sort(states) 
         
-	self.params['max_val'] = self.states.max()
+        self.params['max_val'] = self.states.max()
         self.params['max_state'] = self.states.argmax()
