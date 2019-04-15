@@ -129,7 +129,7 @@ class Game():
         self.states = np.random.choice(np.arange(self.params['lo'], self.params['hi']+1), 
                                        size=self.params['n_states'], 
                                        replace=self.params['replace'])
-        self.states_sorted = np.sort(states) 
+        self.states_sorted = np.sort(self.states) 
         
         self.params['max_val'] = self.states.max()
         self.params['max_state'] = self.states.argmax()

@@ -21,12 +21,12 @@ def qKeyMaxBin(s, update, params, q_key, s_d, v_d):
     
 def simpleReward(val_rank):
     if val_rank == 0:
-	return 10, 1
+        return 10, 1
     else:
-	return -1, 0 
+        return -1, 0 
 
 def topTenReward(val_rank):
     if val_rank < 10:
-	return 10 - val_rank
+        return 10 - val_rank, 1
     else:
-        return -val_rank
+        return -val_rank, 0
