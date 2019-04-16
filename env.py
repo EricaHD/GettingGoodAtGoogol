@@ -41,7 +41,7 @@ class Env():
                 
                 #Update Q-values
                 
-                self.params['val'] = game.flip()
+                self.params['val'] = game.step()
                 self.params['state'] = game.state
                 
                 
@@ -89,7 +89,7 @@ class Env():
                 
                 #Update Q-values
                 
-                self.params['val'] = game.flip()
+                self.params['val'] = game.step()
                 self.params['state'] = game.state
                 
                 

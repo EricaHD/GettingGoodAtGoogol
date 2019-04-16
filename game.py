@@ -10,14 +10,11 @@ class Game():
         
         self.reset()
     
-    def flip(self):
+    def step(self):
         self.state += 1
         self.val = self.states[self.state]
         return self.val
-    
-    def flipQ(self):
-        return self.state+1, self.states[self.state+1]
-    
+      
     def winState(self):
         if self.states[self.state] == self.max_val:
             return True

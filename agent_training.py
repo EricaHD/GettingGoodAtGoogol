@@ -5,7 +5,7 @@ import numpy as np
 
 from env import Env
 from game import Game
-from agent import QAgent
+from agent import *
 from utils import *
 
 if __name__ == '__main__':

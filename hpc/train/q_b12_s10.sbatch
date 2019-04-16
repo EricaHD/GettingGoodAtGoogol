@@ -1,31 +1,31 @@
 #!/bin/bash
 
-#SBATCH --job-name=qb11s10
+#SBATCH --job-name=qb12s10
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=2
 #SBATCH --mem=12GB
 #SBATCH --time=24:00:00
-#SBATCH --output=slurm_q_b11_s10_%j.out
+#SBATCH --output=slurm_q_b12_s10_%j.out
 
 #Run.A
 PYTHONPATH=$PYTHONPATH:. python agent_training.py \
 	--agent q_learn \
     --lo 1 \
-    --hi 100 \
-    --n_states 50 \
+    --hi 1000 \
+    --n_states 500 \
     --alpha .01 \
     --alpha_decay .0001 \
     --alpha_step 10000 \
-    --q_key_fn bin_1_1 \
+    --q_key_fn bin_1_2 \
     --n_games 500000 \
     --reward scalar_10_1 \
     --n_print 10000 \
     --delay 0 \
     --lo_eval 1 \
     --hi_eval 100 \
-    --n_states_eval 25 \
+    --n_states_eval 50 \
     --n_games_eval 100000 \
     --reward_eval scalar_1_1 \
     --n_print_eval 5000 \
     --delay_eval 0 \
-    --file_path agent_values/q_b11_s10.pkl
+	--file_path agent_values/q_b12_s10.pkl

@@ -11,8 +11,8 @@
 PYTHONPATH=$PYTHONPATH:. python agent_training.py \
 	--agent q_learn \
     --lo 1 \
-    --hi 100 \
-    --n_states 50 \
+    --hi 1000 \
+    --n_states 500 \
     --alpha .01 \
     --alpha_decay .0001 \
     --alpha_step 10000 \
@@ -23,7 +23,7 @@ PYTHONPATH=$PYTHONPATH:. python agent_training.py \
     --delay 0 \
     --lo_eval 1 \
     --hi_eval 100 \
-    --n_states_eval 25 \
+    --n_states_eval 50 \
     --n_games_eval 100000 \
     --reward_eval scalar_1_1 \
     --n_print_eval 5000 \
