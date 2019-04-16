@@ -15,7 +15,7 @@ PYTHONPATH=$PYTHONPATH:. python agent_training.py \
     --n_states 50 \
     --alpha .01 \
     --alpha_decay .0001 \
-    --alpha_step 500000 \ 
+    --alpha_step 500000 \
     --q_key_fn bin_1_1 \
     --n_games 10000000 \
     --reward scalar_10_1 \
@@ -25,4 +25,4 @@ PYTHONPATH=$PYTHONPATH:. python agent_training.py \
     --reward_eval scalar_1_1 \
     --n_print_eval 5000 \
     --delay_eval 0 \
-	--file_path agent_values/q_b11_s10.pkl
+    --file_path agent_values/q_b11_s10.pkl
