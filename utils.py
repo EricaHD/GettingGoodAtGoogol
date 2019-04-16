@@ -1,7 +1,7 @@
 import numpy as np
 
 import gzip
-import pickle as pkl
+import cloudpickle as pkl
 
 #########################################################################################
 ##Q-Key FN

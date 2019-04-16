@@ -6,9 +6,7 @@ import numpy as np
 from env import Env
 from game import Game
 from agent import QAgent
-from utils import qKeyMaxBin, qKeySeqBin, rewardScalar, rewardTopN
-
-import pickle as pkl
+from utils import *
 
 if __name__ == '__main__':
 
@@ -28,15 +26,13 @@ if __name__ == '__main__':
     ap.add_argument("-rp", "--replace", default=False,
                     help="SARSA")
     
-    #Training Parameters
-    ap.add_argument("-ng", "--n_games", default=10_000,
-                    help="N-Games")
-    ap.add_argument("-r", "--reward", default="scalar_10_1",
-                    help="Reward Fn")
-    
     #Agent Parameters
-    ap.add_argument("-al", "--alpha", default=0.001,
-                    help="Learning Rate")
+    ap.add_argument("-al", "--alpha", default=0.01,
+                    help="Alpha")
+    ap.add_argument("-ald", "--alpha_decay", default=1e-5,
+                    help="Alpha Decay")
+    ap.add_argument("-as", "--alpha_step", default=1000,
+                    help="Alpha Step")
     ap.add_argument("-g", "--gamma", default=0.9,
                     help="Reward Discount Rate")
     ap.add_argument("-e", "--epsilon", default=0.1,
@@ -52,6 +48,26 @@ if __name__ == '__main__':
     ap.add_argument("-qk", "--q_key", default="0_0",
                     help="Q-Key")
     
+    #Training Parameters
+    ap.add_argument("-ng", "--n_games", default=1000000,
+                    help="N-Games")
+    ap.add_argument("-r", "--reward", default="scalar_10_1",
+                    help="Reward Fn")
+    ap.add_argument("-np", "--n_print", default=100000,
+                    help="N-Print")
+    ap.add_argument("-d", "--delay", default=0,
+                    help="Time Delay")
+    
+    #Eval Parameters
+    ap.add_argument("-nge", "--n_games_eval", default=10000,
+                    help="N-Games Eval")
+    ap.add_argument("-re", "--reward_eval", default="scalar_10_1",
+                    help="Reward Fn Eval")
+    ap.add_argument("-npe", "--n_print_eval", default=1000,
+                    help="N-Print")
+    ap.add_argument("-de", "--delay_eval", default=0,
+                    help="Time Delay")
+    
     #Save Path
     ap.add_argument("-fp", "--file_path",
                     help="Save File Path")
@@ -59,14 +75,20 @@ if __name__ == '__main__':
     
     args = vars(ap.parse_args())
     
+    print("INITIALIZING GAME")
     ###SET UP GAME
     game_params = {'lo':int(args['lo']),
                    'hi':int(args['hi']),
                    'n_states':int(args['n_states']),
                    'replace':bool(args['replace'])}
     
-    game = Game(**game_params)
     
+    game = Game(**game_params)
+    print("Q-Agent PARAMETERS: {}".format(game_params))
+    print("*"*89)
+    print("*"*89)
+    
+    print("INITIALIZING AGENT")
     ###SET UP AGENT
     if args['agent'] == "q_learn":
         if "bin" in args['q_key_fn']:
@@ -77,6 +99,8 @@ if __name__ == '__main__':
             q_key_fn = lambda p, q: qKeySeqBin(p, q, int(s_bin))
     
         agent_params = {'alpha':float(args['alpha']),
+                        'alpha_decay':float(args['alpha_decay']),
+                        'alpha_step':int(args['alpha_step']),
                       	'gamma':float(args['gamma']),
                       	'eps':float(args['epsilon']), 
                       	'eps_decay':float(args['eps_decay']), 
@@ -86,8 +110,13 @@ if __name__ == '__main__':
                       	'q_key':args['q_key']}
         
         agent = QAgent(**agent_params)
+        print("Q-Agent PARAMETERS: {}".format(agent_params))
+        
+    print("*"*89)
+    print("*"*89)
     
-    ###SET UP ENV
+    print("INITIALIZING TRAINING")
+    ###TRAIN
     if "scalar" in args['reward']:
         pos_reward, neg_reward = args['reward'].split("_")[1:]
         reward_fn = lambda g, gp: rewardScalar(g, gp, int(pos_reward), -int(neg_reward)) 
@@ -95,17 +124,48 @@ if __name__ == '__main__':
         pos_reward, neg_reward, n = args['reward'].split("_")[1:]
         reward_fn = lambda g, gp: rewardTopN(g, gp, int(pos_reward), -int(neg_reward), int(n)) 
         
-    env_params = {'game':game,
+    env_train_params = {'game':game,
                   'agent':agent,
                   'n_games':int(args['n_games']),
                   'reward_fn': reward_fn,
-                  'verbose':True}
+                  'n_print':int(args['n_print']),
+                  'delay':int(args['delay'])}
     
     env = Env()
+    env.train(**env_train_params)
+    print("*" * 89)
+    print("*" * 89)
     
-    env.train(**env_params)
+    
+    print("INITIALIZING EVAL")
+    ###EVAL
+    if "scalar" in args['reward_eval']:
+        pos_reward, neg_reward = args['reward'].split("_")[1:]
+        reward_fn_eval = lambda g, gp: rewardScalar(g, gp, int(pos_reward), -int(neg_reward)) 
+    elif 'topN' in args['reward_eval']:
+        pos_reward, neg_reward, n = args['reward'].split("_")[1:]
+        reward_fn_eval = lambda g, gp: rewardTopN(g, gp, int(pos_reward), -int(neg_reward), int(n)) 
+    
+    env_eval_params = {'game':game,
+                       'agent':agent,
+                       'n_games':int(args['n_games_eval']),
+                       'reward_fn': reward_fn_eval,
+                       'n_print':int(args['n_print']),
+                       'delay':int(args['delay'])}
+    
+    env.eval(**env_eval_params)
+    print("*" * 89)
+    print("*" * 89)
+    
+    ###SAVE
+    if args['agent'] == "q_learn":
+        save_params = {"game_params":game_params,
+                       "agent_params":agent_params,
+                       "agent_Q":agent.Q}
+        saveZippedPkl(save_params, args['file_path'])
         
-    with open(args['file_path'], 'wb') as file:
-        pkl.dump(dict(agent.Q), file)
+        print("Q-VALUES STORED AT: {}".format(args['file_path']))
+    
+    
         
-    print("Agent Saved at: {}".format(args['file_path']))
+    

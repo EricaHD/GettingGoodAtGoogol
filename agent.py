@@ -22,10 +22,11 @@ class BasicAgent:
             
 class QAgent(BasicAgent):
     """Q-learning Agent"""
-    def __init__(self, alpha, gamma, eps, eps_decay, s_cost, sarsa, q_key_fn, q_key):
+    def __init__(self, alpha, alpha_decay, alpha_step, gamma, eps, eps_decay, s_cost, sarsa, q_key_fn, q_key):
         super().__init__()
         
         self.alpha, self.gamma, self.eps, self.eps_decay, self.s_cost = alpha, gamma, eps, eps_decay, s_cost
+        self.alpha_decay, self.alpha_step = alpha_decay, alpha_step
         self.orig_eps = eps
         
         self.Q = defaultdict(lambda: {0:0, 1:0})
@@ -74,6 +75,10 @@ class QAgent(BasicAgent):
         else:
             self.Q[self.q_key][0] += self.alpha * (params['reward'] - self.Q[self.q_key][0] - self.s_cost)
             
+            if params['i'] % self.alpha_step == 0:
+                self.alpha *= (1 - self.alpha_decay)
+            
+            
     def reset(self):
         self.Q_max = 0
         self.eps = self.orig_eps
@@ -97,9 +102,6 @@ class OptimalAgent(BasicAgent):
         
         self.max_val = max_val
         
-    def update(self, s, a, s_, a_, r):
-        pass
-    
     def getAction(self, params):
         
         if params['val'] == params['hi']:
@@ -113,6 +115,9 @@ class OptimalAgent(BasicAgent):
                 return 0
             else:
                 return 1
+            
+    def update(self,params):
+        pass
     
     def reset(self):
         self.Q_max = 0
