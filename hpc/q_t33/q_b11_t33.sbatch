@@ -17,9 +17,9 @@ PYTHONPATH=$PYTHONPATH:. python agent_training.py \
     --alpha_decay .0001 \
 	--alpha_step 50000 \
     --q_key_fn bin_1_1 \
-    --n_games 1000000 \
+    --n_games 500000 \
     --reward topN_3_3_3 \
-    --n_print 50000 \
+    --n_print 10000 \
     --delay 0 \
     --lo_eval 1 \
     --hi_eval 100 \

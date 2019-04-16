@@ -158,10 +158,10 @@ if __name__ == '__main__':
     game_eval = Game(**game_eval_params)
     
     if "scalar" in args['reward_eval']:
-        pos_reward, neg_reward = args['reward'].split("_")[1:]
+        pos_reward, neg_reward = args['reward_eval'].split("_")[1:]
         reward_fn_eval = lambda g, gp: rewardScalar(g, gp, int(pos_reward), -int(neg_reward)) 
     elif 'topN' in args['reward_eval']:
-        pos_reward, neg_reward, n = args['reward'].split("_")[1:]
+        pos_reward, neg_reward, n = args['reward_eval'].split("_")[1:]
         reward_fn_eval = lambda g, gp: rewardTopN(g, gp, int(pos_reward), -int(neg_reward), int(n)) 
     
     env_eval_params = {'game':game_eval,

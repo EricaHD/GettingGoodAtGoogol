@@ -15,11 +15,11 @@ PYTHONPATH=$PYTHONPATH:. python agent_training.py \
     --n_states 50 \
     --alpha .01 \
     --alpha_decay .0001 \
-    --alpha_step 50000 \
+    --alpha_step 10000 \
     --q_key_fn bin_2_1 \
-    --n_games 1000000 \
+    --n_games 500000 \
     --reward scalar_10_1 \
-    --n_print 50000 \
+    --n_print 10000 \
     --delay 0 \
     --lo_eval 1 \
     --hi_eval 100 \
