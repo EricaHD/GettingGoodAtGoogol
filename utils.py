@@ -46,14 +46,15 @@ def rewardTopN(game, game_params, pos_reward, neg_reward, n):
     else:
         return np.maximum(neg_reward, -rank) , 0
 
-###########################################################################################
-###########################################################################################
+#########################################################################################
+##SAVE AND LOAD FN
+#########################################################################################
 
-def saveZippedPkl(obj, filename):
+def svZipPkl(obj, filename):
 	with gzip.open(filename, 'wb') as f:
 		pkl.dump(obj, f)
 
-def loadZippedPkl(filename):
+def ldZipPkl(filename):
 	with gzip.open(filename, 'rb') as f:
 		obj = pkl.load(f)
 		return obj

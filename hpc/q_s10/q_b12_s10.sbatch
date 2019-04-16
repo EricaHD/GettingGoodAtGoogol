@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --job-name=qAgentB12S10
+#SBATCH --job-name=qb12s10
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=2
 #SBATCH --mem=12GB
@@ -12,7 +12,7 @@ PYTHONPATH=$PYTHONPATH:. python agent_training.py \
 	--agent q_learn \
     --lo 1 \
     --hi 100 \
-    --n_states 25 \
+    --n_states 50 \
     --alpha .01 \
     --alpha_decay .0001 \
     --alpha_step 50000 \
@@ -21,6 +21,9 @@ PYTHONPATH=$PYTHONPATH:. python agent_training.py \
     --reward scalar_10_1 \
     --n_print 50000 \
     --delay 0 \
+    --lo_eval 1 \
+    --hi_eval 100 \
+    --n_states_eval 25 \
     --n_games_eval 100000 \
     --reward_eval scalar_1_1 \
     --n_print_eval 5000 \

@@ -19,9 +19,9 @@ if __name__ == '__main__':
     #Game Parameters
     ap.add_argument("-lo", "--lo", default=1,
                     help="Lo")
-    ap.add_argument("-hi", "--hi", default=1000,
+    ap.add_argument("-hi", "--hi", default=100,
                     help="Hi")
-    ap.add_argument("-ns", "--n_states", default=50,
+    ap.add_argument("-ns", "--n_states", default=25,
                     help="N-States")
     ap.add_argument("-rp", "--replace", default=False,
                     help="SARSA")
@@ -58,6 +58,17 @@ if __name__ == '__main__':
     ap.add_argument("-d", "--delay", default=0,
                     help="Time Delay")
     
+    
+    #Eval-Game Parameters
+    ap.add_argument("-loe", "--lo_eval", default=1,
+                    help="Lo")
+    ap.add_argument("-hie", "--hi_eval", default=100,
+                    help="Hi")
+    ap.add_argument("-nse", "--n_states_eval", default=25,
+                    help="N-States")
+    ap.add_argument("-rpe", "--replace_eval", default=False,
+                    help="SARSA")
+    
     #Eval Parameters
     ap.add_argument("-nge", "--n_games_eval", default=10000,
                     help="N-Games Eval")
@@ -84,7 +95,7 @@ if __name__ == '__main__':
     
     
     game = Game(**game_params)
-    print("Q-Agent PARAMETERS: {}".format(game_params))
+    
     print("*"*89)
     print("*"*89)
     
@@ -110,7 +121,6 @@ if __name__ == '__main__':
                       	'q_key':args['q_key']}
         
         agent = QAgent(**agent_params)
-        print("Q-Agent PARAMETERS: {}".format(agent_params))
         
     print("*"*89)
     print("*"*89)
@@ -139,6 +149,14 @@ if __name__ == '__main__':
     
     print("INITIALIZING EVAL")
     ###EVAL
+    game_eval_params = {'lo':int(args['lo_eval']),
+                       'hi':int(args['hi_eval']),
+                       'n_states':int(args['n_states_eval']),
+                       'replace':bool(args['replace_eval'])}
+    
+    
+    game_eval = Game(**game_eval_params)
+    
     if "scalar" in args['reward_eval']:
         pos_reward, neg_reward = args['reward'].split("_")[1:]
         reward_fn_eval = lambda g, gp: rewardScalar(g, gp, int(pos_reward), -int(neg_reward)) 
@@ -146,7 +164,7 @@ if __name__ == '__main__':
         pos_reward, neg_reward, n = args['reward'].split("_")[1:]
         reward_fn_eval = lambda g, gp: rewardTopN(g, gp, int(pos_reward), -int(neg_reward), int(n)) 
     
-    env_eval_params = {'game':game,
+    env_eval_params = {'game':game_eval,
                        'agent':agent,
                        'n_games':int(args['n_games_eval']),
                        'reward_fn': reward_fn_eval,
@@ -160,9 +178,10 @@ if __name__ == '__main__':
     ###SAVE
     if args['agent'] == "q_learn":
         save_params = {"game_params":game_params,
+                       "game_eval_params":game_eval_params,
                        "agent_params":agent_params,
                        "agent_Q":agent.Q}
-        saveZippedPkl(save_params, args['file_path'])
+        svZipPkl(save_params, args['file_path'])
         
         print("Q-VALUES STORED AT: {}".format(args['file_path']))
     
