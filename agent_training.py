@@ -3,9 +3,10 @@ from argparse import ArgumentParser
 
 import numpy as np
 
+from env import Env
 from game import Game
-from agent import QAgent, OptimalAgent
-from utils import qKeyMaxBin, simpleReward, topTenReward
+from agent import QAgent
+from utils import qKeyMaxBin, qKeySeqBin, rewardScalar, rewardTopN
 
 import pickle as pkl
 
@@ -26,12 +27,12 @@ if __name__ == '__main__':
                     help="N-States")
     ap.add_argument("-rp", "--replace", default=False,
                     help="SARSA")
-    ap.add_argument("-r", "--reward", default="simple",
-                    help="Reward Fn")
     
     #Training Parameters
     ap.add_argument("-ng", "--n_games", default=10_000,
                     help="N-Games")
+    ap.add_argument("-r", "--reward", default="scalar_10_1",
+                    help="Reward Fn")
     
     #Agent Parameters
     ap.add_argument("-al", "--alpha", default=0.001,
@@ -46,7 +47,7 @@ if __name__ == '__main__':
                     help="Search Cost")
     ap.add_argument("-ql", "--q_learn", default=False,
                     help="SARSA")
-    ap.add_argument("-qkf", "--q_key_fn", default="bin12",
+    ap.add_argument("-qkf", "--q_key_fn", default="bin_1_2",
                     help="Q-Key Fn")
     ap.add_argument("-qk", "--q_key", default="0_0",
                     help="Q-Key")
@@ -58,24 +59,23 @@ if __name__ == '__main__':
     
     args = vars(ap.parse_args())
     
-    if args['reward'] == "simple":
-        reward_fn = simpleReward 
-    elif args['reward'] == 'topTen':
-        reward_fn = topTenReward
-
+    ###SET UP GAME
+    game_params = {'lo':int(args['lo']),
+                   'hi':int(args['hi']),
+                   'n_states':int(args['n_states']),
+                   'replace':bool(args['replace'])}
     
-    game = Game(lo=int(args['lo']), hi=int(args['hi']), n_states=int(args['n_states']), replace=bool(args['replace']), reward_fn=reward_fn)
+    game = Game(**game_params)
     
+    ###SET UP AGENT
     if args['agent'] == "q_learn":
-        if args['q_key_fn'] == "bin22":
-            q_key_fn = lambda s, u, p, q: qKeyMaxBin(s, u, p, q, 2, 2)
-        elif args['q_key_fn'] == "bin12":
-            q_key_fn = lambda s, u, p, q: qKeyMaxBin(s, u, p, q, 1, 2)
-        elif args['q_key_fn'] == "bin21":
-            q_key_fn = lambda s, u, p, q: qKeyMaxBin(s, u, p, q, 2, 1)
-        elif args['q_key_fn'] == "bin11":
-            q_key_fn = lambda s, u, p, q: qKeyMaxBin(s, u, p, q, 1, 1)
- 
+        if "bin" in args['q_key_fn']:
+            s_bin, v_bin = args['q_key_fn'].split("_")[1:]
+            q_key_fn = lambda p, q: qKeyMaxBin(p, q, int(s_bin), int(v_bin))
+        elif "seq" in args['q_key_fn']:
+            s_bin = args['q_key_fn'].split("_")[1]
+            q_key_fn = lambda p, q: qKeySeqBin(p, q, int(s_bin))
+    
         agent_params = {'alpha':float(args['alpha']),
                       	'gamma':float(args['gamma']),
                       	'eps':float(args['epsilon']), 
@@ -87,11 +87,24 @@ if __name__ == '__main__':
         
         agent = QAgent(**agent_params)
     
-    print("Beginning training")            
-    agent_wins, _, _ = game.train(agent, int(args['n_games']), True, False)
+    ###SET UP ENV
+    if "scalar" in args['reward']:
+        pos_reward, neg_reward = args['reward'].split("_")[1:]
+        reward_fn = lambda g, gp: rewardScalar(g, gp, int(pos_reward), -int(neg_reward)) 
+    elif 'topN' in args['reward']:
+        pos_reward, neg_reward, n = args['reward'].split("_")[1:]
+        reward_fn = lambda g, gp: rewardTopN(g, gp, int(pos_reward), -int(neg_reward), int(n)) 
+        
+    env_params = {'game':game,
+                  'agent':agent,
+                  'n_games':int(args['n_games']),
+                  'reward_fn': reward_fn,
+                  'verbose':True}
     
-    print("Training complete, winning percentage: {:.2}".format(agent_wins/int(args['n_games'])))
+    env = Env()
     
+    env.train(**env_params)
+        
     with open(args['file_path'], 'wb') as file:
         pkl.dump(dict(agent.Q), file)
         

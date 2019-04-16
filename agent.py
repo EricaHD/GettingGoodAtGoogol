@@ -14,7 +14,7 @@ class BasicAgent:
     def update(self, params):
         pass
     
-    def resetGame(self):
+    def reset(self):
         pass
 
 #########################################################################################
@@ -35,60 +35,46 @@ class QAgent(BasicAgent):
         self.q_key_fn = q_key_fn
         self.q_key, self.orig_q_key = q_key, q_key
     
-    def getAction(self, params):
-        
-        if params['state_'] is None:
-            s = params['state'] + 1
-        else:
-            s = params['state']
-        
-        if (params['val'] == params['max_val']) or (s == params['n_states']-1):
-            return 0
+    def getAction(self, params, update_key=True):
         
         #Get Q-key
-        self.Q_key = self.q_key_fn(s, False, params, self.q_key)
+        s_key = self.q_key_fn(params, self.q_key)
         
-        #Epsilon Greedy Strategy
-        if random.random() < self.eps:
-            action =  random.randint(0, 1)
+        if (params['val'] == params['hi']) or (params['state'] == params['n_states']-1):
+            action = 0
         else:
-            action = max(self.Q[self.Q_key], key=self.Q[self.Q_key].get)
-        
+            #Epsilon Greedy Strategy
+            if random.random() < self.eps:
+                action =  random.randint(0, 1)
+            else:
+                if self.Q[s_key][0] == self.Q[s_key][1]:
+                    action =  random.randint(0, 1)
+                else:
+                    action = max(self.Q[s_key], key=self.Q[s_key].get)
+
         #epsilon decay
         self.eps *= (1 - self.eps_decay)
-        return action
+        
+        if update_key:
+            self.q_key = s_key
+            return action
+        else:
+            return s_key, action
         
     def update(self, params):
-        
-        s, a, s_, a_, r = params['state'], params['action'], params['state_'], params['action_'], params['reward']
-        
-        s_key = self.q_key_fn(s, True, params, self.q_key)
-        
-        #Game not finished
-        if s_ is not None:
-            params['state'] += 1
-            s__key = self.q_key_fn(s_, True, params, self.q_key)
-            params['state'] -= 1
             
-            #SARSA update
+        if not params['game_over']:
+            s_key, a, r  = self.q_key, 1, params['reward'] 
+            s__key, a_ = self.getAction(params=params, update_key=False)
+            
             if self.sarsa:
                 self.Q[s_key][a] += self.alpha * (r + self.gamma * self.Q[s__key][a_] - self.Q[s_key][a] - self.s_cost)
             else:
                 self.Q[s_key][a] += self.alpha * (r + self.gamma * max([self.Q[s__key][a2] for a2 in range(2)]) - self.Q[s_key][a] - self.s_cost)
         else:
-            self.Q[s_key][a] += self.alpha * (r - self.Q[s_key][a])
+            self.Q[self.q_key][0] += self.alpha * (params['reward'] - self.Q[self.q_key][0] - self.s_cost)
             
-    def observe(self, params):
-        if params['state_'] is None:
-            s = params['state'] + 1
-        else:
-            s = params['state']
-            
-        #Add key to Q
-        self.q_key = self.q_key_fn(s, False, params, self.q_key)
-        self.Q[self.q_key]
-            
-    def resetGame(self):
+    def reset(self):
         self.Q_max = 0
         self.eps = self.orig_eps
         self.q_key = self.orig_q_key
@@ -116,7 +102,7 @@ class OptimalAgent(BasicAgent):
     
     def getAction(self, params):
         
-        if params['val'] == params['max_val']:
+        if params['val'] == params['hi']:
             return 0
     
         if params['state'] <= self.g_state:
@@ -128,6 +114,6 @@ class OptimalAgent(BasicAgent):
             else:
                 return 1
     
-    def resetGame(self):
+    def reset(self):
         self.Q_max = 0
         

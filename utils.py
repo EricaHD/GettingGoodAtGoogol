@@ -1,32 +1,44 @@
 import numpy as np
 
-def qKeyMaxBin(s, update, params, q_key, s_d, v_d):
-    
-    s_key = int(np.round(s/params['n_states'], s_d)*100)
-    
-    if not update:
-        v = params['val']
-        
-        prev_v = int(q_key.split("_")[1])
-        
-        if v > prev_v:
-            
-            v_key = int(np.round(v/params['max_val'], v_d)*100)
-            
-            return "{}_{}".format(s_key, v_key)
-        else:
-            return "{}_{}".format(s_key, prev_v)
-    else:
-        return "{}_{}".format(s_key, int(q_key.split("_")[1]))
-    
-def simpleReward(val_rank):
-    if val_rank == 0:
-        return 10, 1
-    else:
-        return -1, 0 
+#########################################################################################
+##Q-Key FN
+#########################################################################################
 
-def topTenReward(val_rank):
-    if val_rank < 10:
-        return 10 - val_rank, 1
+def qKeyMaxBin(params, q_key, s_d, v_d):
+    s_key = int(np.round(params['state']/params['n_states'], s_d)*100)
+    
+    v = params['val']    
+    prev_v = int(q_key.split("_")[1])
+        
+    if v > prev_v:
+            
+        v_key = int(np.round(v/params['hi'], v_d)*100)
+            
+        return "{}_{}".format(s_key, v_key)
     else:
-        return -val_rank, 0
+        return "{}_{}".format(s_key, prev_v)
+    
+    
+def qKeySeqBin(params, q_key, v_d):
+    v = params['val']
+    v_key = int(np.round(v/params['hi'], v_d)*100)
+    return q_key + "_{}".format(v_key)     
+    
+#########################################################################################
+##REWARD FN
+#########################################################################################
+    
+    
+def rewardScalar(game, game_params, pos_reward, neg_reward):
+    if game_params['val'] == game.max_val:
+        return pos_reward, 1
+    else:
+        return neg_reward, 0 
+
+def rewardTopN(game, game_params, pos_reward, neg_reward, n):
+    rank = np.where(game_params['val'] == game.states_sorted)[0][0]
+    
+    if rank < n:
+        return n - rank, 1
+    else:
+        return np.maximum(neg_reward, -rank) , 0

@@ -1,7 +1,0 @@
-Traceback (most recent call last):
-  File "agent_training.py", line 6, in <module>
-    from game import Game
-  File "/home/ijh216/DeepGoogol/game.py", line 40
-    val_rank = np.where(self.params['val'] == self.states_sorted)[0][0]
-                                                                      ^
-TabError: inconsistent use of tabs and spaces in indentation
