@@ -1,5 +1,8 @@
 import numpy as np
 
+import gzip
+import pickle as pkl
+
 #########################################################################################
 ##Q-Key FN
 #########################################################################################
@@ -42,3 +45,15 @@ def rewardTopN(game, game_params, pos_reward, neg_reward, n):
         return n - rank, 1
     else:
         return np.maximum(neg_reward, -rank) , 0
+
+###########################################################################################
+###########################################################################################
+
+def saveZippedPkl(obj, filename):
+	with gzip.open(filename, 'wb') as f:
+		pkl.dump(obj, f)
+
+def loadZippedPkl(filename):
+	with gzip.open(filename, 'rb') as f:
+		obj = pkl.load(f)
+		return obj
