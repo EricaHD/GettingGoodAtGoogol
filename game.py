@@ -2,36 +2,47 @@ import numpy as np
 from tqdm import tqdm
 
 class Game():
-    def __init__(self, lo, hi, n_states, replace):    
+    def __init__(self, lo, hi, n_idx, replace, reward_fn):    
         self.lo = lo
         self.hi = hi
-        self.n_states = n_states
+        self.n_idx = n_idx
         self.replace = replace
+        self.reward_fn = reward_fn
         
         self.reset()
     
     def step(self):
-        self.state += 1
-        self.val = self.states[self.state]
-        return self.val
+        self.idx += 1
+        self.val = self.values[self.idx]
+        
+        return self.idx, self.val
+    
+    def getReward(self):
+        self.setGameStatus()
+        return self.reward_fn(self)
       
-    def winState(self):
-        if self.states[self.state] == self.max_val:
+    def checkWin(self):
+        if self.values[self.idx] == self.max_val:
             return True
         else:
             return False
         
+    def setGameStatus(self):
+        self.game_over = True
+        
     def reset(self):
-        """Reset the game states """
-        self.states = np.random.choice(np.arange(self.lo, self.hi+1), 
-                                       size=self.n_states, 
+        """Reset the game"""
+        self.values = np.random.choice(np.arange(self.lo, self.hi+1), 
+                                       size=self.n_idx, 
                                        replace=self.replace)
-        self.states_sorted = np.sort(self.states) 
+        self.values_sorted = np.sort(self.values) 
         
-        self.state = 0
-        self.val = self.states[0]
+        self.idx = 0
+        self.val = self.values[0]
         
-        self.max_val = self.states.max()
-        self.max_state = self.states.argmax()
+        self.max_val = self.values.max()
+        self.max_idx = self.values.argmax()
+        
+        self.game_over = False
         
     

@@ -7,39 +7,31 @@ import cloudpickle as pkl
 ##Q-Key FN
 #########################################################################################
 
-def qKeyMaxBin(params, q_key, s_d, v_d):
-    s_key = int(np.round(params['state']/params['n_states'], s_d)*100)
-    
-    v = params['val']    
-    prev_v = int(q_key.split("_")[1])
-        
-    if v > prev_v:
-            
-        v_key = int(np.round(v/params['hi'], v_d)*100)
-            
-        return "{}_{}".format(s_key, v_key)
-    else:
-        return "{}_{}".format(s_key, prev_v)
-    
-    
-def qKeySeqBin(params, q_key, v_d):
-    v = params['val']
+def qKeyMaxBin(params, idx, v, i_d, v_d):
+    i_key = int(np.round(idx/params['n_idx'], i_d)*100)
     v_key = int(np.round(v/params['hi'], v_d)*100)
-    return q_key + "_{}".format(v_key)     
     
+    return str((i_key, v_key))
+
+def vMax(params, v, v_):
+    if v > v_:
+        return v
+    else:
+        return v_
+
 #########################################################################################
 ##REWARD FN
 #########################################################################################
     
     
-def rewardScalar(game, game_params, pos_reward, neg_reward):
-    if game_params['val'] == game.max_val:
+def rewardScalar(game, pos_reward, neg_reward):
+    if game.val == game.max_val:
         return pos_reward, 1
     else:
         return neg_reward, 0 
 
 def rewardTopN(game, game_params, pos_reward, neg_reward, n):
-    rank = np.where(game_params['val'] == game.states_sorted)[0][0]
+    rank = np.where(game.val == game.values_sorted)[0][0]
     
     if rank < n:
         return n - rank, 1
