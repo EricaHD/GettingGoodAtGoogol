@@ -11,7 +11,7 @@
 PYTHONPATH=$PYTHONPATH:. python agent_training.py \
 	--agent q_learn \
     --lo 1 \
-    --hi 1000 \
+    --hi 500 \
     --n_states 100 \
     --alpha .01 \
     --alpha_decay .0001 \
