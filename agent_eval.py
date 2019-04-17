@@ -23,11 +23,11 @@ if __name__ == '__main__':
                     help="Lo")
     ap.add_argument("-hi", "--hi", default=100,
                     help="Hi")
-    ap.add_argument("-ns", "--n_idx", default=25,
+    ap.add_argument("-ni", "--n_idx", default=25,
                     help="N-idx")
     ap.add_argument("-rp", "--replace", default=False,
                     help="Replacement")
-    ap.add_argument("-r", "--reward", default="scalar_10_1",
+    ap.add_argument("-r", "--reward", default="scalar_1_1",
                     help="Reward Fn")
     
     #Eval Parameters
@@ -46,14 +46,15 @@ if __name__ == '__main__':
     ###SET UP GAME
     if "scalar" in args['reward']:
         pos_reward, neg_reward = args['reward'].split("_")[1:]
-        reward_fn = lambda g, gp: rewardScalar(g, gp, int(pos_reward), -int(neg_reward)) 
+        reward_fn = lambda g: rewardScalar(g, int(pos_reward), -int(neg_reward)) 
     elif 'topN' in args['reward']:
         pos_reward, neg_reward, n = args['reward'].split("_")[1:]
-        reward_fn = lambda g, gp: rewardTopN(g, gp, int(pos_reward), -int(neg_reward), int(n)) 
+        n_pct = int(int(n)/100 * int(args['n_idx']))
+        reward_fn = lambda g: rewardTopN(g, int(pos_reward), -int(neg_reward), n_pct) 
         
     game_params = {'lo':int(args['lo']),
                    'hi':int(args['hi']),
-                   'n_states':int(args['n_states']),
+                   'n_idx':int(args['n_idx']),
                    'replace':bool(args['replace']),
                    'reward_fn':reward_fn,
                   }
@@ -65,10 +66,13 @@ if __name__ == '__main__':
     if args['agent'] == "q_learn":
         agent = QAgent(**path_params['agent_params'])
         agent.Q = path_params['agent_Q']
+        trainer = QTrainer()
     elif args['agent'] == 'mcmc':
         agent = MCMCAgent(**path_params['agent_params'])
         agent.Q = path_params['agent_Q']
         agent.policy = path_params['agent_policy']
+        trainer = MCMCTrainer()
+    
         
 
     trainer_params = {'game':game,
@@ -76,8 +80,7 @@ if __name__ == '__main__':
                       'n_games':int(args['n_games']),
                       'n_print':int(args['n_print']),
                       'delay':int(args['delay'])}
-    
-    trainer = Trainer()
+
     trainer.eval(**trainer_params)
     print("*" * 89)
     print("*" * 89)

@@ -4,7 +4,7 @@ import gzip
 import cloudpickle as pkl
 
 #########################################################################################
-##Q-Key FN
+##Q-KEY FN
 #########################################################################################
 
 def qKeyMaxBin(params, idx, v, i_d, v_d):
@@ -30,11 +30,11 @@ def rewardScalar(game, pos_reward, neg_reward):
     else:
         return neg_reward, 0 
 
-def rewardTopN(game, game_params, pos_reward, neg_reward, n):
+def rewardTopN(game, pos_reward, neg_reward, n_pct):
     rank = np.where(game.val == game.values_sorted)[0][0]
     
-    if rank < n:
-        return n - rank, 1
+    if rank < n_pct:
+        return pos_reward - rank, 1
     else:
         return np.maximum(neg_reward, -rank) , 0
 

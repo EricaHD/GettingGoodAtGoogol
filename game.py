@@ -35,7 +35,7 @@ class Game():
         self.values = np.random.choice(np.arange(self.lo, self.hi+1), 
                                        size=self.n_idx, 
                                        replace=self.replace)
-        self.values_sorted = np.sort(self.values) 
+        self.values_sorted = np.sort(self.values) [::-1]
         
         self.idx = 0
         self.val = self.values[0]

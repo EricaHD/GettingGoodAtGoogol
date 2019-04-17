@@ -53,7 +53,7 @@ class Trainer():
             if (i%n_print == 0) & (i > 0):
                 sleep(delay)
                 clear_output()
-                print("GAME: {} | VICTORY PERCENTAGE: {:.2}".format(i, wins/i))
+                print("EVAL PCT: {:.2} | VICTORY PERCENTAGE: {:.2}".format(i/n_games, wins/i))
             
         
         clear_output()
@@ -111,7 +111,7 @@ class QTrainer(Trainer):
             if (i%n_print == 0) & (i > 0):
                 sleep(delay)
                 clear_output()
-                print("GAME: {} | VICTORY PERCENTAGE: {:.2}".format(i, wins/i))
+                print("TRAIN PCT: {:.2} | VICTORY PERCENTAGE: {:.2}".format(i/n_games, wins/i))
                     
         clear_output()
         print("TRAINING COMPLETE | FINAL VICTORY PERCENTAGE: {:.2}".format(wins/n_games))

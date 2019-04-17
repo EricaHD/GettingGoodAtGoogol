@@ -93,10 +93,11 @@ if __name__ == '__main__':
     ###SET UP GAME
     if "scalar" in args['reward']:
         pos_reward, neg_reward = args['reward'].split("_")[1:]
-        reward_fn = lambda g, gp: rewardScalar(g, gp, int(pos_reward), -int(neg_reward)) 
+        reward_fn = lambda g: rewardScalar(g, int(pos_reward), -int(neg_reward)) 
     elif 'topN' in args['reward']:
         pos_reward, neg_reward, n = args['reward'].split("_")[1:]
-        reward_fn = lambda g, gp: rewardTopN(g, gp, int(pos_reward), -int(neg_reward), int(n)) 
+        n_pct = int(int(n)/100 * int(args['n_idx']))
+        reward_fn = lambda g: rewardTopN(g, int(pos_reward), -int(neg_reward), n_pct) 
         
     game_params = {'lo':int(args['lo']),
                    'hi':int(args['hi']),
@@ -130,7 +131,7 @@ if __name__ == '__main__':
         
         trainer_train_params = {'game':game,
                                 'agent':agent,
-                                'n_games':int(args['n_games'])
+                                'n_games':int(args['n_games']),
                                 'n_print':int(args['n_print']),
                                 'delay':int(args['delay'])}
         
@@ -164,17 +165,18 @@ if __name__ == '__main__':
         trainer = MCMCTrainer()
     
     print("TRAINING")
-    trainer.train(**env_train_params)
+    trainer.train(**trainer_train_params)
     print("*" * 89)
     print("*" * 89)
     
     
-    if "scalar" in args['reward']:
+    if "scalar" in args['reward_eval']:
         pos_reward, neg_reward = args['reward_eval'].split("_")[1:]
-        reward_fn = lambda g, gp: rewardScalar(g, gp, int(pos_reward), -int(neg_reward)) 
-    elif 'topN' in args['reward']:
+        reward_fn = lambda g: rewardScalar(g, int(pos_reward), -int(neg_reward)) 
+    elif "topN" in args['reward_eval']:    
         pos_reward, neg_reward, n = args['reward_eval'].split("_")[1:]
-        reward_fn = lambda g, gp: rewardTopN(g, gp, int(pos_reward), -int(neg_reward), int(n)) 
+        n_pct = int(int(n)/100 * int(args['n_idx_eval']))
+        reward_fn = lambda g: rewardTopN(g, tint(pos_reward), -int(neg_reward), n_pct) 
         
     game_eval_params = {'lo':int(args['lo_eval']),
                    'hi':int(args['hi_eval']),
@@ -182,15 +184,16 @@ if __name__ == '__main__':
                    'replace':bool(args['replace_eval']),
                    'reward_fn':reward_fn}
     
+    game_eval = Game(**game_eval_params)
     
     trainer_eval_params = {'game':game_eval,
-                       'agent':agent,
-                       'n_games':int(args['n_games_eval']),
-                       'n_print':int(args['n_print']),
-                       'delay':int(args['delay'])}
+                           'agent':agent,
+                           'n_games':int(args['n_games_eval']),
+                           'n_print':int(args['n_print']),
+                           'delay':int(args['delay'])}
     
     print("EVAL")
-    env.eval(**env_eval_params)
+    trainer.eval(**trainer_eval_params)
     print("*" * 89)
     print("*" * 89)
     
