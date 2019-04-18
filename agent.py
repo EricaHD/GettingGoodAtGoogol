@@ -29,7 +29,7 @@ class BasicAgent:
             
 class QAgent(BasicAgent):
     """Q-learning Agent"""
-    def __init__(self, alpha, alpha_decay, alpha_step, gamma, eps, eps_decay, s_cost, sarsa, v_fn, q_key_fn):
+    def __init__(self, alpha, alpha_decay, alpha_step, gamma, eps, eps_decay, s_cost, sarsa, v_fn, v_key, q_key_fn):
         super().__init__()
         
         self.alpha, self.gamma, self.eps, self.eps_decay, self.s_cost = alpha, gamma, eps, eps_decay, s_cost
@@ -39,9 +39,9 @@ class QAgent(BasicAgent):
         self.Q = defaultdict(lambda: {0:0, 1:0})
         
         self.sarsa = sarsa
-        
+       
         self.v_fn = v_fn
-        self.v_key = -1
+        self.v_key, self.orig_v_key = v_key, v_key
         
         self.q_key_fn = q_key_fn
         self.q_key, self.orig_q_key = "", ""
@@ -113,9 +113,8 @@ class QAgent(BasicAgent):
             
             
     def reset(self):
-        self.Q_max = 0
         self.eps = self.orig_eps
-        self.v_key = -1
+        self.v_key = self.orig_v_key
         self.q_key = self.orig_q_key
         
             
@@ -158,18 +157,17 @@ class OptimalAgent(BasicAgent):
 
 class MCMCAgent(BasicAgent):
     """Monte-Carlo Markov Chain Agent"""
-    def __init__(self, gamma, eps, eps_decay, s_cost, v_fn, q_key_fn, p_key_fn):
+    def __init__(self, gamma, eps, eps_decay, s_cost, v_fn, v_key, q_key_fn):
         super().__init__()
         self.gamma, self.eps, self.eps_decay, self.s_cost = gamma, eps, eps_decay, s_cost
         
         self.v_fn = v_fn
-        self.v_key = -1
+        self.v_key, self.orig_v_key = v_key, v_key
         
         self.Q = defaultdict(lambda: {0:0, 1:0})
         self.q_key_fn = q_key_fn
         
         self.policy = defaultdict(lambda: random.randint(0, 1)) 
-        self.p_key_fn = p_key_fn
         
         self.returns = defaultdict(lambda: {0:0, 1:0})
         self.counts = defaultdict(lambda: {0:0, 1:0})
@@ -190,7 +188,7 @@ class MCMCAgent(BasicAgent):
                 action =  random.randint(0, 1)
             #Greedy
             else:
-                p_key = self.p_key_fn(params, params['idx'], self.v_key)
+                p_key = self.q_key_fn(params, params['idx'], self.v_key)
                 action = self.policy[p_key]
             
             #Epsilon Decay
@@ -202,27 +200,27 @@ class MCMCAgent(BasicAgent):
             if (params['idx'] == params['n_idx']-1) | (self.v_key == params['hi']):
                 action = 0
             else:
-                p_key = self.p_key_fn(params, params['idx'], self.v_key)
+                p_key = self.q_key_fn(params, params['idx'], self.v_key)
                 action = self.policy[p_key]
 
             return action
     
     def update(self, params, episode):
         
-        #visited = defaultdict(lambda: {0:False, 1:False})
+        visited = defaultdict(lambda: {0:False, 1:False})
         
         for e in range(len(episode)):
             idx, val, action, reward = episode[e]
             q_key = self.q_key_fn(params, idx, val)
             self.counts[q_key][action] += 1
                 
-            #if q_key not in visited:
-            ep_reward = 0
-            for j, (idx_, val_, action_, reward_) in enumerate(episode[e:]):
-                ep_reward += ((self.gamma ** j) *  reward_) - self.s_cost
-                        
+            if not visited[q_key][action]:
+                ep_reward = 0
+                for j, (idx_, val_, action_, reward_) in enumerate(episode[e:]):
+                    ep_reward += ((self.gamma ** j) *  reward_) - self.s_cost
+
             self.returns[q_key][action] = self.returns[q_key][action] + (ep_reward - self.returns[q_key][action])/self.counts[q_key][action]
-            #visited[q_key][action] = True
+            visited[q_key][action] = True
             
         for ret in self.returns.keys():
             if self.returns[ret][0] == self.returns[ret][1]:
@@ -233,9 +231,9 @@ class MCMCAgent(BasicAgent):
                 self.policy[ret] = 1
         
     def reset(self):
-        self.v_key = -1
+        self.v_key = self.orig_v_key
         
     def resetFull(self):
-        self.v_key = -1
-        self.returns = defaultdict(lambda: {0:[], 1:[]})
+        self.v_key = self.orig_v_key
+        self.returns = defaultdict(lambda: {0:0, 1:0})
         self.counts = defaultdict(lambda: {0:0, 1:0})

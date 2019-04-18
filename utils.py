@@ -18,6 +18,16 @@ def vMax(params, v, v_):
         return v
     else:
         return v_
+    
+def vSeq(params, v, v_):
+    seq = eval(v_)
+    seq.append(v)
+    return str(seq)
+
+def qKeySeq(params, idx, v, v_d):
+    seq = eval(v)
+    seq[idx] = int(np.round(seq[idx]/params['hi'], v_d)*100)
+    return str(seq)
 
 #########################################################################################
 ##REWARD FN

@@ -140,7 +140,7 @@ class MCMCTrainer(Trainer):
         
         agent.train()
         
-        for i in range(n_episodes):
+        for i in tqdm(range(n_episodes)):
             game.reset()
             agent.reset()
             self.params = self.reset(game)
@@ -158,7 +158,7 @@ class MCMCTrainer(Trainer):
         else:
             reward = 0
             self.params['idx'], self.params['val'] = game.step()
-            return [[self.params['idx']-1, val, action, reward]] 
+            return [[self.params['idx']-1, val, action, reward]] + self.mcEpisode(game, agent)
         
     def reset(self, game): 
         

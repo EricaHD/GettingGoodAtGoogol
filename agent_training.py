@@ -15,20 +15,6 @@ if __name__ == '__main__':
     #Agent
     ap.add_argument("-a", "--agent", default='q_learn',
                     help="Agent Type")
-    
-    #Game Parameters
-    ap.add_argument("-lo", "--lo", default=1,
-                    help="Lo")
-    ap.add_argument("-hi", "--hi", default=100,
-                    help="Hi")
-    ap.add_argument("-ni", "--n_idx", default=25,
-                    help="N-Idx")
-    ap.add_argument("-rp", "--replace", default=False,
-                    help="Replacement")
-    ap.add_argument("-r", "--reward", default="scalar_10_1",
-                    help="Reward Fn")
-    
-    #Agent Parameters
     ap.add_argument("-al", "--alpha", default=0.01,
                     help="Alpha")
     ap.add_argument("-ald", "--alpha_decay", default=1e-5,
@@ -49,8 +35,21 @@ if __name__ == '__main__':
                     help="Q-Key Fn")
     ap.add_argument("-vf", "--v_fn", default="vMax",
                     help="Val Fn")
-    ap.add_argument("-pkf", "--p_key_fn", default="bin_1_2",
-                    help="Policy Fn")
+    ap.add_argument("-vk", "--v_key", default=str([0]),
+                    help="Val Key")
+    
+    #Game Parameters
+    ap.add_argument("-lo", "--lo", default=1,
+                    help="Lo")
+    ap.add_argument("-hi", "--hi", default=100,
+                    help="Hi")
+    ap.add_argument("-ni", "--n_idx", default=25,
+                    help="N-Idx")
+    ap.add_argument("-rp", "--replace", default=False,
+                    help="Replacement")
+    ap.add_argument("-r", "--reward", default="scalar_10_1",
+                    help="Reward Fn")
+    
     
     #Training Parameters
     ap.add_argument("-ng", "--n_games", default=1000000,
@@ -112,9 +111,16 @@ if __name__ == '__main__':
         if "bin" in args['q_key_fn']:
             i_bin, v_bin = args['q_key_fn'].split("_")[1:]
             q_key_fn = lambda p, i, v: qKeyMaxBin(p, i, v, int(i_bin), int(v_bin))
+        elif "seq" in args['q_key_fn']:
+            v_bin = args['q_key_fn'].split("_")[1]
+            q_key_fn = lambda p, i, v: qKeySeq(p, i, v, int(v_bin))
             
         if args['v_fn'] == "vMax":
             v_fn = vMax
+            v_key = -1
+        if args['v_fn'] == "vSeq":
+            v_fn = vSeq
+            v_key = str([0])
     
         agent_params = {'alpha':float(args['alpha']),
                         'alpha_decay':float(args['alpha_decay']),
@@ -125,7 +131,8 @@ if __name__ == '__main__':
                       	's_cost':float(args['s_cost']),
                       	'sarsa':bool(args['q_learn']),
                       	'q_key_fn':q_key_fn,
-                      	'v_fn':v_fn}
+                      	'v_fn':v_fn,
+                        'v_key':v_key}
         
         agent = QAgent(**agent_params)
         
@@ -141,20 +148,24 @@ if __name__ == '__main__':
         if "bin" in args['q_key_fn']:
             i_bin, v_bin = args['q_key_fn'].split("_")[1:]
             q_key_fn = lambda p, i, v: qKeyMaxBin(p, i, v, int(i_bin), int(v_bin))
-        if "bin" in args['p_key_fn']:
-            i_bin, v_bin = args['p_key_fn'].split("_")[1:]
-            p_key_fn = lambda p, i, v: qKeyMaxBin(p, i, v, int(i_bin), int(v_bin))
+        elif "seq" in args['q_key_fn']:
+            v_bin = args['q_key_fn'].split("_")[1]
+            q_key_fn = lambda p, i, v: qKeySeq(p, i, v, int(v_bin))
             
         if args['v_fn'] == "vMax":
             v_fn = vMax
+            v_key = -1
+        if args['v_fn'] == "vSeq":
+            v_fn = vSeq
+            v_key = str([0])
         
         agent_params = {'gamma':float(args['gamma']),
                       	'eps':float(args['epsilon']), 
                       	'eps_decay':float(args['eps_decay']), 
                       	's_cost':float(args['s_cost']),
                       	'q_key_fn':q_key_fn,
-                        'p_key_fn':p_key_fn,
-                      	'v_fn':v_fn}
+                      	'v_fn':v_fn,
+                        'v_key':v_key}
         
         agent = MCMCAgent(**agent_params)
         
@@ -189,8 +200,8 @@ if __name__ == '__main__':
     trainer_eval_params = {'game':game_eval,
                            'agent':agent,
                            'n_games':int(args['n_games_eval']),
-                           'n_print':int(args['n_print']),
-                           'delay':int(args['delay'])}
+                           'n_print':int(args['n_print_eval']),
+                           'delay':int(args['delay_eval'])}
     
     print("EVAL")
     trainer.eval(**trainer_eval_params)
