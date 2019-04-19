@@ -26,7 +26,7 @@ class Trainer():
         agent.eval()
         
         #Iterate through games
-        for i in tqdm(range(n_games)):
+        for i in tqdm(range(n_games), leave=False):
             #Reset game and agent
             game.reset()
             agent.reset()
@@ -53,11 +53,11 @@ class Trainer():
             if (i%n_print == 0) & (i > 0):
                 sleep(delay)
                 clear_output()
-                print("EVAL PCT: {:.2} | VICTORY PERCENTAGE: {:.2}".format(i/n_games, wins/i))
+                print("EVAL PCT: {:.2} |\t VICTORY PERCENTAGE: {:.2}".format(i/n_games, wins/i))
             
         
         clear_output()
-        print("EVAL COMPLETE | FINAL VICTORY PERCENTAGE: {:.2}".format(wins/n_games))
+        print("EVAL COMPLETE |\t FINAL VICTORY PERCENTAGE: {:.2}".format(wins/n_games))
         
     def reset(self):
         pass
@@ -71,14 +71,14 @@ class QTrainer(Trainer):
         super().__init__()
         return
         
-    def train(self, game, agent, n_games, n_print, delay):
+    def train(self, game, agent, n_games, n_print, delay, curriculum):
         """Train an agent over n_games"""
         
         wins = 0
         agent.train()
         
         #Iterate through games
-        for i in tqdm(range(n_games)):
+        for i in tqdm(range(n_games), leave=False):
             #Reset game and agent
             game.reset()
             agent.reset()
@@ -111,10 +111,20 @@ class QTrainer(Trainer):
             if (i%n_print == 0) & (i > 0):
                 sleep(delay)
                 clear_output()
-                print("TRAIN PCT: {:.2} | VICTORY PERCENTAGE: {:.2}".format(i/n_games, wins/i))
+                print("TRAIN PCT: {:.2} |\t VICTORY PERCENTAGE: {:.2}".format(i/n_games, wins/i))
+                
+                
+            if (i%curriculum['epoch'] == 0) & (i > 0):
+                for k, v in game.reward.items():
+                    v_ = eval("{} {} {}".format(v, curriculum['params']['op'], curriculum['params'][k]))
+                    game.reward[k] = v_
+                    
+                print("ADJUSTING REWARDS")
+                
+                
                     
         clear_output()
-        print("TRAINING COMPLETE | FINAL VICTORY PERCENTAGE: {:.2}".format(wins/n_games))
+        print("TRAINING COMPLETE |\t FINAL VICTORY PERCENTAGE: {:.2}".format(wins/n_games))
     
     def reset(self, game): 
         
@@ -136,11 +146,11 @@ class MCMCTrainer(Trainer):
         super().__init__()
         return
         
-    def train(self, game, agent, n_episodes):
+    def train(self, game, agent, n_episodes, curriculum):
         
         agent.train()
         
-        for i in tqdm(range(n_episodes)):
+        for i in tqdm(range(n_episodes), leave=False):
             game.reset()
             agent.reset()
             self.params = self.reset(game)
@@ -149,6 +159,13 @@ class MCMCTrainer(Trainer):
             
             agent.update(self.params, episode)
             
+            if (i%curriculum['epoch'] == 0) & (i > 0):
+                for k, v in game.reward.items():
+                    v_ = eval("{} {} {}".format(v, curriculum['params']['op'], curriculum['params'][k]))
+                    game.reward[k] = v_
+                    print(k, v, v_)
+                    
+                print("ADJUSTING REWARDS")
     
     def mcEpisode(self, game, agent):
         action, val = agent.getAction(self.params)

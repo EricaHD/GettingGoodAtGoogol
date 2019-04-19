@@ -2,12 +2,13 @@ import numpy as np
 from tqdm import tqdm
 
 class Game():
-    def __init__(self, lo, hi, n_idx, replace, reward_fn):    
+    def __init__(self, lo, hi, n_idx, replace, reward_fn, reward):    
         self.lo = lo
         self.hi = hi
         self.n_idx = n_idx
         self.replace = replace
         self.reward_fn = reward_fn
+        self.reward = reward
         
         self.reset()
     

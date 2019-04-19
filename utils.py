@@ -7,9 +7,9 @@ import cloudpickle as pkl
 ##Q-KEY FN
 #########################################################################################
 
-def qKeyMaxBin(params, idx, v, i_d, v_d):
-    i_key = int(np.round(idx/params['n_idx'], i_d)*100)
-    v_key = int(np.round(v/params['hi'], v_d)*100)
+def qKeyMaxBin(params, idx, v, agent_params):
+    i_key = int(np.round(idx/params['n_idx'], agent_params['i_bin'])*100)
+    v_key = int(np.round(v/params['hi'], agent_params['v_bin'])*100)
     
     return str((i_key, v_key))
 
@@ -18,15 +18,15 @@ def vMax(params, v, v_):
         return v
     else:
         return v_
-    
+
+def qKeySeq(params, idx, v, agent_params):
+    seq = eval(v)
+    seq[idx] = int(np.round(seq[idx]/params['hi'], agent_params['v_bin'])*100)
+    return str(seq)
+
 def vSeq(params, v, v_):
     seq = eval(v_)
     seq.append(v)
-    return str(seq)
-
-def qKeySeq(params, idx, v, v_d):
-    seq = eval(v)
-    seq[idx] = int(np.round(seq[idx]/params['hi'], v_d)*100)
     return str(seq)
 
 #########################################################################################
@@ -34,19 +34,21 @@ def qKeySeq(params, idx, v, v_d):
 #########################################################################################
     
     
-def rewardScalar(game, pos_reward, neg_reward):
+def rewardScalar(game):
     if game.val == game.max_val:
-        return pos_reward, 1
+        return game.reward['pos'], 1
     else:
-        return neg_reward, 0 
+        return game.reward['neg'], 0 
 
-def rewardTopN(game, pos_reward, neg_reward, n_pct):
+def rewardTopN(game):
     rank = np.where(game.val == game.values_sorted)[0][0]
     
-    if rank < n_pct:
-        return pos_reward - rank, 1
+    n_pct = int(game.reward['n']/100 * game.n_idx)
+    
+    if rank <= n_pct:
+        return game.reward['pos'] - rank, 1
     else:
-        return np.maximum(neg_reward, -rank) , 0
+        return np.maximum(game.reward['neg'], -rank) , 0
 
 #########################################################################################
 ##SAVE AND LOAD FN
@@ -60,3 +62,19 @@ def ldZipPkl(filename):
 	with gzip.open(filename, 'rb') as f:
 		obj = pkl.load(f)
 		return obj
+    
+#########################################################################################
+##OP FN
+#########################################################################################
+
+def convertOp(op):
+    if op == "minus":
+        return '-'
+    elif op == "plus":
+        return "+"
+    elif op == "times":
+        return "*"
+    elif op == "divide":
+        return "/"
+    
+    return op

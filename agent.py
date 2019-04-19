@@ -29,7 +29,7 @@ class BasicAgent:
             
 class QAgent(BasicAgent):
     """Q-learning Agent"""
-    def __init__(self, alpha, alpha_decay, alpha_step, gamma, eps, eps_decay, s_cost, sarsa, v_fn, v_key, q_key_fn):
+    def __init__(self, alpha, alpha_decay, alpha_step, gamma, eps, eps_decay, s_cost, sarsa, v_fn, v_key, q_key_fn, q_key_params):
         super().__init__()
         
         self.alpha, self.gamma, self.eps, self.eps_decay, self.s_cost = alpha, gamma, eps, eps_decay, s_cost
@@ -45,12 +45,13 @@ class QAgent(BasicAgent):
         
         self.q_key_fn = q_key_fn
         self.q_key, self.orig_q_key = "", ""
+        self.q_key_params = q_key_params
     
     def getAction(self, params, update_key=True):
         
         #Get Q-key
         self.v_key = self.v_fn(params, params['val'], self.v_key)
-        q_key = self.q_key_fn(params, params['idx'], self.v_key)
+        q_key = self.q_key_fn(params, params['idx'], self.v_key, self.q_key_params)
         
         #Epsilon Greedy in Train Mode
         if self.mode == "Train":
@@ -100,7 +101,7 @@ class QAgent(BasicAgent):
             
             #Update for SARSA
             if self.sarsa:
-                self.Q[q_key][a] += self.alpha * (r + self.gamma * self.Q[iq_key][a_] - self.Q[q_key][a] - self.s_cost)
+                self.Q[q_key][a] += self.alpha * (r + self.gamma * self.Q[q_key][a_] - self.Q[q_key][a] - self.s_cost)
             else:
                 self.Q[q_key][a] += self.alpha * (r + self.gamma * max([self.Q[q__key][a2] for a2 in range(2)]) - self.Q[q_key][a] - self.s_cost)
         #Game over update
@@ -157,7 +158,7 @@ class OptimalAgent(BasicAgent):
 
 class MCMCAgent(BasicAgent):
     """Monte-Carlo Markov Chain Agent"""
-    def __init__(self, gamma, eps, eps_decay, s_cost, v_fn, v_key, q_key_fn):
+    def __init__(self, gamma, eps, eps_decay, s_cost, v_fn, v_key, q_key_fn, q_key_params):
         super().__init__()
         self.gamma, self.eps, self.eps_decay, self.s_cost = gamma, eps, eps_decay, s_cost
         
@@ -166,6 +167,7 @@ class MCMCAgent(BasicAgent):
         
         self.Q = defaultdict(lambda: {0:0, 1:0})
         self.q_key_fn = q_key_fn
+        self.q_key_params = q_key_params
         
         self.policy = defaultdict(lambda: random.randint(0, 1)) 
         
@@ -188,7 +190,7 @@ class MCMCAgent(BasicAgent):
                 action =  random.randint(0, 1)
             #Greedy
             else:
-                p_key = self.q_key_fn(params, params['idx'], self.v_key)
+                p_key = self.q_key_fn(params, params['idx'], self.v_key, self.q_key_params)
                 action = self.policy[p_key]
             
             #Epsilon Decay
@@ -200,7 +202,7 @@ class MCMCAgent(BasicAgent):
             if (params['idx'] == params['n_idx']-1) | (self.v_key == params['hi']):
                 action = 0
             else:
-                p_key = self.q_key_fn(params, params['idx'], self.v_key)
+                p_key = self.q_key_fn(params, params['idx'], self.v_key, self.q_key_params)
                 action = self.policy[p_key]
 
             return action
@@ -211,7 +213,7 @@ class MCMCAgent(BasicAgent):
         
         for e in range(len(episode)):
             idx, val, action, reward = episode[e]
-            q_key = self.q_key_fn(params, idx, val)
+            q_key = self.q_key_fn(params, idx, val, self.q_key_params)
             self.counts[q_key][action] += 1
                 
             if not visited[q_key][action]:
