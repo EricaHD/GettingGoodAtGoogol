@@ -33,7 +33,7 @@ if __name__ == '__main__':
                     help="SARSA")
     ap.add_argument("-qkf", "--q_key_fn", type=str, default="bin",
                     help="Q-Key Fn")
-    ap.add_argument("-qkp", "--q_key_params", type=str, default=str((2, 2)),
+    ap.add_argument("-qkp", "--q_key_params", type=str, default="2_2",
                     help="Q-Key Params")
     ap.add_argument("-vf", "--v_fn", type=str, default="vMax",
                     help="Val Fn")
@@ -49,7 +49,7 @@ if __name__ == '__main__':
                     help="Replacement")
     ap.add_argument("-r", "--reward_fn", type=str, default="topN",
                     help="Reward Fn")
-    ap.add_argument("-rps", "--reward", type=str, default=str((5, -5, 5)),
+    ap.add_argument("-rps", "--reward", type=str, default="5_5_5",
                     help="Reward Params")
     
     
@@ -64,7 +64,7 @@ if __name__ == '__main__':
                     help="Time Delay")
     ap.add_argument("-cre", "--curr_epoch", type=int, default=100000,
                     help="Curriculum Epoch")     
-    ap.add_argument("-crp", "--curr_params", type=str, default=str((0, 0, 10, '-')),
+    ap.add_argument("-crp", "--curr_params", type=str, default="0_0_10_-",
                     help="Curriculum Params")    
     
     
@@ -79,7 +79,7 @@ if __name__ == '__main__':
                     help="Replacement")
     ap.add_argument("-re", "--reward_fn_eval", type=str, default="scalar",
                     help="Reward Fn")
-    ap.add_argument("-rpse", "--reward_eval", type=str, default=str((1, -1)),
+    ap.add_argument("-rpse", "--reward_eval", type=str, default="1_1",
                     help="Reward Params Eval")
     
     #Eval Parameters
@@ -179,7 +179,7 @@ if __name__ == '__main__':
 
         elif 'topN' in args['reward_fn']:
             reward = rewardTopN
-            pos, neg, n = ['reward'].split("_")
+            pos, neg, n = args['reward'].split("_")
             reward = {'pos':int(pos), 'neg':-int(neg), 'n':int(n)} 
 
             c_pos, c_neg, c_n, c_op = args['curr_params'].split("_")
