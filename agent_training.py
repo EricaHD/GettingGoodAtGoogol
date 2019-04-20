@@ -131,7 +131,7 @@ if __name__ == '__main__':
             q_key_params = {"i_bin":int(i_bin), "v_bin":int(v_bin)}
         elif "seq" in args['q_key_fn']:
             v_bin = ['q_key_params'].split("_")
-            q_key_fn = "qKeySeq"
+            q_key_fn = qKeySeq
             q_key_params = {"v_bin":int(v_bin)}
             
         if args['v_fn'] == "vMax":
@@ -195,7 +195,7 @@ if __name__ == '__main__':
             q_key_params = {"i_bin":int(i_bin), "v_bin":int(v_bin)}
         elif "seq" in args['q_key_fn']:
             v_bin = ['q_key_params'].split("_")
-            q_key_fn = "qKeySeq"
+            q_key_fn = qKeySeq
             q_key_params = {"v_bin":int(v_bin)}
         
         agent_params = {'gamma':args['gamma'],
