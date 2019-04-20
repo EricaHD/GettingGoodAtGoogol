@@ -124,22 +124,24 @@ if __name__ == '__main__':
     game = Game(**game_params)
     
     ###SET UP AGENT
+    
+    if "bin" in args['q_key_fn']:
+        i_bin, v_bin = args['q_key_params'].split("_")
+        q_key_fn = qKeyMaxBin
+        q_key_params = {"i_bin":int(i_bin), "v_bin":int(v_bin)}
+    elif "seq" in args['q_key_fn']:
+        v_bin = ['q_key_params'].split("_")
+        q_key_fn = qKeySeq
+        q_key_params = {"v_bin":int(v_bin)}
+
+    if args['v_fn'] == "vMax":
+        v_fn = vMax
+        v_key = -1
+    if args['v_fn'] == "vSeq":
+        v_fn = vSeq
+        v_key = str([0])
+    
     if args['agent'] == "q_learn":
-        if "bin" in args['q_key_fn']:
-            i_bin, v_bin = args['q_key_params'].split("_")
-            q_key_fn = qKeyMaxBin
-            q_key_params = {"i_bin":int(i_bin), "v_bin":int(v_bin)}
-        elif "seq" in args['q_key_fn']:
-            v_bin = ['q_key_params'].split("_")
-            q_key_fn = qKeySeq
-            q_key_params = {"v_bin":int(v_bin)}
-            
-        if args['v_fn'] == "vMax":
-            v_fn = vMax
-            v_key = -1
-        if args['v_fn'] == "vSeq":
-            v_fn = vSeq
-            v_key = str([0])
     
         agent_params = {'alpha':args['alpha'],
                         'alpha_decay':args['alpha_decay'],
@@ -187,16 +189,6 @@ if __name__ == '__main__':
 ##
 ##            c_pos, c_neg, c_n, c_op = args['curr_params'].split("_")
 ##            curr_params = {'pos':int(c_pos), 'neg':int(c_neg), 'n':int(c_n), 'op':convertOp(c_op)}
-
-## NOTE: we seem to need q_key_fn and q_key_params for mcmc agent
-        if "bin" in args['q_key_fn']:
-            i_bin, v_bin = args['q_key_params'].split("_")
-            q_key_fn = qKeyMaxBin
-            q_key_params = {"i_bin":int(i_bin), "v_bin":int(v_bin)}
-        elif "seq" in args['q_key_fn']:
-            v_bin = ['q_key_params'].split("_")
-            q_key_fn = qKeySeq
-            q_key_params = {"v_bin":int(v_bin)}
         
         agent_params = {'gamma':args['gamma'],
                       	'eps':args['epsilon'], 
