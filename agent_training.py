@@ -169,7 +169,7 @@ if __name__ == '__main__':
         trainer = QTrainer()
         
     elif args['agent'] == "mcmc":
-##
+
 ## NOTE: unnecessary duplicate of code in SET UP GAME???
 ##
 ##        if "scalar" in args['reward_fn']:
@@ -187,6 +187,16 @@ if __name__ == '__main__':
 ##
 ##            c_pos, c_neg, c_n, c_op = args['curr_params'].split("_")
 ##            curr_params = {'pos':int(c_pos), 'neg':int(c_neg), 'n':int(c_n), 'op':convertOp(c_op)}
+
+## NOTE: we seem to need q_key_fn and q_key_params for mcmc agent
+        if "bin" in args['q_key_fn']:
+            i_bin, v_bin = args['q_key_params'].split("_")
+            q_key_fn = qKeyMaxBin
+            q_key_params = {"i_bin":int(i_bin), "v_bin":int(v_bin)}
+        elif "seq" in args['q_key_fn']:
+            v_bin = ['q_key_params'].split("_")
+            q_key_fn = "qKeySeq"
+            q_key_params = {"v_bin":int(v_bin)}
         
         agent_params = {'gamma':args['gamma'],
                       	'eps':args['epsilon'], 
