@@ -217,22 +217,22 @@ if __name__ == '__main__':
     print("*" * 89)
     
     
-    if "scalar" in args['reward_fn']:
-        reward_fn = rewardScalar
-        pos, neg = args['reward'].split("_")
-        reward = {'pos':int(pos), 'neg':-int(neg)}
-    elif 'topN' in args['reward_fn']:
-        reward_fn = rewardTopN
-        pos, neg, n = args['reward'].split("_")
-        reward = {'pos':int(pos), 'neg':-int(neg), 'n':int(n)} 
+    if "scalar" in args['reward_fn_eval']:
+        reward_fn_eval = rewardScalar
+        pos, neg = args['reward_eval'].split("_")
+        reward_eval = {'pos':int(pos), 'neg':-int(neg)}
+    elif 'topN' in args['reward_fn_eval']:
+        reward_fn_eval = rewardTopN
+        pos, neg, n = args['reward_eval'].split("_")
+        reward_eval = {'pos':int(pos), 'neg':-int(neg), 'n':int(n)} 
         
         
     game_eval_params = {'lo':args['lo_eval'],
-                   'hi':args['hi_eval'],
-                   'n_idx':args['n_idx_eval'],
-                   'replace':args['replace_eval'],
-                   'reward_fn':reward_fn,
-                   'reward':reward}
+                        'hi':args['hi_eval'],
+                        'n_idx':args['n_idx_eval'],
+                        'replace':args['replace_eval'],
+                        'reward_fn':reward_fn_eval,
+                        'reward':reward_eval}
     
     game_eval = Game(**game_eval_params)
     
