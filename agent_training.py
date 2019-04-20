@@ -169,21 +169,24 @@ if __name__ == '__main__':
         trainer = QTrainer()
         
     elif args['agent'] == "mcmc":
-        if "scalar" in args['reward_fn']:
-            reward_fn = rewardScalar
-            pos, neg = args['reward'].split("_")
-            reward = {'pos':int(pos), 'neg':-int(neg)}
-
-            c_pos, c_neg, c_op = args['curr_params'].split("_")
-            curr_params = {'pos':int(c_pos), 'neg':int(c_neg), 'op':convertOp(c_op)}
-
-        elif 'topN' in args['reward_fn']:
-            reward = rewardTopN
-            pos, neg, n = args['reward'].split("_")
-            reward = {'pos':int(pos), 'neg':-int(neg), 'n':int(n)} 
-
-            c_pos, c_neg, c_n, c_op = args['curr_params'].split("_")
-            curr_params = {'pos':int(c_pos), 'neg':int(c_neg), 'n':int(c_n), 'op':convertOp(c_op)}
+##
+## NOTE: unnecessary duplicate of code in SET UP GAME???
+##
+##        if "scalar" in args['reward_fn']:
+##            reward_fn = rewardScalar
+##            pos, neg = args['reward'].split("_")
+##            reward = {'pos':int(pos), 'neg':-int(neg)}
+##
+##            c_pos, c_neg, c_op = args['curr_params'].split("_")
+##            curr_params = {'pos':int(c_pos), 'neg':int(c_neg), 'op':convertOp(c_op)}
+##
+##        elif 'topN' in args['reward_fn']:
+##            reward = rewardTopN
+##            pos, neg, n = args['reward'].split("_")
+##            reward = {'pos':int(pos), 'neg':-int(neg), 'n':int(n)} 
+##
+##            c_pos, c_neg, c_n, c_op = args['curr_params'].split("_")
+##            curr_params = {'pos':int(c_pos), 'neg':int(c_neg), 'n':int(c_n), 'op':convertOp(c_op)}
         
         agent_params = {'gamma':args['gamma'],
                       	'eps':args['epsilon'], 
