@@ -181,7 +181,7 @@ if __name__ == '__main__':
 ##            curr_params = {'pos':int(c_pos), 'neg':int(c_neg), 'op':convertOp(c_op)}
 ##
 ##        elif 'topN' in args['reward_fn']:
-##            reward = rewardTopN
+##            reward_fn = rewardTopN
 ##            pos, neg, n = args['reward'].split("_")
 ##            reward = {'pos':int(pos), 'neg':-int(neg), 'n':int(n)} 
 ##
