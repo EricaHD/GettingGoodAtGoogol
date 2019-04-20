@@ -37,7 +37,7 @@ PYTHONPATH=$PYTHONPATH:. python agent_training.py \
     --hi_eval 500 \
     --n_idx_eval 100 \
     --replace_eval False \
-    --reward_eval scalar \
+    --reward_fn_eval scalar \
     --reward_eval 1_1 \
     --n_games_eval 100000 \
     --n_print_eval 20000 \
