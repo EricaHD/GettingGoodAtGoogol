@@ -1,8 +1,6 @@
 import random
 from argparse import ArgumentParser
-
 import numpy as np
-
 from trainer import *
 from game import Game
 from agent import *
@@ -12,7 +10,7 @@ if __name__ == '__main__':
 
     ap = ArgumentParser()
     
-    #Agent
+    # Agent Parameters
     ap.add_argument("-a", "--agent", type=str, default='q_learn',
                     help="Agent Type")
     ap.add_argument("-al", "--alpha", type=float, default=0.01,
@@ -38,7 +36,7 @@ if __name__ == '__main__':
     ap.add_argument("-vf", "--v_fn", type=str, default="vMax",
                     help="Val Fn")
     
-    #Game Parameters
+    # Training Game Parameters
     ap.add_argument("-lo", "--lo", type=int, default=1,
                     help="Lo")
     ap.add_argument("-hi", "--hi", type=int, default=100,
@@ -52,8 +50,7 @@ if __name__ == '__main__':
     ap.add_argument("-rps", "--reward", type=str, default="5_5_5",
                     help="Reward Params")
     
-    
-    #Training Parameters
+    # Training Parameters
     ap.add_argument("-ng", "--n_games", type=int, default=1000000,
                     help="N-Games")
     ap.add_argument("-ne", "--n_episodes", type=int, default=1000000,
@@ -67,8 +64,7 @@ if __name__ == '__main__':
     ap.add_argument("-crp", "--curr_params", type=str, default="0_0_10_-",
                     help="Curriculum Params")    
     
-    
-    #Eval-Game Parameters
+    # Evaluation Game Parameters
     ap.add_argument("-loe", "--lo_eval", type=int, default=1,
                     help="Lo")
     ap.add_argument("-hie", "--hi_eval", type=int, default=100,
@@ -82,7 +78,7 @@ if __name__ == '__main__':
     ap.add_argument("-rpse", "--reward_eval", type=str, default="1_1",
                     help="Reward Params Eval")
     
-    #Eval Parameters
+    # Evaluation Parameters
     ap.add_argument("-nge", "--n_games_eval", type=int, default=10000,
                     help="N-Games Eval")
     ap.add_argument("-npe", "--n_print_eval", type=int, default=1000,
@@ -90,14 +86,16 @@ if __name__ == '__main__':
     ap.add_argument("-de", "--delay_eval", type=int, default=0,
                     help="Time Delay")
     
-    #Save Path
+    # Save Path
     ap.add_argument("-fp", "--file_path",
                     help="Save File Path")
     
-    
     args = vars(ap.parse_args())
     
-    ###SET UP GAME
+    ##################################################
+    # SET UP GAME
+    ##################################################
+    
     if "scalar" in args['reward_fn']:
         reward_fn = rewardScalar
         pos, neg = args['reward'].split("_")
@@ -123,7 +121,9 @@ if __name__ == '__main__':
     
     game = Game(**game_params)
     
-    ###SET UP AGENT
+    ##################################################
+    # SET UP AGENTS
+    ##################################################
     
     if "bin" in args['q_key_fn']:
         i_bin, v_bin = args['q_key_params'].split("_")
@@ -140,6 +140,10 @@ if __name__ == '__main__':
     if args['v_fn'] == "vSeq":
         v_fn = vSeq
         v_key = str([0])
+    
+    ##################################################
+    # SET UP Q-LEARNING AGENT
+    ##################################################
     
     if args['agent'] == "q_learn":
     
@@ -163,13 +167,14 @@ if __name__ == '__main__':
                                 'n_games':args['n_games'],
                                 'n_print':args['n_print'],
                                 'delay':args['delay'],
-                                'curriculum':{'epoch':args['curr_epoch'],
-                                              'params':curr_params
-                                             }
-                               }
+                                'curriculum':{'epoch':args['curr_epoch'], 'params':curr_params}}
         
         trainer = QTrainer()
-        
+    
+    ##################################################
+    # SET UP MONTE CARLO AGENT
+    ##################################################
+    
     elif args['agent'] == "mcmc":
         
         agent_params = {'gamma':args['gamma'],
@@ -186,18 +191,22 @@ if __name__ == '__main__':
         trainer_train_params = {'game':game,
                                 'agent':agent,
                                 'n_episodes':args['n_episodes'],
-                                'curriculum':{'epoch':args['curr_epoch'],
-                                              'params':curr_params
-                                             }
-                               }
+                                'curriculum':{'epoch':args['curr_epoch'], 'params':curr_params}}
         
         trainer = MCMCTrainer()
+    
+    ##################################################
+    # TRAINING
+    ##################################################
     
     print("TRAINING")
     trainer.train(**trainer_train_params)
     print("*" * 89)
     print("*" * 89)
     
+    ##################################################
+    # SET UP EVALUATION
+    ##################################################
     
     if "scalar" in args['reward_fn_eval']:
         reward_fn_eval = rewardScalar
@@ -224,13 +233,18 @@ if __name__ == '__main__':
                            'n_print':args['n_print_eval'],
                            'delay':args['delay_eval']}
     
+    ##################################################
+    # EVALUATION
+    ##################################################
+    
     print("EVAL")
     trainer.eval(**trainer_eval_params)
     print("*" * 89)
     print("*" * 89)
     
-    ###SAVE
+    ##################################################
+    # SAVE
+    ##################################################
     
     svZipPkl(agent, args['file_path'])
     print("AGENT STORED AT: {}".format(args['file_path']))
-    
