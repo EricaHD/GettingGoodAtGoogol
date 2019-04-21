@@ -96,20 +96,20 @@ if __name__ == '__main__':
     # SET UP GAME
     ##################################################
     
-    if "scalar" in args['reward_fn']:
+    if 'scalar' in args['reward_fn']:
         reward_fn = rewardScalar
-        pos, neg = args['reward'].split("_")
+        pos, neg = args['reward'].split('_')
         reward = {'pos':int(pos), 'neg':-int(neg)}
         
-        c_pos, c_neg, c_op = args['curr_params'].split("_")
+        c_pos, c_neg, c_op = args['curr_params'].split('_')
         curr_params = {'pos':int(c_pos), 'neg':int(c_neg), 'op':convertOp(c_op)}
         
     elif 'topN' in args['reward_fn']:
         reward_fn = rewardTopN
-        pos, neg, n = args['reward'].split("_")
+        pos, neg, n = args['reward'].split('_')
         reward = {'pos':int(pos), 'neg':-int(neg), 'n':int(n)} 
         
-        c_pos, c_neg, c_n, c_op = args['curr_params'].split("_")
+        c_pos, c_neg, c_n, c_op = args['curr_params'].split('_')
         curr_params = {'pos':int(c_pos), 'neg':int(c_neg), 'n':int(c_n), 'op':convertOp(c_op)}
         
     game_params = {'lo':args['lo'],
@@ -125,19 +125,19 @@ if __name__ == '__main__':
     # SET UP AGENTS
     ##################################################
     
-    if "bin" in args['q_key_fn']:
-        i_bin, v_bin = args['q_key_params'].split("_")
+    if 'bin' in args['q_key_fn']:
+        i_bin, v_bin = args['q_key_params'].split('_')
         q_key_fn = qKeyMaxBin
-        q_key_params = {"i_bin":int(i_bin), "v_bin":int(v_bin)}
-    elif "seq" in args['q_key_fn']:
-        v_bin = ['q_key_params'].split("_")
+        q_key_params = {'i_bin':int(i_bin), 'v_bin':int(v_bin)}
+    elif 'seq' in args['q_key_fn']:
+        v_bin = ['q_key_params'].split('_')
         q_key_fn = qKeySeq
-        q_key_params = {"v_bin":int(v_bin)}
+        q_key_params = {'v_bin':int(v_bin)}
 
-    if args['v_fn'] == "vMax":
+    if args['v_fn'] == 'vMax':
         v_fn = vMax
         v_key = -1
-    if args['v_fn'] == "vSeq":
+    if args['v_fn'] == 'vSeq':
         v_fn = vSeq
         v_key = str([0])
     
@@ -145,7 +145,7 @@ if __name__ == '__main__':
     # SET UP Q-LEARNING AGENT
     ##################################################
     
-    if args['agent'] == "q_learn":
+    if args['agent'] == 'q_learn':
     
         agent_params = {'alpha':args['alpha'],
                         'alpha_decay':args['alpha_decay'],
@@ -175,7 +175,7 @@ if __name__ == '__main__':
     # SET UP MONTE CARLO AGENT
     ##################################################
     
-    elif args['agent'] == "mcmc":
+    elif args['agent'] == 'mcmc':
         
         agent_params = {'gamma':args['gamma'],
                       	'eps':args['epsilon'], 
@@ -199,22 +199,22 @@ if __name__ == '__main__':
     # TRAINING
     ##################################################
     
-    print("TRAINING")
+    print('TRAINING')
     trainer.train(**trainer_train_params)
-    print("*" * 89)
-    print("*" * 89)
+    print('*' * 89)
+    print('*' * 89)
     
     ##################################################
     # SET UP EVALUATION
     ##################################################
     
-    if "scalar" in args['reward_fn_eval']:
+    if 'scalar' in args['reward_fn_eval']:
         reward_fn_eval = rewardScalar
-        pos, neg = args['reward_eval'].split("_")
+        pos, neg = args['reward_eval'].split('_')
         reward_eval = {'pos':int(pos), 'neg':-int(neg)}
     elif 'topN' in args['reward_fn_eval']:
         reward_fn_eval = rewardTopN
-        pos, neg, n = args['reward_eval'].split("_")
+        pos, neg, n = args['reward_eval'].split('_')
         reward_eval = {'pos':int(pos), 'neg':-int(neg), 'n':int(n)} 
         
         
@@ -237,10 +237,10 @@ if __name__ == '__main__':
     # EVALUATION
     ##################################################
     
-    print("EVAL")
+    print('EVAL')
     trainer.eval(**trainer_eval_params)
-    print("*" * 89)
-    print("*" * 89)
+    print('*' * 89)
+    print('*' * 89)
     
     ##################################################
     # SAVE
