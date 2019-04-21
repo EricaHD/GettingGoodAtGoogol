@@ -102,7 +102,7 @@ if __name__ == '__main__':
         reward = {'pos':int(pos), 'neg':-int(neg)}
         
         c_pos, c_neg, c_op = args['curr_params'].split('_')
-        curr_params = {'pos':int(c_pos), 'neg':int(c_neg), 'op':convertOp(c_op)}
+        curr_params = {'pos':int(c_pos), 'neg':-int(c_neg), 'op':convertOp(c_op)}
         
     elif 'topN' in args['reward_fn']:
         reward_fn = rewardTopN
@@ -110,7 +110,7 @@ if __name__ == '__main__':
         reward = {'pos':int(pos), 'neg':-int(neg), 'n':int(n)} 
         
         c_pos, c_neg, c_n, c_op = args['curr_params'].split('_')
-        curr_params = {'pos':int(c_pos), 'neg':int(c_neg), 'n':int(c_n), 'op':convertOp(c_op)}
+        curr_params = {'pos':int(c_pos), 'neg':-int(c_neg), 'n':int(c_n), 'op':convertOp(c_op)}
         
     game_params = {'lo':args['lo'],
                    'hi':args['hi'],
