@@ -62,7 +62,7 @@ if __name__ == '__main__':
     ap.add_argument("-cre", "--curr_epoch", type=int, default=100000,
                     help="curriculum epoch")     
     ap.add_argument("-crp", "--curr_params", type=str, default="0_0_10_-",
-                    help="curriculum parameters, #_#_#_# when reward_fn is scalar, #_#_#_op when reward_fn is topN")    
+                    help="curriculum parameters, #_#_op when reward_fn is scalar, #_#_#_op when reward_fn is topN")    
     
     # Evaluation Game Parameters
     ap.add_argument("-loe", "--lo_eval", type=int, default=1,
