@@ -132,7 +132,7 @@ if __name__ == '__main__':
     elif 'seq' in args['q_key_fn']:
         v_bin = args['q_key_params'].split('_')
         q_key_fn = qKeySeq
-        q_key_params = {'v_bin':int(v_bin)}
+        q_key_params = {'v_bin':int(v_bin[0])}
 
     if args['v_fn'] == 'vMax':
         v_fn = vMax
