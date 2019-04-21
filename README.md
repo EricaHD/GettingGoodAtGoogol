@@ -11,6 +11,7 @@ Final Project for Computational Cognitive Modeling (NYU PSYCH-GA 3405.002 / DS-G
 | Out of memory [2] | 2h,37m | | 0.01 | 0.00001 | 10000 | 0.9 | 0.1 | 0.00001 | 0 | False | **seq** | 2 | vSeq | 1 | 10000 | 50 | False | **topN** | 10\_10\_3 | **50000000** | 10000 | 0 | 70000000 | 0\_0\_10\_- | 1 | 10000 | 50 | False | scalar | 10\_1 | 10000 | 1000 | 0 |
 
 [1] Ran out of 12GB of memory.  Stopped at 26%.  Training victory percentage 3.3%.
+
 [2] Ran out of 12GB of memory.  Stopped at 27%.  Training victory percentage 8.5%.
 
 #### Monte Carlo Results
