@@ -11,7 +11,7 @@
 
 module purge
 module load python3/intel/3.6.3
-souce /home/ehd255/pyenv/py3.6.3/bin/activate
+source /home/ehd255/pyenv/py3.6.3/bin/activate
 
 python /home/ehd255/DeepGoogol/agent_training.py \
     --agent q_learn \
