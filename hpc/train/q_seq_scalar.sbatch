@@ -32,7 +32,7 @@ python /home/ehd255/DeepGoogol/agent_training.py \
     --replace False \
     --reward_fn scalar \
     --reward 10_10 \
-    --n_games 1000000 \
+    --n_games 50000000 \
     --n_print 10000 \
     --delay 0 \
     --curr_epoch 70000000 \
