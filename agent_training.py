@@ -12,83 +12,83 @@ if __name__ == '__main__':
     
     # Agent Parameters
     ap.add_argument("-a", "--agent", type=str, default='q_learn',
-                    help="Agent Type")
+                    help="agent type can be q_learn or mcmc")
     ap.add_argument("-al", "--alpha", type=float, default=0.01,
-                    help="Alpha")
+                    help="learning rate [q only]")
     ap.add_argument("-ald", "--alpha_decay", type=float, default=1e-5,
-                    help="Alpha Decay")
+                    help="learning rate decay factor [q only]")
     ap.add_argument("-as", "--alpha_step", type=int, default=1000,
-                    help="Alpha Step")
+                    help="learning rate decays every alpha_step turns [q only]")
     ap.add_argument("-g", "--gamma", type=float, default=0.9,
-                    help="Reward Discount Rate")
+                    help="discount factor")
     ap.add_argument("-e", "--epsilon", type=float, default=0.1,
-                    help="Epsilon")
+                    help="the probability of exploration")
     ap.add_argument("-ed", "--eps_decay", type=float, default=1e-5,
-                    help="Epsilon Decay")
+                    help="epsilon decay factor")
     ap.add_argument("-s", "--s_cost", type=float, default=0,
-                    help="Search Cost")
+                    help="search cost")
     ap.add_argument("-ql", "--q_learn", type=bool, default=False,
-                    help="SARSA")
+                    help="SARSA when True, Q-learning when False [q only]")
     ap.add_argument("-qkf", "--q_key_fn", type=str, default="bin",
-                    help="Q-Key Fn")
+                    help="can be bin or seq")
     ap.add_argument("-qkp", "--q_key_params", type=str, default="2_2",
-                    help="Q-Key Params")
+                    help="# when q_key_fn is seq, #_# when q_key_fn is bin")
     ap.add_argument("-vf", "--v_fn", type=str, default="vMax",
-                    help="Val Fn")
+                    help="can be vMax or vSeq")
     
     # Training Game Parameters
     ap.add_argument("-lo", "--lo", type=int, default=1,
-                    help="Lo")
+                    help="lowest value possible in training games")
     ap.add_argument("-hi", "--hi", type=int, default=100,
-                    help="Hi")
+                    help="highest value possible in training games")
     ap.add_argument("-ni", "--n_idx", type=int, default=25,
-                    help="N-Idx")
+                    help="number of cards in training games")
     ap.add_argument("-rp", "--replace", type=bool, default=False,
-                    help="Replacement")
+                    help="numbers in training games can repeat when True, numbers are distinct when False")
     ap.add_argument("-r", "--reward_fn", type=str, default="topN",
-                    help="Reward Fn")
+                    help="reward function in training games, can be scalar or topN")
     ap.add_argument("-rps", "--reward", type=str, default="5_5_5",
-                    help="Reward Params")
+                    help="#_# when reward_fn is scalar, #_#_# when reward_fn is topN")
     
     # Training Parameters
     ap.add_argument("-ng", "--n_games", type=int, default=1000000,
-                    help="N-Games")
+                    help="number of training games [q only]")
     ap.add_argument("-ne", "--n_episodes", type=int, default=1000000,
-                    help="N-Episodes")
+                    help="number of Monte Carlo episodes [mc only]")
     ap.add_argument("-np", "--n_print", type=int, default=100000,
-                    help="N-Print")
+                    help="when to print [q only]")
     ap.add_argument("-d", "--delay", type=int, default=0,
-                    help="Time Delay")
+                    help="time delay in training games [q only]")
     ap.add_argument("-cre", "--curr_epoch", type=int, default=100000,
-                    help="Curriculum Epoch")     
+                    help="curriculum epoch")     
     ap.add_argument("-crp", "--curr_params", type=str, default="0_0_10_-",
-                    help="Curriculum Params")    
+                    help="curriculum parameters, #_#_#_# when reward_fn is scalar, #_#_#_op when reward_fn is topN")    
     
     # Evaluation Game Parameters
     ap.add_argument("-loe", "--lo_eval", type=int, default=1,
-                    help="Lo")
+                    help="lowest value possible in evaluation games")
     ap.add_argument("-hie", "--hi_eval", type=int, default=100,
-                    help="Hi")
+                    help="highest value possible in evaluation games")
     ap.add_argument("-nie", "--n_idx_eval", type=int, default=25,
-                    help="N-Idx")
+                    help="number of cards in training games")
     ap.add_argument("-rpe", "--replace_eval", type=bool, default=False,
-                    help="Replacement")
+                    help="numbers in evaluation games can repeat when True, numbers are distinct when False")
     ap.add_argument("-re", "--reward_fn_eval", type=str, default="scalar",
-                    help="Reward Fn")
+                    help="reward function in evaluation games, can be scalar or topN")
     ap.add_argument("-rpse", "--reward_eval", type=str, default="1_1",
-                    help="Reward Params Eval")
+                    help="#_# when reward_fn_eval is scalar, #_#_# when reward_fn_eval is topN")
     
     # Evaluation Parameters
     ap.add_argument("-nge", "--n_games_eval", type=int, default=10000,
-                    help="N-Games Eval")
+                    help="number of evaluation games")
     ap.add_argument("-npe", "--n_print_eval", type=int, default=1000,
-                    help="N-Print")
+                    help="when to print")
     ap.add_argument("-de", "--delay_eval", type=int, default=0,
-                    help="Time Delay")
+                    help="time delay in evaluation games")
     
     # Save Path
     ap.add_argument("-fp", "--file_path",
-                    help="Save File Path")
+                    help="file path used for saving")
     
     args = vars(ap.parse_args())
     
