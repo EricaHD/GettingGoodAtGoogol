@@ -183,7 +183,7 @@ class MCMCAgent(BasicAgent):
         #Training mode is Epsilon-Greedy
         if self.mode == "Train":
             #Auto-win or auto-stop
-            if (params['idx'] == params['n_idx']-1) | (self.v_key == params['hi']):
+            if (params['idx'] == params['n_idx']-1) or (self.v_key == params['hi']):
                 action = 0
             #Epsilon
             elif random.random() < self.eps:
@@ -199,7 +199,7 @@ class MCMCAgent(BasicAgent):
             return action, self.v_key
         else:
             #Auto-win or auto-stop
-            if (params['idx'] == params['n_idx']-1) | (self.v_key == params['hi']):
+            if (params['idx'] == params['n_idx']-1) or (self.v_key == params['hi']):
                 action = 0
             else:
                 p_key = self.q_key_fn(params, params['idx'], self.v_key, self.q_key_params)
