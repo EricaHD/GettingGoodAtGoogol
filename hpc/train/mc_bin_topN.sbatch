@@ -28,7 +28,7 @@ python /home/ehd255/DeepGoogol/agent_training.py \
     --replace False \
     --reward_fn topN \
     --reward 10_10_3 \
-    --n_episodes 1000000 \
+    --n_episodes 10000000 \
     --curr_epoch 70000000 \
     --curr_params 0_0_10_minus \
     --lo_eval 1 \
