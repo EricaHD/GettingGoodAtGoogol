@@ -1,5 +1,5 @@
 import os 
-from time import sleep
+from time import time, sleep
 
 import numpy as np
 from tqdm import tqdm
@@ -24,6 +24,8 @@ class Trainer():
         
         wins = 0
         agent.eval()
+        
+        
         
         #Iterate through games
         for i in tqdm(range(n_games), leave=False):
@@ -75,6 +77,7 @@ class QTrainer(Trainer):
         """Train an agent over n_games"""
         
         wins = 0
+        games = 0
         agent.train()
         
         #Iterate through games
@@ -107,14 +110,16 @@ class QTrainer(Trainer):
             agent.update(self.params)
             
             wins += win
+            games += 1
             
             if (i%n_print == 0) & (i > 0):
                 sleep(delay)
                 clear_output()
-                print("TRAIN PCT: {:.2} |\t VICTORY PERCENTAGE: {:.2}".format(i/n_games, wins/i))
+                print("TRAIN PCT: {:.2} |\t VICTORY PERCENTAGE: {:.2}".format(i/n_games, wins/games))
                 
                 
             if (i%curriculum['epoch'] == 0) & (i > 0):
+                wins, games = 0, 0
                 for k, v in game.reward.items():
                     v_ = eval("{} {} {}".format(v, curriculum['params']['op'], curriculum['params'][k]))
                     game.reward[k] = v_

@@ -6,14 +6,8 @@
 #SBATCH --mem=12GB
 #SBATCH --time=24:00:00
 #SBATCH --output=slurm_qbt_%j.out
-#SBATCH --mail-type=END
-#SBATCH --mail-user=ehd255@nyu.edu
 
-module purge
-module load python3/intel/3.6.3
-source /home/ehd255/pyenv/py3.6.3/bin/activate
-
-python /home/ehd255/DeepGoogol/agent_training.py \
+python agent_training.py \
     --agent q_learn \
     --alpha 0.01 \
     --alpha_decay 0.00001 \
@@ -31,7 +25,7 @@ python /home/ehd255/DeepGoogol/agent_training.py \
     --n_idx 50 \
     --replace False \
     --reward_fn topN \
-    --reward 10_10_6 \
+    --reward 10_10_11 \
     --n_games 1000000 \
     --n_print 100000 \
     --delay 0 \
