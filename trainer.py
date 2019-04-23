@@ -72,12 +72,11 @@ class QTrainer(Trainer):
     def __init__(self):
         super().__init__()
         return
-        
+
     def train(self, game, agent, n_games, n_print, delay, curriculum):
         """Train an agent over n_games"""
         
-        wins = 0
-        games = 0
+        wins, games = 0, 0
         agent.train()
         
         #Iterate through games
@@ -129,7 +128,9 @@ class QTrainer(Trainer):
                 
                     
         clear_output()
-        print("TRAINING COMPLETE |\t FINAL VICTORY PERCENTAGE: {:.2}".format(wins/n_games))
+        print("TRAINING COMPLETE |\t FINAL VICTORY PERCENTAGE: {:.2}".format(wins/games))
+    
+        return wins/games
     
     def reset(self, game): 
         

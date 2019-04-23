@@ -1,3 +1,5 @@
+from itertools import product
+
 import numpy as np
 
 import gzip
@@ -32,7 +34,6 @@ def vSeq(params, v, v_):
 #########################################################################################
 ##REWARD FN
 #########################################################################################
-    
     
 def rewardScalar(game):
     if game.val == game.max_val:
