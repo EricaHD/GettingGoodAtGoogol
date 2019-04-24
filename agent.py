@@ -3,6 +3,16 @@ import random
 
 import numpy as np
 
+import torch
+import torch.nn as nn
+import torch.optim as optim
+import torch.nn.functional as F
+import torchvision.transforms as T
+
+from utils import *
+
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
 class BasicAgent:
     """Agent Architecture"""
     def __init__(self):
@@ -44,10 +54,12 @@ class QAgent(BasicAgent):
         self.v_key, self.orig_v_key = v_key, v_key
         
         self.q_key_fn = q_key_fn
-        self.q_key, self.orig_q_key = "", ""
+        self.q_key, self.prev_q_key, self.orig_q_key = "", "", ""
         self.q_key_params = q_key_params
     
-    def getAction(self, params, update_key=True):
+    def getAction(self, params):
+        if (params['val'] == params['hi']) or (params['idx'] == params['n_idx']-1):
+            return 0
         
         #Get Q-key
         self.v_key = self.v_fn(params, params['val'], self.v_key)
@@ -55,11 +67,8 @@ class QAgent(BasicAgent):
         
         #Epsilon Greedy in Train Mode
         if self.mode == "Train":
-            #If auto-win or auto-stop
-            if (params['val'] == params['hi']) or (params['idx'] == params['n_idx']-1):
-                action = 0
             #Epsilon
-            elif random.random() < self.eps:
+            if random.random() < self.eps:
                 action =  random.randint(0, 1)
             else:
                 #Equal
@@ -71,18 +80,12 @@ class QAgent(BasicAgent):
             
             self.eps *= (1 - self.eps_decay)
             
-            #Called by Update fn
-            if update_key: 
-                self.q_key = q_key
-                return action
-            else:
-                return q_key, action            
+            self.prev_q_key = self.q_key
+            self.q_key = q_key
+            return action      
         else:
-            #If auto-win or auto-stop
-            if (params['val'] == params['hi']) or (params['idx'] == params['n_idx']-1):
-                action = 0
             #Equal
-            elif self.Q[q_key][0] == self.Q[q_key][1]:
+            if self.Q[q_key][0] == self.Q[q_key][1]:
                 action =  random.randint(0, 1)
             #Greedy
             else:
@@ -90,14 +93,13 @@ class QAgent(BasicAgent):
             
             return action
 
-        
     def update(self, params):
             
         #Middle of game update
-        if not params['game_over']:
+        if not params['game_status']:
             #Get keys
-            q_key, a, r  = self.q_key, 1, params['reward'] 
-            q__key, a_ = self.getAction(params=params, update_key=False)
+            q_key, a, r  = self.prev_q_key, 1, params['reward']
+            q__key, a_ = self.q_key, 0
             
             #Update for SARSA
             if self.sarsa:
@@ -114,9 +116,8 @@ class QAgent(BasicAgent):
             
             
     def reset(self):
-        self.eps = self.orig_eps
         self.v_key = self.orig_v_key
-        self.q_key = self.orig_q_key
+        self.q_key, self.prev_q_key = self.orig_q_key, self.orig_q_key
         
             
 #########################################################################################
@@ -239,3 +240,98 @@ class MCMCAgent(BasicAgent):
         self.v_key = self.orig_v_key
         self.returns = defaultdict(lambda: {0:0, 1:0})
         self.counts = defaultdict(lambda: {0:0, 1:0})
+        
+#########################################################################################
+#########################################################################################
+    
+class DQAgent(BasicAgent):
+    """DQN Agent"""
+    def __init__(self, batch_size, gamma, eps, eps_decay, target_update, p_to_s, p_net, t_net, optimizer, loss, memory):
+        super().__init__()
+        
+        self.batch_size, self.gamma, self.eps, self.eps_decay, self.target_update = batch_size, gamma, eps, eps_decay, target_update
+        self.eps_orig = eps
+        
+        self.p_to_s = p_to_s
+        
+        self.policy_net, self.target_net = p_net, t_net
+        self.optimizer, self.loss = optimizer, loss
+        
+        self.memory = memory
+    
+    def getAction(self, params):
+        
+        state = self.p_to_s(params)
+        
+        if self.mode == "Train":
+            if (params['val'] == params['hi']) or (params['idx'] == params['n_idx']-1):
+                action = torch.tensor([[0.]], device=device, dtype=torch.long)
+            elif random.random() < self.eps:
+                action = torch.tensor([[random.randrange(2)]], device=device, dtype=torch.long)
+            else:
+                with torch.no_grad():
+                    action = self.policy_net(state).max(1)[1].view(1, 1)
+            
+            self.eps *= (1 - self.eps_decay)
+            return action, state
+        else:
+            if (params['val'] == params['hi']) or (params['idx'] == params['n_idx']-1):
+                action = torch.tensor([[0.]], device=device, dtype=torch.long)
+            else:
+                with torch.no_grad():
+                    action = self.policy_net(state).max(1)[1].view(1, 1)
+            return action
+                
+    def update(self):
+        if len(self.memory) < self.batch_size:
+            return
+        
+        transitions = self.memory.sample(self.batch_size)
+        batch = Transition(*zip(*transitions))
+    
+        #Compute masks for non-final games
+        non_final_mask = torch.tensor(tuple(map(lambda s: s is not None,
+                                              batch.next_state)), device=device, dtype=torch.uint8)
+        non_final_next_states = torch.cat([s for s in batch.next_state
+                                                    if s is not None])
+        
+        #Sep state, action, reward
+        state_batch = torch.cat(batch.state)
+        action_batch = torch.cat(batch.action)
+        reward_batch = torch.cat(batch.reward)
+    
+        #Q(s_t, a)
+        state_action_values = self.policy_net(state_batch).gather(1, action_batch)
+
+        #V(s_{t+1})
+        next_state_values = torch.zeros(self.batch_size, device=device)
+        next_state_values[non_final_mask] = self.target_net(non_final_next_states).max(1)[0].detach()
+    
+        # Compute the expected Q values
+        expected_state_action_values = (next_state_values * self.gamma) + reward_batch
+
+        # Compute Loss
+        loss = self.loss(state_action_values, expected_state_action_values.unsqueeze(1))
+
+        # Optimize the model
+        self.optimizer.zero_grad()
+        loss.backward()
+        for param in self.policy_net.parameters():
+            param.grad.data.clamp_(-1, 1)
+        self.optimizer.step()
+        
+    def train(self):
+        self.mode="Train"
+        self.policy_net.train()
+        self.target_net.eval()
+        
+    def eval(self):
+        self.mode="Eval"
+        self.policy_net.eval()
+    
+    def updateNet(self, game_i):
+        if game_i % self.target_update == 0:
+            self.target_net.load_state_dict(self.policy_net.state_dict())
+            
+    def reset(self):
+        self.optimizer.zero_grad()

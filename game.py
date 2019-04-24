@@ -12,22 +12,19 @@ class Game():
         
         self.reset()
     
-    def step(self):
-        self.idx += 1
-        self.val = self.values[self.idx]
+    def step(self, action):  
         
-        return self.idx, self.val
-    
-    def getReward(self):
-        self.setGameStatus()
-        return self.reward_fn(self)
-      
-    def checkWin(self):
-        if self.values[self.idx] == self.max_val:
-            return True
+        if action == 0:
+            self.setGameStatus()
+            reward, self.win = self.reward_fn(self)
+            game_over = self.game_over
         else:
-            return False
+            self.idx += 1
+            self.val = self.values[self.idx]
+            reward, game_over = 0., self.game_over
         
+        return self.idx, self.val, float(reward), game_over
+    
     def setGameStatus(self):
         self.game_over = True
         
@@ -45,5 +42,6 @@ class Game():
         self.max_idx = self.values.argmax()
         
         self.game_over = False
+        self.win = 0
         
     

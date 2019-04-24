@@ -4,9 +4,20 @@ from time import time, sleep
 import numpy as np
 from tqdm import tqdm
 
-from IPython.display import clear_output
+import torch
+import torch.nn as nn
+import torch.optim as optim
+import torch.nn.functional as F
+import torchvision.transforms as T
 
 from game import Game
+from utils import *
+
+from IPython.display import clear_output
+
+
+
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 #########################################################################################
 ##Basic Trainer
@@ -25,8 +36,6 @@ class Trainer():
         wins = 0
         agent.eval()
         
-        
-        
         #Iterate through games
         for i in tqdm(range(n_games), leave=False):
             #Reset game and agent
@@ -38,19 +47,12 @@ class Trainer():
             #Iterate through game
             while True:
                 
-                self.params['action'] = agent.getAction(self.params) 
-                      
-                #Check for stop
-                if self.params['action'] == 0:
-                    self.params['reward'], win = game.getReward()
-                    game.setGameStatus()
-                    break
-                else:
-                    self.params['reward'] = 0
+                action = agent.getAction(self.params) 
+                self.params['idx'], self.params['val'], self.params['reward'], self.params['game_status'] = game.step(action)
                 
-                self.params['idx'], self.params['val'] = game.step()
-            
-            wins += win
+                if self.params['game_status']:
+                    wins += game.win
+                    break
             
             if (i%n_print == 0) & (i > 0):
                 sleep(delay)
@@ -92,23 +94,20 @@ class QTrainer(Trainer):
             while True:
                 
                 self.params['action'] = agent.getAction(self.params) 
-                      
-                #Check for stop
-                if self.params['action'] == 0:
-                    self.params['reward'], win = game.getReward()
+                self.params['idx'], self.params['val'], self.params['reward'], self.params['game_status'] = game.step(self.params['action'])
+                
+                if self.params['game_status']:
+                    wins += game.win
                     break
                 else:
-                    self.params['reward'] = 0
-                
-                #Step and update
-                self.params['idx'], self.params['val'] = game.step()
-                agent.update(self.params)
+                    #Step and update
+                    self.params['action'] = agent.getAction(self.params) 
+                    self.params['idx'], self.params['val'], _, _ = game.step(self.params['action'])
+                    agent.update(self.params)
                 
             #Update Q-values 
-            self.params['game_over'] = True
             agent.update(self.params)
             
-            wins += win
             games += 1
             
             if (i%n_print == 0) & (i > 0):
@@ -141,7 +140,7 @@ class QTrainer(Trainer):
                 "idx":0,
                 "action":None,
                 "val":game.val,
-                "game_over":False}
+                "game_status":False}
     
 #########################################################################################
 ##MCMC Trainer
@@ -175,12 +174,11 @@ class MCMCTrainer(Trainer):
     
     def mcEpisode(self, game, agent):
         action, val = agent.getAction(self.params)
-        if action == 0:
-            reward = game.getReward()[0]
+        self.params['idx'], self.params['val'], reward, self.params['game_status'] = game.step(action)
+        
+        if self.params['game_status']:
             return [[self.params['idx'], val, action, reward]] 
         else:
-            reward = 0
-            self.params['idx'], self.params['val'] = game.step()
             return [[self.params['idx']-1, val, action, reward]] + self.mcEpisode(game, agent)
         
     def reset(self, game): 
@@ -191,6 +189,110 @@ class MCMCTrainer(Trainer):
                 "replace":game.replace,
                 "idx":game.idx,
                 "val":game.val}
+    
+#########################################################################################
+##DQN Trainer
+#########################################################################################
+
+class DQTrainer(Trainer):
+    def __init__(self):
+        super().__init__()
+        return
+    
+    def train(self, game, agent, n_games, n_print, delay, curriculum):
+        """Train a DQAgent over n_games"""
+        
+        wins, games = 0, 0
+        agent.train()
+        
+        for game_i in tqdm(range(n_games)):
+            game.reset()
+            agent.reset()
+
+            self.params = self.reset(game)
+            self.params['game_i'] = game_i
+
+            while True:
+                action, state = agent.getAction(self.params)
+                self.params['idx'], self.params['val'], self.params['reward'], self.params['game_status'] = game.step(action.item())
+                reward = torch.tensor([self.params['reward']], device=device)
+
+                if self.params['game_status']:
+                    next_state = None
+                    agent.memory.push(state, action, next_state, reward)
+                    wins += game.win
+                    break
+                else:
+                    next_state = agent.p_to_s(self.params)
+                    agent.memory.push(state, action, next_state, reward)
+                    state = next_state
+                    agent.update()
+
+            agent.updateNet(game_i)
+            games += 1
+
+            if (game_i%n_print == 0) & (game_i > 0):
+                sleep(delay)
+                clear_output()
+                print("TRAIN PCT: {:.2} |\t VICTORY PERCENTAGE: {:.2}".format(game_i/n_games, wins/games))
+
+
+            if (game_i%curriculum['epoch'] == 0) & (game_i > 0):
+                wins, games = 0, 0
+                for k, v in game.reward.items():
+                    v_ = eval("{} {} {}".format(v, curriculum['params']['op'], curriculum['params'][k]))
+                    game.reward[k] = v_
+
+                print("ADJUSTING REWARDS")
+                       
+        clear_output()
+        print("TRAINING COMPLETE |\t FINAL VICTORY PERCENTAGE: {:.2}".format(wins/games))
+        return wins/games
+    
+    def eval(self, game, agent, n_games, n_print, delay):
+        """Train a DQAgent over n_games"""
+        
+        wins, games = 0, 0
+        agent.eval()
+        
+        for game_i in tqdm(range(n_games)):
+            game.reset()
+
+            self.params = self.reset(game)
+            self.params['game_i'] = game_i
+
+            while True:
+                action = agent.getAction(self.params)
+                self.params['idx'], self.params['val'], self.params['reward'], self.params['game_status'] = game.step(action.item())
+                reward = torch.tensor([self.params['reward']], device=device)
+
+                if self.params['game_status']:
+                    wins += game.win
+                    break
+                    
+            games += 1
+
+            if (game_i%n_print == 0) & (game_i > 0):
+                sleep(delay)
+                clear_output()
+                print("TRAIN PCT: {:.2} |\t VICTORY PERCENTAGE: {:.2}".format(game_i/n_games, wins/games))
+
+                       
+        clear_output()
+        print("TRAINING COMPLETE |\t FINAL VICTORY PERCENTAGE: {:.2}".format(wins/games))
+        return wins/games
+    
+    def reset(self, game): 
+        
+        return {"lo":game.lo,
+                "hi":game.hi,
+                "n_idx":game.n_idx,
+                "replace":game.replace,
+                "idx":0,
+                "action":None,
+                "val":game.val,
+                "game_status":False}
+
     
     
     
