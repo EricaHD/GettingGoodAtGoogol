@@ -180,6 +180,9 @@ if __name__ == '__main__':
     if args['v_fn'] == 'vMax':
         v_fn = vMax
         v_key = -1
+    elif args['v_fn'] == 'vIdx':
+        v_fn = vIdx
+        v_key = 0
     
     dqa_params = {'batch_size':args['batch_size'],
                   'gamma':args['gamma'],

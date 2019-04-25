@@ -127,9 +127,12 @@ if __name__ == '__main__':
     if args['v_fn'] == 'vMax':
         v_fn = vMax
         v_key = -1
-    if args['v_fn'] == 'vSeq':
+    elif args['v_fn'] == 'vSeq':
         v_fn = vSeq
         v_key = str([0])
+    elif args['v_fn'] == 'vIdx':
+        v_fn = vIdx
+        v_key = 0
 
     ##################################################
     # SET UP MONTE CARLO AGENT
