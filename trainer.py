@@ -223,7 +223,7 @@ class DQTrainer(Trainer):
                     wins += game.win
                     break
                 else:
-                    next_state = agent.p_to_s(self.params)
+                    next_state = agent.p_to_s(self.params, agent.v_key)
                     agent.memory.push(state, action, next_state, reward)
                     state = next_state
                     agent.update()

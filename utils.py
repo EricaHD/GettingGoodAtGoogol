@@ -5,6 +5,12 @@ from itertools import product
 
 import numpy as np
 
+import torch
+import torch.nn as nn
+import torch.optim as optim
+import torch.nn.functional as F
+import torchvision.transforms as T
+
 import gzip
 import cloudpickle as pkl
 
@@ -33,6 +39,12 @@ def vSeq(params, v, v_):
     seq = eval(v_)
     seq.append(v)
     return str(seq)
+
+def vIdx(params, v, v_):
+    return v
+
+def stateMax(params, v_key):
+    return torch.tensor([params['idx']/params['n_idx'], v_key/params['hi']]).unsqueeze(0)
 
 #########################################################################################
 ##REWARD FN

@@ -49,7 +49,7 @@ class QAgent(BasicAgent):
         self.Q = defaultdict(lambda: {0:0, 1:0})
         
         self.sarsa = sarsa
-       
+        
         self.v_fn = v_fn
         self.v_key, self.orig_v_key = v_key, v_key
         
@@ -246,7 +246,7 @@ class MCMCAgent(BasicAgent):
     
 class DQAgent(BasicAgent):
     """DQN Agent"""
-    def __init__(self, batch_size, gamma, eps, eps_decay, target_update, p_to_s, p_net, t_net, optimizer, loss, memory):
+    def __init__(self, batch_size, gamma, eps, eps_decay, target_update, p_to_s, p_net, t_net, optimizer, loss, memory, v_fn, v_key):
         super().__init__()
         
         self.batch_size, self.gamma, self.eps, self.eps_decay, self.target_update = batch_size, gamma, eps, eps_decay, target_update
@@ -258,10 +258,15 @@ class DQAgent(BasicAgent):
         self.optimizer, self.loss = optimizer, loss
         
         self.memory = memory
+        
+        self.v_fn, self.v_key, self.orig_v_key = v_fn, v_key, v_key
     
     def getAction(self, params):
         
-        state = self.p_to_s(params)
+        #Get new v
+        self.v_key = self.v_fn(params, params['val'], self.v_key)
+        
+        state = self.p_to_s(params, self.v_key)
         
         if self.mode == "Train":
             if (params['val'] == params['hi']) or (params['idx'] == params['n_idx']-1):
@@ -334,4 +339,5 @@ class DQAgent(BasicAgent):
             self.target_net.load_state_dict(self.policy_net.state_dict())
             
     def reset(self):
+        self.v_key = self.orig_v_key
         self.optimizer.zero_grad()
