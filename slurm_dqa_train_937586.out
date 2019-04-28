@@ -1,7 +1,0 @@
-Traceback (most recent call last):
-  File "dqa_train.py", line 16, in <module>
-    from agent import *
-  File "/home/ijh216/DeepGoogol/agent.py", line 264
-    self.device = device
-                       ^
-TabError: inconsistent use of tabs and spaces in indentation
