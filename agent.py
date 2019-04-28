@@ -277,7 +277,7 @@ class DQAgent(BasicAgent):
                 action = torch.tensor([[random.randrange(2)]], device=self.device, dtype=torch.long)
             else:
                 with torch.no_grad():
-                    action = self.policy_net(state).max(1)[1].view(1, 1).to(self.device)
+                    action = self.policy_net(state).max(1)[1].view(1, 1)
             
             self.eps *= (1 - self.eps_decay)
             return action, state
@@ -286,7 +286,7 @@ class DQAgent(BasicAgent):
                 action = torch.tensor([[0.]], device=self.device, dtype=torch.long)
             else:
                 with torch.no_grad():
-                    action = self.policy_net(state).max(1)[1].view(1, 1).to(self.device)
+                    action = self.policy_net(state).max(1)[1].view(1, 1)
             return action
                 
     def update(self):
@@ -300,7 +300,7 @@ class DQAgent(BasicAgent):
         non_final_mask = torch.tensor(tuple(map(lambda s: s is not None,
                                               batch.next_state)), device=self.device, dtype=torch.uint8)
         non_final_next_states = torch.cat([s for s in batch.next_state
-                                                    if s is not None])
+                                                    if s is not None]).to(self.device)
         
         #Sep state, action, reward
         state_batch = torch.cat(batch.state).to(self.device)
