@@ -161,6 +161,8 @@ if __name__ == '__main__':
     
     if args['p_to_s'] == "stateMax":
         p_to_s = stateMax
+    elif args['p_to_s'] == "stateMaxV":
+        p_to_s = stateMaxV
         
     if args['optimizer'] == "adam":
         optimizer = optim.Adam(policy_net.parameters())

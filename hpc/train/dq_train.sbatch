@@ -16,8 +16,8 @@ PYTHONPATH=$PYTHONPATH:. python dqa_train.py \
     --target_update 100 \
     --optimizer rmsprop \
     --loss huber \
-    --mem_size 100000 \
-    --p_to_s stateMax \
+    --mem_size 500000 \
+    --p_to_s stateMaxV \
     --gamma 0.9 \
     --epsilon 0.1 \
     --eps_decay .00001 \
@@ -29,10 +29,10 @@ PYTHONPATH=$PYTHONPATH:. python dqa_train.py \
     --replace False \
     --reward_fn topN \
     --reward 6_6_6 \
-    --n_games 10000 \
-    --n_print 1000 \
+    --n_games 1000000 \
+    --n_print 100000 \
     --delay 0 \
-    --curr_epoch 2000 \
+    --curr_epoch 100000 \
     --curr_params 0_0_1_minus \
     --lo_eval 1 \
     --hi_eval 500 \
@@ -40,7 +40,7 @@ PYTHONPATH=$PYTHONPATH:. python dqa_train.py \
     --replace_eval False \
     --reward_fn_eval scalar \
     --reward_eval 1_1 \
-    --n_games_eval 1000 \
-    --n_print_eval 100 \
+    --n_games_eval 10000 \
+    --n_print_eval 1000 \
     --delay_eval 0 \
     --file_path agents/dqa_train.pkl

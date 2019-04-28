@@ -24,6 +24,13 @@ def qKeyMaxBin(params, idx, v, agent_params):
     
     return str((i_key, v_key))
 
+def qKeyMaxBinV(params, idx, v, agent_params):
+    i_key = int(np.round(idx/params['n_idx'], agent_params['i_bin'])*100)
+    val_key = int(np.round(params['val']/params['hi'], agent_params['v_bin'])*100)
+    v_key = int(np.round(v/params['hi'], agent_params['v_bin'])*100)
+    
+    return str((i_key, val_key, v_key))
+
 def vMax(params, v, v_):
     if v > v_:
         return v
@@ -45,6 +52,9 @@ def vIdx(params, v, v_):
 
 def stateMax(params, v_key):
     return torch.tensor([params['idx']/params['n_idx'], v_key/params['hi']]).unsqueeze(0)
+
+def stateMaxV(params, v_key):
+    return torch.tensor([params['idx']/params['n_idx'], params['val']/params['hi'], v_key/params['hi']]).unsqueeze(0)
 
 #########################################################################################
 ##REWARD FN

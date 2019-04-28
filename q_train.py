@@ -127,6 +127,10 @@ if __name__ == '__main__':
         i_bin, v_bin = args['q_key_params'].split('_')
         q_key_fn = qKeyMaxBin
         q_key_params = {'i_bin':int(i_bin), 'v_bin':int(v_bin)}
+    elif 'binV' in args['q_key_fn']:
+        i_bin, v_bin = args['q_key_params'].split('_')
+        q_key_fn = qKeyMaxBinV
+        q_key_params = {'i_bin':int(i_bin), 'v_bin':int(v_bin)}
     elif 'seq' in args['q_key_fn']:
         v_bin = args['q_key_params'].split('_')
         q_key_fn = qKeySeq
