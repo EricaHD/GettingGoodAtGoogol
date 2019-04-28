@@ -17,7 +17,7 @@ from IPython.display import clear_output
 
 
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+#device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 #########################################################################################
 ##Basic Trainer
@@ -199,7 +199,7 @@ class DQTrainer(Trainer):
         super().__init__()
         return
     
-    def train(self, game, agent, n_games, n_print, delay, curriculum):
+    def train(self, game, agent, n_games, n_print, delay, curriculum, device):
         """Train a DQAgent over n_games"""
         
         wins, games = 0, 0
@@ -249,7 +249,7 @@ class DQTrainer(Trainer):
         print("TRAINING COMPLETE |\t FINAL VICTORY PERCENTAGE: {:.2}".format(wins/games))
         return wins/games
     
-    def eval(self, game, agent, n_games, n_print, delay):
+    def eval(self, game, agent, n_games, n_print, delay, device):
         """Train a DQAgent over n_games"""
         
         wins, games = 0, 0

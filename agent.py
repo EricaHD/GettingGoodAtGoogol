@@ -246,7 +246,7 @@ class MCMCAgent(BasicAgent):
     
 class DQAgent(BasicAgent):
     """DQN Agent"""
-    def __init__(self, batch_size, gamma, eps, eps_decay, target_update, p_to_s, p_net, t_net, optimizer, loss, memory, v_fn, v_key):
+    def __init__(self, batch_size, gamma, eps, eps_decay, target_update, p_to_s, p_net, t_net, optimizer, loss, memory, v_fn, v_key, device):
         super().__init__()
         
         self.batch_size, self.gamma, self.eps, self.eps_decay, self.target_update = batch_size, gamma, eps, eps_decay, target_update
@@ -261,30 +261,32 @@ class DQAgent(BasicAgent):
         
         self.v_fn, self.v_key, self.orig_v_key = v_fn, v_key, v_key
     
+	self.device = device
+
     def getAction(self, params):
         
         #Get new v
         self.v_key = self.v_fn(params, params['val'], self.v_key)
         
-        state = self.p_to_s(params, self.v_key)
+        state = self.p_to_s(params, self.v_key).to(self.device)
         
         if self.mode == "Train":
             if (params['val'] == params['hi']) or (params['idx'] == params['n_idx']-1):
-                action = torch.tensor([[0.]], device=device, dtype=torch.long)
+                action = torch.tensor([[0.]], device=self.device, dtype=torch.long)
             elif random.random() < self.eps:
-                action = torch.tensor([[random.randrange(2)]], device=device, dtype=torch.long)
+                action = torch.tensor([[random.randrange(2)]], device=self.device, dtype=torch.long)
             else:
                 with torch.no_grad():
-                    action = self.policy_net(state).max(1)[1].view(1, 1)
+                    action = self.policy_net(state).max(1)[1].view(1, 1).to(self.device)
             
             self.eps *= (1 - self.eps_decay)
             return action, state
         else:
             if (params['val'] == params['hi']) or (params['idx'] == params['n_idx']-1):
-                action = torch.tensor([[0.]], device=device, dtype=torch.long)
+                action = torch.tensor([[0.]], device=self.device, dtype=torch.long)
             else:
                 with torch.no_grad():
-                    action = self.policy_net(state).max(1)[1].view(1, 1)
+                    action = self.policy_net(state).max(1)[1].view(1, 1).to(self.device)
             return action
                 
     def update(self):
@@ -296,20 +298,20 @@ class DQAgent(BasicAgent):
     
         #Compute masks for non-final games
         non_final_mask = torch.tensor(tuple(map(lambda s: s is not None,
-                                              batch.next_state)), device=device, dtype=torch.uint8)
+                                              batch.next_state)), device=self.device, dtype=torch.uint8)
         non_final_next_states = torch.cat([s for s in batch.next_state
                                                     if s is not None])
         
         #Sep state, action, reward
-        state_batch = torch.cat(batch.state)
-        action_batch = torch.cat(batch.action)
-        reward_batch = torch.cat(batch.reward)
+        state_batch = torch.cat(batch.state).to(self.device)
+        action_batch = torch.cat(batch.action).to(self.device)
+        reward_batch = torch.cat(batch.reward).to(self.device)
     
         #Q(s_t, a)
-        state_action_values = self.policy_net(state_batch).gather(1, action_batch)
+        state_action_values = self.policy_net(state_batch).gather(1, action_batch).to(self.device)
 
         #V(s_{t+1})
-        next_state_values = torch.zeros(self.batch_size, device=device)
+        next_state_values = torch.zeros(self.batch_size, device=self.device)
         next_state_values[non_final_mask] = self.target_net(non_final_next_states).max(1)[0].detach()
     
         # Compute the expected Q values

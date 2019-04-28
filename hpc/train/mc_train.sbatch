@@ -17,19 +17,19 @@ PYTHONPATH=$PYTHONPATH:. python mc_train.py \
     --q_key_params 2_3  \
     --v_fn vMax \
     --lo 1 \
-    --hi 500 \
-    --n_idx 100 \
+    --hi 1000 \
+    --n_idx 50 \
     --replace False \
     --reward_fn topN \
-    --reward 6_6_6 \
-    --n_episodes 1000000 \
-    --n_print 100000 \
+    --reward 10_10_10 \
+    --n_episodes 100000 \
+    --n_print 10000 \
     --delay 0 \
-    --curr_epoch 100000 \
+    --curr_epoch 10000 \
     --curr_params 0_0_1_minus \
     --lo_eval 1 \
-    --hi_eval 500 \
-    --n_idx_eval 100 \
+    --hi_eval 1000 \
+    --n_idx_eval 50 \
     --replace_eval False \
     --reward_fn_eval scalar \
     --reward_eval 1_1 \
