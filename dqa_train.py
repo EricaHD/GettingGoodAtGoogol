@@ -199,7 +199,7 @@ if __name__ == '__main__':
                   'memory':memory,
                   'v_fn':v_fn,
                   'v_key':v_key,
-		'device':device
+                  'device':device
                   }
 
     agent = DQAgent(**dqa_params)
@@ -210,7 +210,7 @@ if __name__ == '__main__':
                             'n_print':args['n_print'],
                             'delay':args['delay'],
                             'curriculum':{'epoch':args['curr_epoch'], 'params':curr_params},
-			'device':device}
+                            'device':device}
         
     trainer = DQTrainer()
     
@@ -257,7 +257,7 @@ if __name__ == '__main__':
                            'n_games':args['n_games_eval'],
                            'n_print':args['n_print_eval'],
                            'delay':args['delay_eval'],
-			'device':device}
+                           'device':device}
     
     ##################################################
     # EVALUATION

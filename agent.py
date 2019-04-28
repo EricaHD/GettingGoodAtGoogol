@@ -260,8 +260,8 @@ class DQAgent(BasicAgent):
         self.memory = memory
         
         self.v_fn, self.v_key, self.orig_v_key = v_fn, v_key, v_key
-    
-	self.device = device
+        
+        self.device = device
 
     def getAction(self, params):
         
