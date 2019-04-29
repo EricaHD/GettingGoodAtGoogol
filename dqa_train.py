@@ -271,6 +271,6 @@ if __name__ == '__main__':
     ##################################################
     # SAVE
     ##################################################
-    
-    svZipPkl(agent, args['file_path'])
+    #torch.save(agent.to("cpu"), args['file_path'])
+    svZipPkl(agent.to("cpu"), args['file_path']+".pkl")
     print("AGENT STORED AT: {}".format(args['file_path']))
