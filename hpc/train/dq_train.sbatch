@@ -12,20 +12,20 @@
 PYTHONPATH=$PYTHONPATH:. python dqa_train.py \
     --device cuda \
     --net basic \
-    --net_param 3_128 \
+    --net_param 2_128 \
     --batch_size 128 \
-    --target_update 100 \
+    --target_update 1000 \
     --optimizer rmsprop \
     --loss huber \
     --mem_size 100000 \
-    --p_to_s stateMaxV \
+    --p_to_s stateMax \
     --gamma 0.9 \
     --epsilon 0.1 \
     --eps_decay .00001 \
     --s_cost 0 \
-    --v_fn vMax \
+    --v_fn vIdx \
     --lo 1 \
-    --hi 1000 \
+    --hi 100000 \
     --n_idx 50 \
     --replace False \
     --reward_fn topN \
@@ -36,7 +36,7 @@ PYTHONPATH=$PYTHONPATH:. python dqa_train.py \
     --curr_epoch 10000 \
     --curr_params 0_0_1_minus \
     --lo_eval 1 \
-    --hi_eval 1000 \
+    --hi_eval 100000 \
     --n_idx_eval 50 \
     --replace_eval False \
     --reward_fn_eval scalar \
@@ -44,4 +44,4 @@ PYTHONPATH=$PYTHONPATH:. python dqa_train.py \
     --n_games_eval 10000 \
     --n_print_eval 1000 \
     --delay_eval 0 \
-    --file_path agents/dqa_train.pkl
+    --file_path agents/dqa_train3.pkl

@@ -250,7 +250,7 @@ class DQTrainer(Trainer):
         return wins/games
     
     def eval(self, game, agent, n_games, n_print, delay, device):
-        """Train a DQAgent over n_games"""
+        """Eval a DQAgent over n_games"""
         
         wins, games = 0, 0
         agent.eval()

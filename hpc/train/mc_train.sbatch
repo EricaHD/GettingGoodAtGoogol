@@ -13,9 +13,9 @@ PYTHONPATH=$PYTHONPATH:. python mc_train.py \
     --epsilon 0.1 \
     --eps_decay .00001 \
     --s_cost 0 \
-    --q_key_fn binV \
+    --q_key_fn bin \
     --q_key_params 2_3  \
-    --v_fn vMax \
+    --v_fn vIdx \
     --lo 1 \
     --hi 1000 \
     --n_idx 50 \
