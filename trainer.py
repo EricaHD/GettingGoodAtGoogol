@@ -257,6 +257,7 @@ class DQTrainer(Trainer):
         
         for game_i in tqdm(range(n_games)):
             game.reset()
+            agent.reset()
 
             self.params = self.reset(game)
             self.params['game_i'] = game_i

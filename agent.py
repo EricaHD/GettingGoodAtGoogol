@@ -286,6 +286,7 @@ class DQAgent(BasicAgent):
                 action = torch.tensor([[0.]], device=self.device, dtype=torch.long)
             else:
                 with torch.no_grad():
+                    state = state.detach()
                     action = self.policy_net(state).max(1)[1].view(1, 1)
             return action
                 
