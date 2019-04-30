@@ -220,6 +220,7 @@ class DQTrainer(Trainer):
                 if self.params['game_status']:
                     next_state = None
                     agent.memory.push(state, action, next_state, reward)
+                    agent.update()
                     wins += game.win
                     break
                 else:
