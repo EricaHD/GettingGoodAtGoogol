@@ -9,7 +9,7 @@ import torch.optim as optim
 import torch.nn.functional as F
 import torchvision.transforms as T
 
-torch.manual_seed(3001)
+torch.manual_seed(1008)
 
 from trainer import *
 from game import Game
@@ -272,5 +272,7 @@ if __name__ == '__main__':
     # SAVE
     ##################################################
     #torch.save(agent.to("cpu"), args['file_path'])
-    svZipPkl(agent.to("cpu"), args['file_path']+".pkl")
+    agent.policy_net = agent.policy_net.to("cpu")
+    agent.target_net = agent.target_net.to("cpu")
+    svZipPkl(agent, args['file_path']+".pkl")
     print("AGENT STORED AT: {}".format(args['file_path']))

@@ -240,8 +240,11 @@ class DQTrainer(Trainer):
             if (game_i%curriculum['epoch'] == 0) & (game_i > 0):
                 wins, games = 0, 0
                 for k, v in game.reward.items():
-                    v_ = eval("{} {} {}".format(v, curriculum['params']['op'], curriculum['params'][k]))
-                    game.reward[k] = v_
+                    if v == 0:
+                        continue
+                    else:
+                        v_ = eval("{} {} {}".format(v, curriculum['params']['op'], curriculum['params'][k]))
+                        game.reward[k] = v_
 
                 print("ADJUSTING REWARDS")
                        

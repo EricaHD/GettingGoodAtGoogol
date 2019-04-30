@@ -5,19 +5,19 @@
 #SBATCH --gres=gpu:1
 #SBATCH --cpus-per-task=4
 #SBATCH --mem=96000
-#SBATCH --time=24:00:00
+#SBATCH --time=2:00:00
 #SBATCH --output=slurm_dqa_train_%j.out
 
 #Run.A
 PYTHONPATH=$PYTHONPATH:. python dqa_train.py \
-    --device cuda \
+    --device cpu \
     --net basic \
     --net_param 2_128 \
-    --batch_size 128 \
-    --target_update 1000 \
+    --batch_size 256 \
+    --target_update 100 \
     --optimizer rmsprop \
     --loss huber \
-    --mem_size 10000 \
+    --mem_size 1000 \
     --p_to_s stateMax \
     --gamma 0.9 \
     --epsilon 0.1 \
@@ -29,11 +29,11 @@ PYTHONPATH=$PYTHONPATH:. python dqa_train.py \
     --n_idx 50 \
     --replace False \
     --reward_fn topN \
-    --reward 1_1_1 \
-    --n_games 1000000 \
+    --reward 10_10_10 \
+    --n_games 100000 \
     --n_print 10000 \
     --delay 0 \
-    --curr_epoch 10000000000 \
+    --curr_epoch 10000 \
     --curr_params 0_0_1_minus \
     --lo_eval 1 \
     --hi_eval 100000 \
