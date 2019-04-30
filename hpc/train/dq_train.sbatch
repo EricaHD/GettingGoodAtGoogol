@@ -10,7 +10,7 @@
 
 #Run.A
 PYTHONPATH=$PYTHONPATH:. python dqa_train.py \
-    --device cpu \
+    --device cuda \
     --net basic \
     --net_param 2_128 \
     --batch_size 256 \
@@ -29,7 +29,7 @@ PYTHONPATH=$PYTHONPATH:. python dqa_train.py \
     --n_idx 50 \
     --replace False \
     --reward_fn topN \
-    --reward 10_10_10 \
+    --reward 10_10_11 \
     --n_games 100000 \
     --n_print 10000 \
     --delay 0 \
@@ -44,4 +44,4 @@ PYTHONPATH=$PYTHONPATH:. python dqa_train.py \
     --n_games_eval 10000 \
     --n_print_eval 1000 \
     --delay_eval 0 \
-    --file_path agents/dqa_train_4
+    --file_path agents/dqa_train_5
