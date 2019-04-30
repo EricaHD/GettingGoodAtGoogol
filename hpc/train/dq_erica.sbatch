@@ -23,7 +23,7 @@ python /home/ehd255/DeepGoogol/dqa_train.py \
     --optimizer rmsprop \
     --loss huber \
     --mem_size 1000 \
-    --p_to_s stateMaxV \
+    --p_to_s stateMax \
     --gamma 0.9 \
     --epsilon 0.1 \
     --eps_decay .00001 \
