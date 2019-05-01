@@ -39,9 +39,9 @@ if __name__ == '__main__':
     # Training Game Parameters
     ap.add_argument("-lo", "--lo", type=int, default=1,
                     help="lowest value possible in training games")
-    ap.add_argument("-hi", "--hi", type=int, default=100,
+    ap.add_argument("-hi", "--hi", type=int, default=100000,
                     help="highest value possible in training games")
-    ap.add_argument("-ni", "--n_idx", type=int, default=25,
+    ap.add_argument("-ni", "--n_idx", type=int, default=50,
                     help="number of cards in training games")
     ap.add_argument("-rp", "--replace", type=bool, default=False,
                     help="numbers in training games can repeat when True, numbers are distinct when False")
@@ -53,11 +53,11 @@ if __name__ == '__main__':
     # Training Parameters
     ap.add_argument("-ng", "--n_games", type=int, default=1000000,
                     help="number of training games [q only]")
-    ap.add_argument("-np", "--n_print", type=int, default=100000,
+    ap.add_argument("-np", "--n_print", type=int, default=10000,
                     help="when to print [q only]")
     ap.add_argument("-d", "--delay", type=int, default=0,
                     help="time delay in training games [q only]")
-    ap.add_argument("-cre", "--curr_epoch", type=int, default=100000,
+    ap.add_argument("-cre", "--curr_epoch", type=int, default=1000000000,
                     help="curriculum epoch")     
     ap.add_argument("-crp", "--curr_params", type=str, default="0_0_10_-",
                     help="curriculum parameters, #_#_op when reward_fn is scalar, #_#_#_op when reward_fn is topN")    
@@ -65,9 +65,9 @@ if __name__ == '__main__':
     # Evaluation Game Parameters
     ap.add_argument("-loe", "--lo_eval", type=int, default=1,
                     help="lowest value possible in evaluation games")
-    ap.add_argument("-hie", "--hi_eval", type=int, default=100,
+    ap.add_argument("-hie", "--hi_eval", type=int, default=100000,
                     help="highest value possible in evaluation games")
-    ap.add_argument("-nie", "--n_idx_eval", type=int, default=25,
+    ap.add_argument("-nie", "--n_idx_eval", type=int, default=50,
                     help="number of cards in training games")
     ap.add_argument("-rpe", "--replace_eval", type=bool, default=False,
                     help="numbers in evaluation games can repeat when True, numbers are distinct when False")
