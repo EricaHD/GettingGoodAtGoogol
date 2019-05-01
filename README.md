@@ -1,6 +1,10 @@
 # DeepGoogol
 Final Project for Computational Cognitive Modeling (NYU PSYCH-GA 3405.002 / DS-GS 3001.005)
 
+Results: https://docs.google.com/spreadsheets/d/1pS1UTBt8W-3IH4qjOUHC0U4UOJvPaNY_J0-i7nCuKaY/edit?usp=sharing
+
+Report: https://www.overleaf.com/2521124919cxdbbnrkkwfn
+
 #### Q Learning Results
 
 | **RESULTS** | **TIME** | | alpha | alpha\_decay | alpha\_step | gamma | epsilon | eps\_decay | s\_cost | q\_learn | q\_key\_fn | q\_key\_params | v\_fn | lo | hi | n\_idx | replace | reward\_fn | reward | n\_games | n\_print | delay | curr\_epoch | curr\_params | lo\_eval | hi\_eval | n\_idx\_eval | replace\_eval | reward\_fn\_eval | reward\_eval | n\_games\_eval | n\_print\_eval | delay\_eval |
