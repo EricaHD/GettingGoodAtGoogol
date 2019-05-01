@@ -11,7 +11,7 @@
 PYTHONPATH=$PYTHONPATH:. python dqa_train.py \
     --device cpu \
     --net basic \
-    --net_param 2_128 \
+    --net_params 2_128_0.0 \
     --batch_size 128 \
     --target_update 1000 \
     --optimizer rmsprop \

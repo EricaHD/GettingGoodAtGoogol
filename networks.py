@@ -8,11 +8,11 @@ import torchvision.transforms as T
 
 class BasicDQN(nn.Module):
 
-    def __init__(self, inp_size, hid_size, out_size):
+    def __init__(self, inp_size, hid_size, out_size, drop_prob):
         super(BasicDQN, self).__init__()
         
         self.hid = nn.Linear(inp_size, hid_size)
-        self.drop = nn.Dropout(p=0.3)
+        self.drop = nn.Dropout(p=drop_prob)
         self.out = nn.Linear(hid_size, out_size)
         
     def forward(self, x):

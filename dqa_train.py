@@ -28,7 +28,7 @@ if __name__ == '__main__':
     # Agent Parameters
     ap.add_argument("-net", "--net", type=str, default="basic",
                     help="Network")
-    ap.add_argument("-netp", "--net_params", type=str, default="2_256",
+    ap.add_argument("-netp", "--net_params", type=str, default="2_256_0.0",
                     help="Network Params")
     ap.add_argument("-b", "--batch_size", type=int, default=128,
                     help="Batch Size")
@@ -145,11 +145,12 @@ if __name__ == '__main__':
     device = torch.device(args['device'])
     
     if args['net'] == "basic":
-        inp_size, hid_size = args['net_params'].split('_')
+        inp_size, hid_size, drop_prob = args['net_params'].split('_')
         
         net_params = {'inp_size':int(inp_size),
                       'hid_size':int(hid_size),
-                      'out_size':2
+                      'out_size':2,
+                      'drop_prob':float(drop_prob)
                      }
 
         policy_net = BasicDQN(**net_params).to(device)

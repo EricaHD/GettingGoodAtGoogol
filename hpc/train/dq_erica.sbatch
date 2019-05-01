@@ -17,7 +17,7 @@ source /home/ehd255/pyenv/py3.6.3/bin/activate
 python /home/ehd255/DeepGoogol/dqa_train.py \
     --device cuda \
     --net basic \
-    --net_param 2_128 \
+    --net_params 2_128_0.0 \
     --batch_size 256 \
     --target_update 100 \
     --optimizer rmsprop \
