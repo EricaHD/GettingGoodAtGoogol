@@ -64,7 +64,7 @@ if __name__ == '__main__':
                     help="numbers in training games can repeat when True, numbers are distinct when False")
     ap.add_argument("-r", "--reward_fn", type=str, default="topN",
                     help="reward function in training games, can be scalar or topN")
-    ap.add_argument("-rps", "--reward", type=str, default="5_5_5",
+    ap.add_argument("-rps", "--reward", type=str, default="100_100_7",
                     help="#_# when reward_fn is scalar, #_#_# when reward_fn is topN")
     
     # Training Parameters
