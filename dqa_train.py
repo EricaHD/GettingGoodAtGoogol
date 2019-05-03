@@ -28,29 +28,29 @@ if __name__ == '__main__':
     # Agent Parameters
     ap.add_argument("-net", "--net", type=str, default="basic",
                     help="Network")
-    ap.add_argument("-netp", "--net_params", type=str, default="2_256_0.0",
+    ap.add_argument("-netp", "--net_params", type=str, default="2_32_0.0",
                     help="Network Params")
-    ap.add_argument("-b", "--batch_size", type=int, default=128,
+    ap.add_argument("-b", "--batch_size", type=int, default=256,
                     help="Batch Size")
     ap.add_argument("-g", "--gamma", type=float, default=0.9,
                     help="discount factor")
     ap.add_argument("-e", "--epsilon", type=float, default=0.1,
                     help="the probability of exploration")
-    ap.add_argument("-ed", "--eps_decay", type=float, default=1e-5,
+    ap.add_argument("-ed", "--eps_decay", type=float, default=0.00001,
                     help="epsilon decay factor")
     ap.add_argument("-s", "--s_cost", type=float, default=0,
                     help="search cost")
-    ap.add_argument("-tu", "--target_update", type=int, default=1000,
+    ap.add_argument("-tu", "--target_update", type=int, default=100,
                     help="Target Net Update")
-    ap.add_argument("-o", "--optimizer", type=str, default="adam",
+    ap.add_argument("-o", "--optimizer", type=str, default="rmsprop",
                     help="Optimizer")
     ap.add_argument("-loss", "--loss", type=str, default="huber",
                     help="Loss Fn")
-    ap.add_argument("-mem", "--mem_size", type=int, default=100000,
+    ap.add_argument("-mem", "--mem_size", type=int, default=2500,
                     help="Memory Size")
     ap.add_argument("-pts", "--p_to_s", type=str, default="stateMax",
                     help="Params to State fn")
-    ap.add_argument("-vf", "--v_fn", type=str, default="vMax",
+    ap.add_argument("-vf", "--v_fn", type=str, default="vIdx",
                     help="V Fn")
     
     # Training Game Parameters
@@ -68,9 +68,9 @@ if __name__ == '__main__':
                     help="#_# when reward_fn is scalar, #_#_# when reward_fn is topN")
     
     # Training Parameters
-    ap.add_argument("-ng", "--n_games", type=int, default=1000000,
+    ap.add_argument("-ng", "--n_games", type=int, default=500000,
                     help="number of training games [q only]")
-    ap.add_argument("-ne", "--n_episodes", type=int, default=1000000,
+    ap.add_argument("-ne", "--n_episodes", type=int, default=500000,
                     help="number of Monte Carlo episodes [mc only]")
     ap.add_argument("-np", "--n_print", type=int, default=10000,
                     help="when to print [q only]")
