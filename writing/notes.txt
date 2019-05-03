@@ -17,12 +17,15 @@ Overall Ideas
     - Apply search cost for better human comparison
     - "How far off are we if we stop at X%"
     - Are there flat maximas?
+    
+Updated Suggestions (5/2)
+    - After tuning, do transfer learning
+    - Currently transfering less stringent -> more.  Reverse it?
+    - For human trials, use empirical evidence, not self-reporting
+    - Where to agents tend to stop?  How about humans?  Are they undersampling to save on cognitive resources, as mentioned in Peter Todd's paper?
         
 Agents
-    - Q-learning
-        - Actual values
-        - Greater than, less than, equal to mean/median
-        - Hashed values    
+    - Q-learning 
     - SARSA
     - Deep Q-learning
     - Monte Carlo
