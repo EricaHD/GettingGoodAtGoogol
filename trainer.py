@@ -257,6 +257,7 @@ class DQTrainer(Trainer):
         """Eval a DQAgent over n_games"""
         
         wins, games = 0, 0
+        stop_choices = [0] * game.n_idx
         agent.eval()
         
         for game_i in tqdm(range(n_games)):
@@ -268,6 +269,8 @@ class DQTrainer(Trainer):
 
             while True:
                 action = agent.getAction(self.params)
+                if action == 0:
+                    stop_choices[self.params['idx']] += 1
                 self.params['idx'], self.params['val'], self.params['reward'], self.params['game_status'] = game.step(action.item())
                 reward = torch.tensor([self.params['reward']], device=device)
 
@@ -285,6 +288,7 @@ class DQTrainer(Trainer):
                        
         clear_output()
         print("TRAINING COMPLETE |\t FINAL VICTORY PERCENTAGE: {:.2}".format(wins/games))
+        print("STOP CHOICES:", stop_choices)
         return wins/games
     
     def reset(self, game): 
@@ -297,24 +301,3 @@ class DQTrainer(Trainer):
                 "action":None,
                 "val":game.val,
                 "game_status":False}
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-     
-        
- 
