@@ -34,6 +34,7 @@ class Trainer():
         """Train an agent over n_games"""
         
         wins = 0
+        stop_choices = [0] * game.n_idx
         agent.eval()
         
         #Iterate through games
@@ -48,6 +49,8 @@ class Trainer():
             while True:
                 
                 action = agent.getAction(self.params) 
+                if action == 0:
+                    stop_choices[self.params['idx']] += 1
                 self.params['idx'], self.params['val'], self.params['reward'], self.params['game_status'] = game.step(action)
                 
                 if self.params['game_status']:
@@ -62,6 +65,7 @@ class Trainer():
         
         clear_output()
         print("EVAL COMPLETE |\t FINAL VICTORY PERCENTAGE: {:.2}".format(wins/n_games))
+        print("STOP CHOICES:", stop_choices)
         
     def reset(self):
         pass
