@@ -139,11 +139,46 @@ if __name__ == '__main__':
         v_key = 0
 
     ##################################################
+    # F-Min
+    ##################################################
+    
+    def objective(_params):
+        
+        [_g, _e] = _params
+        
+        print("Trying params " + str(_g) + " and " + str(_e))
+        
+        agent_params = {'gamma':_g,
+                        'eps':_e, 
+                        'eps_decay':args['eps_decay'], 
+                        's_cost':args['s_cost'],
+                        'q_key_fn':q_key_fn,
+                        'q_key_params':q_key_params,
+                        'v_fn':v_fn,
+                        'v_key':v_key}
+        
+        agent = MCMCAgent(**agent_params)
+        
+        trainer_train_params = {'game':game,
+                                'agent':agent,
+                                'n_episodes':args['n_episodes'],
+                                'curriculum':{'epoch':args['curr_epoch'], 'params':curr_params}}
+        
+        trainer = MCMCTrainer()
+        
+        percent_wins = trainer.train(**trainer_train_params)
+        percent_losses = 1.0 - percent_wins
+        return percent_losses
+    
+    best_params = fmin(objective, [args['gamma'], args['epsilon']], maxiter=1)  # change number of iterations
+    print("BEST GAMMA, EPSILON:", best_params)
+        
+    ##################################################
     # SET UP MONTE CARLO AGENT
     ##################################################
     
-    agent_params = {'gamma':args['gamma'],
-                    'eps':args['epsilon'], 
+    agent_params = {'gamma':best_params[0],
+                    'eps':best_params[1], 
                     'eps_decay':args['eps_decay'], 
                     's_cost':args['s_cost'],
                     'q_key_fn':q_key_fn,
@@ -159,13 +194,7 @@ if __name__ == '__main__':
                             'curriculum':{'epoch':args['curr_epoch'], 'params':curr_params}}
         
     trainer = MCMCTrainer()
-    
-    ##################################################
-    # F-Min
-    ##################################################
-    
-    ##ADD IN FMIN 
-    
+        
     ##################################################
     # TRAINING
     ##################################################
