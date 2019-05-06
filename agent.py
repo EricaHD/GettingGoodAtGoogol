@@ -139,7 +139,7 @@ class OptimalAgent(BasicAgent):
         
     def getAction(self, params):
         
-        if params['val'] == params['hi']:
+        if (params['val'] == params['hi']) or (params['idx'] == params['n_idx']-1):
             return 0
     
         if params['idx'] <= self.g_idx:

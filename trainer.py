@@ -66,8 +66,16 @@ class Trainer():
         print("EVAL COMPLETE |\t FINAL VICTORY PERCENTAGE: {:.2}".format(wins/n_games))
         print("STOP CHOICES:", stop_choices)
         
-    def reset(self):
-        pass
+    def reset(self, game): 
+        
+        return {"lo":game.lo,
+                "hi":game.hi,
+                "n_idx":game.n_idx,
+                "replace":game.replace,
+                "idx":0,
+                "action":None,
+                "val":game.val,
+                "game_status":False}
 
 #########################################################################################
 # Q-Learner Trainer
