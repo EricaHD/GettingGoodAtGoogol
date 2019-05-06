@@ -184,7 +184,7 @@ if __name__ == '__main__':
         percent_losses = 1.0 - percent_wins
         return percent_losses
     
-    best_params = fmin(objective, [args['alpha'], args['gamma'], args['epsilon']], maxiter=1)  # change number of iterations
+    best_params = fmin(objective, [args['alpha'], args['gamma'], args['epsilon']], maxiter=0)  # set maxiter > 0 to use fmin
     print("BEST ALPHA, GAMMA, EPSILON:", best_params)
     
     ##################################################
