@@ -15,15 +15,15 @@ if __name__ == '__main__':
     # Agent Parameters
     ap.add_argument("-al", "--alpha", type=float, default=0.01,
                     help="learning rate [q only]")
-    ap.add_argument("-ald", "--alpha_decay", type=float, default=1e-5,
+    ap.add_argument("-ald", "--alpha_decay", type=float, default=0.00001,
                     help="learning rate decay factor [q only]")
-    ap.add_argument("-as", "--alpha_step", type=int, default=1000,
+    ap.add_argument("-as", "--alpha_step", type=int, default=10000,
                     help="learning rate decays every alpha_step turns [q only]")
     ap.add_argument("-g", "--gamma", type=float, default=0.9,
                     help="discount factor")
     ap.add_argument("-e", "--epsilon", type=float, default=0.1,
                     help="the probability of exploration")
-    ap.add_argument("-ed", "--eps_decay", type=float, default=1e-5,
+    ap.add_argument("-ed", "--eps_decay", type=float, default=0.00001,
                     help="epsilon decay factor")
     ap.add_argument("-s", "--s_cost", type=float, default=0,
                     help="search cost")
@@ -31,10 +31,10 @@ if __name__ == '__main__':
                     help="SARSA when True, Q-learning when False [q only]")
     ap.add_argument("-qkf", "--q_key_fn", type=str, default="bin",
                     help="can be bin or seq")
-    ap.add_argument("-qkp", "--q_key_params", type=str, default="2_2",
+    ap.add_argument("-qkp", "--q_key_params", type=str, default="2_20",
                     help="# when q_key_fn is seq, #_# when q_key_fn is bin")
-    ap.add_argument("-vf", "--v_fn", type=str, default="vMax",
-                    help="can be vMax or vSeq")
+    ap.add_argument("-vf", "--v_fn", type=str, default="vIdx",
+                    help="can be vMax or vSeq or vIdx")
     
     # Training Game Parameters
     ap.add_argument("-lo", "--lo", type=int, default=1,
@@ -47,11 +47,11 @@ if __name__ == '__main__':
                     help="numbers in training games can repeat when True, numbers are distinct when False")
     ap.add_argument("-r", "--reward_fn", type=str, default="topN",
                     help="reward function in training games, can be scalar or topN")
-    ap.add_argument("-rps", "--reward", type=str, default="5_5_5",
+    ap.add_argument("-rps", "--reward", type=str, default="10_10_7",
                     help="#_# when reward_fn is scalar, #_#_# when reward_fn is topN")
     
     # Training Parameters
-    ap.add_argument("-ng", "--n_games", type=int, default=1000000,
+    ap.add_argument("-ng", "--n_games", type=int, default=100000,
                     help="number of training games [q only]")
     ap.add_argument("-np", "--n_print", type=int, default=10000,
                     help="when to print [q only]")
