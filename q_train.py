@@ -147,14 +147,55 @@ if __name__ == '__main__':
         v_key = 0
     
     ##################################################
-    # SET UP Agent
+    # F-Min
+    ##################################################
+    
+    def objective(_params):
+        
+        [_a, _g, _e] = _params
+        
+        print("Trying params " + str(_a) + " and " + str(_g) + " and " + str(_e))
+        
+        agent_params = {'alpha':_a,
+                        'alpha_decay':args['alpha_decay'],
+                        'alpha_step':args['alpha_step'],
+                        'gamma':_g,
+                        'eps':_e, 
+                        'eps_decay':args['eps_decay'], 
+                        's_cost':args['s_cost'],
+                        'sarsa':args['q_learn'],
+                        'q_key_fn':q_key_fn,
+                        'q_key_params':q_key_params,
+                        'v_fn':v_fn,
+                        'v_key':v_key}
+        
+        agent = QAgent(**agent_params)
+        
+        trainer_train_params = {'game':game,
+                                'agent':agent,
+                                'n_games':args['n_games'],
+                                'n_print':args['n_print'],
+                                'delay':args['delay'],
+                                'curriculum':{'epoch':args['curr_epoch'], 'params':curr_params}}
+        
+        trainer = QTrainer()
+        
+        percent_wins = trainer.train(**trainer_train_params)
+        percent_losses = 1.0 - percent_wins
+        return percent_losses
+    
+    best_params = fmin(objective, [args['alpha'], args['gamma'], args['epsilon']], maxiter=1)  # change number of iterations
+    print("BEST ALPHA, GAMMA, EPSILON:", best_params)
+    
+    ##################################################
+    # SET UP Q-LEARNING AGENT
     ##################################################   
     
-    agent_params = {'alpha':args['alpha'],
+    agent_params = {'alpha':best_params[0],
                     'alpha_decay':args['alpha_decay'],
                     'alpha_step':args['alpha_step'],
-                    'gamma':args['gamma'],
-                    'eps':args['epsilon'], 
+                    'gamma':best_params[1],
+                    'eps':best_params[2], 
                     'eps_decay':args['eps_decay'], 
                     's_cost':args['s_cost'],
                     'sarsa':args['q_learn'],
@@ -173,12 +214,6 @@ if __name__ == '__main__':
                             'curriculum':{'epoch':args['curr_epoch'], 'params':curr_params}}
         
     trainer = QTrainer()
-    
-    ##################################################
-    # F-Min
-    ##################################################
-    
-    ##ADD IN FMIN 
         
     ##################################################
     # TRAINING
