@@ -157,6 +157,7 @@ class MCMCTrainer(Trainer):
         
     def train(self, game, agent, n_episodes, curriculum):
         
+        num_wins = 0
         agent.train()
         
         for i in tqdm(range(n_episodes), leave=False):
@@ -165,6 +166,9 @@ class MCMCTrainer(Trainer):
             self.params = self.reset(game)
             
             episode = self.mcEpisode(game, agent)
+            
+            if episode[-1][3] > 0:  # if the reward was positive, we probably won
+                num_wins += 1
             
             agent.update(self.params, episode)
             
@@ -175,6 +179,8 @@ class MCMCTrainer(Trainer):
                     print(k, v, v_)
                     
                 print("ADJUSTING REWARDS")
+        
+        return num_wins / n_episodes
     
     def mcEpisode(self, game, agent):
         action, val = agent.getAction(self.params)
