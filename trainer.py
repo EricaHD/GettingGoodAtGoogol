@@ -16,11 +16,10 @@ from utils import *
 from IPython.display import clear_output
 
 
-
 #device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 #########################################################################################
-##Basic Trainer
+# Basic Trainer
 #########################################################################################
 
 class Trainer():
@@ -71,7 +70,7 @@ class Trainer():
         pass
 
 #########################################################################################
-##Q-Learner Trainer
+# Q-Learner Trainer
 #########################################################################################
 
 class QTrainer(Trainer):
@@ -147,7 +146,7 @@ class QTrainer(Trainer):
                 "game_status":False}
     
 #########################################################################################
-##MCMC Trainer
+# MCMC Trainer
 #########################################################################################
 
 class MCMCTrainer(Trainer):
@@ -157,7 +156,7 @@ class MCMCTrainer(Trainer):
         
     def train(self, game, agent, n_episodes, curriculum):
         
-        num_wins = 0
+        wins, games = 0, 0
         agent.train()
         
         for i in tqdm(range(n_episodes), leave=False):
@@ -168,7 +167,8 @@ class MCMCTrainer(Trainer):
             episode = self.mcEpisode(game, agent)
             
             if episode[-1][3] > 0:  # if the reward was positive, we probably won
-                num_wins += 1
+                wins += 1
+            games += 1
             
             agent.update(self.params, episode)
             
@@ -180,7 +180,7 @@ class MCMCTrainer(Trainer):
                     
                 print("ADJUSTING REWARDS")
         
-        return num_wins / n_episodes
+        return wins/games
     
     def mcEpisode(self, game, agent):
         action, val = agent.getAction(self.params)
@@ -201,7 +201,7 @@ class MCMCTrainer(Trainer):
                 "val":game.val}
     
 #########################################################################################
-##DQN Trainer
+# DQN Trainer
 #########################################################################################
 
 class DQTrainer(Trainer):
