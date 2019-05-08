@@ -260,6 +260,8 @@ if __name__ == '__main__':
         trainer_train_params = {'game':game_train,
                                 'agent':agent,
                                 'n_games':10000,
+                                'n_print':1000,
+                                'delay':0,
                                 'curriculum':{'epoch':1000000000, 'params':{}}}
         
         trainer.train(**trainer_train_params)
@@ -280,6 +282,8 @@ if __name__ == '__main__':
         trainer_eval_params = {'game':game_eval,
                                'agent':agent,
                                'n_games':10000,
+                               'n_print':1000,
+                               'delay':0,
                                'curriculum':{'epoch':1000000000, 'params':{}}}
         
         if i == 0:
