@@ -79,6 +79,8 @@ if __name__ == '__main__':
     # Save Path
     ap.add_argument("-fp", "--file_path",
                     help="file path used for saving")
+    ap.add_argument("-scfp", "--sc_file_path",
+                    help="file path used for saving stopping choices")
     
     args = vars(ap.parse_args())
     
@@ -207,7 +209,7 @@ if __name__ == '__main__':
     svZipPkl(agent, args['file_path'])
     
     ##################################################
-    # EVALUATING
+    # TRANSFERING LEARNING & EVALUATION
     ##################################################
 
     eval_games = {"Eval1":{'lo':1, 'hi':100000, 'n_idx':50, 'replace':False},
@@ -243,7 +245,7 @@ if __name__ == '__main__':
         trainer.train(**trainer_train_params)
         
         ##################################################
-        # FINAL EVALUATION
+        # EVALUATION
         ##################################################
         
         game_eval_params = {'lo':game['lo'],
@@ -265,4 +267,3 @@ if __name__ == '__main__':
             svZipPkl(stop_choices, args['sc_file_path'])
         else:
             train.eval(**trainer_eval_params)
-    
