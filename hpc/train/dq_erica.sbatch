@@ -15,7 +15,6 @@ module load python3/intel/3.6.3
 source /home/ehd255/pyenv/py3.6.3/bin/activate
 
 python /home/ehd255/DeepGoogol/dqa_train.py \
-    --s_cost 0 \
     --lo 1 \
     --hi 100000 \
     --n_idx 50 \
@@ -29,3 +28,4 @@ python /home/ehd255/DeepGoogol/dqa_train.py \
     --reward_fn_eval scalar \
     --reward_eval 1_1 \
     --file_path /home/ehd255/DeepGoogol/agents/dqa
+    --sc_file_path /home/ehd255/DeepGoogol/agents/dqa_sc
