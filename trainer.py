@@ -64,7 +64,7 @@ class Trainer():
         
         clear_output()
         print("EVAL COMPLETE |\t FINAL VICTORY PERCENTAGE: {:.2}".format(wins/n_games))
-        return wins/games, stop_choices
+        return wins/n_games, stop_choices
         
     def reset(self, game): 
         
