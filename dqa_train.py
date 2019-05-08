@@ -272,9 +272,10 @@ if __name__ == '__main__':
                                 'n_games':10000,
                                 'n_print':1000,
                                 'delay':0,
+                                'curriculum':{'epoch':1000000000, 'params':{}},
                                 'device':device}
         
-        trainer.eval(**trainer_train_params)
+        trainer.train(**trainer_train_params)
     
         ##################################################
         # EVALUATION
