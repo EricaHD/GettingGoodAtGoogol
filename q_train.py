@@ -283,8 +283,7 @@ if __name__ == '__main__':
                                'agent':agent,
                                'n_games':10000,
                                'n_print':1000,
-                               'delay':0,
-                               'curriculum':{'epoch':1000000000, 'params':{}}}
+                               'delay':0}
         
         if i == 0:
             _, stop_choices = trainer.eval(**trainer_eval_params)
