@@ -26,5 +26,5 @@ python /home/ehd255/DeepGoogol/q_train.py \
     --replace_eval False \
     --reward_fn_eval scalar \
     --reward_eval 1_1 \
-    --file_path /home/ehd255/DeepGoogol/agents/q_train.pkl
+    --file_path /home/ehd255/DeepGoogol/agents/q_train.pkl \
     --sc_file_path /home/ehd255/DeepGoogol/agents/q_sc.pkl
