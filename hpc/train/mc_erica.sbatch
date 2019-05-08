@@ -14,7 +14,6 @@ module load python3/intel/3.6.3
 source /home/ehd255/pyenv/py3.6.3/bin/activate
 
 python /home/ehd255/DeepGoogol/mc_train.py \
-    --s_cost 0 \
     --lo 1 \
     --hi 100000 \
     --n_idx 50 \
