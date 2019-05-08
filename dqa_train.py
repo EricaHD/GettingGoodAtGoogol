@@ -240,13 +240,13 @@ if __name__ == '__main__':
     # TRANSFERING LEARNING & EVALUATION
     ##################################################
 
-    eval_games = {"Eval1":{'lo':1, 'hi':100000, 'n_idx':50, 'replace':False},
-                  "Eval2":{'lo':1, 'hi':1000, 'n_idx':50, 'replace':False},
-                  "Eval3":{'lo':1, 'hi':10000, 'n_idx':50, 'replace':False},
-                  "Eval4":{'lo':1, 'hi':1000000, 'n_idx':50, 'replace':False},
-                  "Eval5":{'lo':1, 'hi':100000, 'n_idx':25, 'replace':False},
-                  "Eval6":{'lo':1, 'hi':100000, 'n_idx':100, 'replace':False},
-                  "Eval7":{'lo':1, 'hi':100000, 'n_idx':50, 'replace':True}}
+    eval_games = [{'lo':1, 'hi':100000, 'n_idx':50, 'replace':False},
+                  {'lo':1, 'hi':1000, 'n_idx':50, 'replace':False},
+                  {'lo':1, 'hi':10000, 'n_idx':50, 'replace':False},
+                  {'lo':1, 'hi':1000000, 'n_idx':50, 'replace':False},
+                  {'lo':1, 'hi':100000, 'n_idx':25, 'replace':False},
+                  {'lo':1, 'hi':100000, 'n_idx':100, 'replace':False},
+                  {'lo':1, 'hi':100000, 'n_idx':50, 'replace':True}]
     
     for i, game in enumerate(eval_games):
         
