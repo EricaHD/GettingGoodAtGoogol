@@ -246,7 +246,7 @@ if __name__ == '__main__':
         # TRANSFER LEARNING
         ##################################################
         
-        agent = ldZipPikl(args['file_path'])
+        agent = ldZipPkl(args['file_path'])
         
         game_train_params = {'lo':game['lo'],
                              'hi':game['hi'],
