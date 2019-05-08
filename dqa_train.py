@@ -265,7 +265,7 @@ if __name__ == '__main__':
                              'reward_fn':rewardTopN,
                              'reward':{'pos':10, 'neg':-10, 'n':7}}
         
-        game_train = Game(**game_eval_params)
+        game_train = Game(**game_train_params)
         
         trainer_train_params = {'game':game_train,
                                 'agent':agent,
@@ -274,7 +274,7 @@ if __name__ == '__main__':
                                 'delay':0,
                                 'device':device}
         
-        trainer.eval(**trainer_eval_params)
+        trainer.eval(**trainer_train_params)
     
         ##################################################
         # EVALUATION
