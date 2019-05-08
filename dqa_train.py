@@ -297,7 +297,7 @@ if __name__ == '__main__':
                                'device':device}
         
         if i == 0:
-            _, stop_choices = train.eval(**trainer_eval_params)
+            _, stop_choices = trainer.eval(**trainer_eval_params)
             svZipPkl(stop_choices, args['sc_file_path'])
         else:
-            train.eval(**trainer_eval_params)
+            trainer.eval(**trainer_eval_params)
