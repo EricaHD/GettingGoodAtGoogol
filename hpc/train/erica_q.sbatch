@@ -4,7 +4,7 @@
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=2
 #SBATCH --mem=12GB
-#SBATCH --time=24:00:00
+#SBATCH --time=4:00:00
 #SBATCH --output=slurm_q_train_%j.out
 #SBATCH --mail-type=END
 #SBATCH --mail-user=ehd255@nyu.edu
