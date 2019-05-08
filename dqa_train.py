@@ -106,6 +106,8 @@ if __name__ == '__main__':
     # Save Path
     ap.add_argument("-fp", "--file_path",
                     help="file path used for saving")
+    ap.add_argument("-scfp", "--sc_file_path",
+                    help="file path used for saving stopping choices")
     
     args = vars(ap.parse_args())
     
@@ -219,7 +221,7 @@ if __name__ == '__main__':
     # F-Min
     ##################################################
     
-    ##ADD IN FMIN 
+    # Add in fmin
        
     ##################################################
     # TRAINING
@@ -230,50 +232,72 @@ if __name__ == '__main__':
     print('*' * 89)
     print('*' * 89)
     
-    ##################################################
-    # SET UP EVALUATION
-    ##################################################
-    
-    if 'scalar' in args['reward_fn_eval']:
-        reward_fn_eval = rewardScalar
-        pos, neg = args['reward_eval'].split('_')
-        reward_eval = {'pos':int(pos), 'neg':-int(neg)}
-    elif 'topN' in args['reward_fn_eval']:
-        reward_fn_eval = rewardTopN
-        pos, neg, n = args['reward_eval'].split('_')
-        reward_eval = {'pos':int(pos), 'neg':-int(neg), 'n':int(n)} 
-        
-        
-    game_eval_params = {'lo':args['lo_eval'],
-                        'hi':args['hi_eval'],
-                        'n_idx':args['n_idx_eval'],
-                        'replace':args['replace_eval'],
-                        'reward_fn':reward_fn_eval,
-                        'reward':reward_eval}
-    
-    game_eval = Game(**game_eval_params)
-    
-    trainer_eval_params = {'game':game_eval,
-                           'agent':agent,
-                           'n_games':args['n_games_eval'],
-                           'n_print':args['n_print_eval'],
-                           'delay':args['delay_eval'],
-                           'device':device}
-    
-    ##################################################
-    # EVALUATION
-    ##################################################
-    
-    print('EVAL')
-    trainer.eval(**trainer_eval_params)
-    print('*' * 89)
-    print('*' * 89)
-    
-    ##################################################
-    # SAVE
-    ##################################################
-    #torch.save(agent.to("cpu"), args['file_path'])
     agent.policy_net = agent.policy_net.to("cpu")
     agent.target_net = agent.target_net.to("cpu")
     svZipPkl(agent, args['file_path']+".pkl")
-    print("AGENT STORED AT: {}".format(args['file_path']))
+    
+    ##################################################
+    # TRANSFERING LEARNING & EVALUATION
+    ##################################################
+
+    eval_games = {"Eval1":{'lo':1, 'hi':100000, 'n_idx':50, 'replace':False},
+                  "Eval2":{'lo':1, 'hi':1000, 'n_idx':50, 'replace':False},
+                  "Eval3":{'lo':1, 'hi':10000, 'n_idx':50, 'replace':False},
+                  "Eval4":{'lo':1, 'hi':1000000, 'n_idx':50, 'replace':False},
+                  "Eval5":{'lo':1, 'hi':100000, 'n_idx':25, 'replace':False},
+                  "Eval6":{'lo':1, 'hi':100000, 'n_idx':100, 'replace':False},
+                  "Eval7":{'lo':1, 'hi':100000, 'n_idx':50, 'replace':True}}
+    
+    for i, game in enumerate(eval_games):
+        
+        ##################################################
+        # TRANSFER LEARNING
+        ##################################################
+        
+        agent = ldZipPkl(args['file_path']+".pkl")
+        agent.policy_net = agent.policy_net.to(device)
+        agent.target_net = agent.target_net.to(device)
+    
+        game_train_params = {'lo':game['lo'],
+                             'hi':game['hi'],
+                             'n_idx':game['n_idx'],
+                             'replace':game['replace'],
+                             'reward_fn':rewardTopN,
+                             'reward':{'pos':10, 'neg':-10, 'n':7}}
+        
+        game_train = Game(**game_eval_params)
+        
+        trainer_train_params = {'game':game_train,
+                                'agent':agent,
+                                'n_games':10000,
+                                'n_print':1000,
+                                'delay':0,
+                                'device':device}
+        
+        trainer.eval(**trainer_eval_params)
+    
+        ##################################################
+        # EVALUATION
+        ##################################################
+        
+        game_eval_params = {'lo':game['lo'],
+                            'hi':game['hi'],
+                            'n_idx':game['n_idx'],
+                            'replace':game['replace'],
+                            'reward_fn':rewardScalar,
+                            'reward':{'pos':1, 'neg':-1}}
+        
+        game_eval = Game(**game_eval_params)
+        
+        trainer_eval_params = {'game':game_eval,
+                               'agent':agent,
+                               'n_games':10000,
+                               'n_print':1000,
+                               'delay':0,
+                               'device':device}
+        
+        if i == 0:
+            _, stop_choices = train.eval(**trainer_eval_params)
+            svZipPkl(stop_choices, args['sc_file_path'])
+        else:
+            train.eval(**trainer_eval_params)
