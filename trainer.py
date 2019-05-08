@@ -64,7 +64,7 @@ class Trainer():
         
         clear_output()
         print("EVAL COMPLETE |\t FINAL VICTORY PERCENTAGE: {:.2}".format(wins/n_games))
-        print("STOP CHOICES:", stop_choices)
+        return wins/games, stop_choices
         
     def reset(self, game): 
         
@@ -307,7 +307,7 @@ class DQTrainer(Trainer):
         clear_output()
         print("TRAINING COMPLETE |\t FINAL VICTORY PERCENTAGE: {:.2}".format(wins/games))
         print("STOP CHOICES:", stop_choices)
-        return wins/games
+        return wins/games, stop_choices
     
     def reset(self, game): 
         
