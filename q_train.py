@@ -255,7 +255,7 @@ if __name__ == '__main__':
                              'reward_fn':rewardTopN,
                              'reward':{'pos':10, 'neg':-10, 'n':7}}
         
-        game_train = Game(**game_params)
+        game_train = Game(**game_train_params)
     
         trainer_train_params = {'game':game_train,
                                 'agent':agent,
