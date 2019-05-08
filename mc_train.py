@@ -259,9 +259,10 @@ if __name__ == '__main__':
         
         trainer_eval_params = {'game':game_eval,
                                'agent':agent,
-                               'n_episodes':10000,
-                               'curriculum':{'epoch':1000000000, 'params':{}}}
-         
+                               'n_games':10000,
+                               'n_print':1000,
+                               'delay':0}
+        
         if i == 0:
             _, stop_choices = trainer.eval(**trainer_eval_params)
             svZipPkl(stop_choices, args['sc_file_path'])
