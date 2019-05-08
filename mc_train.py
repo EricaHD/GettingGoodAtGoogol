@@ -142,43 +142,43 @@ if __name__ == '__main__':
     # F-Min
     ##################################################
     
-    def objective(_params):
-        
-        [_g, _e] = _params
-        
-        print("Trying params " + str(_g) + " and " + str(_e))
-        
-        agent_params = {'gamma':_g,
-                        'eps':_e, 
-                        'eps_decay':args['eps_decay'], 
-                        's_cost':args['s_cost'],
-                        'q_key_fn':q_key_fn,
-                        'q_key_params':q_key_params,
-                        'v_fn':v_fn,
-                        'v_key':v_key}
-        
-        agent = MCMCAgent(**agent_params)
-        
-        trainer_train_params = {'game':game,
-                                'agent':agent,
-                                'n_episodes':args['n_episodes'],
-                                'curriculum':{'epoch':args['curr_epoch'], 'params':curr_params}}
-        
-        trainer = MCMCTrainer()
-        
-        percent_wins = trainer.train(**trainer_train_params)
-        percent_losses = 1.0 - percent_wins
-        return percent_losses
-    
-    best_params = fmin(objective, [args['gamma'], args['epsilon']], maxiter=0)  # set maxiter > 0 to use fmin
-    print("BEST GAMMA, EPSILON:", best_params)
+    # def objective(_params):
+    #
+    #     [_g, _e] = _params
+    #
+    #     print("Trying params " + str(_g) + " and " + str(_e))
+    #
+    #     agent_params = {'gamma':_g,
+    #                     'eps':_e,
+    #                     'eps_decay':args['eps_decay'],
+    #                     's_cost':args['s_cost'],
+    #                     'q_key_fn':q_key_fn,
+    #                     'q_key_params':q_key_params,
+    #                     'v_fn':v_fn,
+    #                     'v_key':v_key}
+    #
+    #     agent = MCMCAgent(**agent_params)
+    #
+    #     trainer_train_params = {'game':game,
+    #                             'agent':agent,
+    #                             'n_episodes':args['n_episodes'],
+    #                             'curriculum':{'epoch':args['curr_epoch'], 'params':curr_params}}
+    #
+    #     trainer = MCMCTrainer()
+    #
+    #     percent_wins = trainer.train(**trainer_train_params)
+    #     percent_losses = 1.0 - percent_wins
+    #     return percent_losses
+    #
+    # best_params = fmin(objective, [args['gamma'], args['epsilon']], maxiter=0)  # set maxiter > 0 to use fmin
+    # print("BEST GAMMA, EPSILON:", best_params)
         
     ##################################################
     # SET UP MONTE CARLO AGENT
     ##################################################
     
-    agent_params = {'gamma':best_params[0],
-                    'eps':best_params[1], 
+    agent_params = {'gamma':args['gamma'],
+                    'eps':args['epsilon'],
                     'eps_decay':args['eps_decay'], 
                     's_cost':args['s_cost'],
                     'q_key_fn':q_key_fn,
@@ -187,7 +187,7 @@ if __name__ == '__main__':
                     'v_key':v_key}
         
     agent = MCMCAgent(**agent_params)
-        
+
     trainer_train_params = {'game':game,
                             'agent':agent,
                             'n_episodes':args['n_episodes'],
@@ -216,7 +216,6 @@ if __name__ == '__main__':
         reward_fn_eval = rewardTopN
         pos, neg, n = args['reward_eval'].split('_')
         reward_eval = {'pos':int(pos), 'neg':-int(neg), 'n':int(n)} 
-        
         
     game_eval_params = {'lo':args['lo_eval'],
                         'hi':args['hi_eval'],
