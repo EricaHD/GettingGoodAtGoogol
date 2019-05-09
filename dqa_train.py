@@ -234,7 +234,7 @@ if __name__ == '__main__':
     
     agent.policy_net = agent.policy_net.to("cpu")
     agent.target_net = agent.target_net.to("cpu")
-    svZipPkl(agent, args['file_path']+".pkl")
+    svZipPkl(agent, args['file_path'])
     
     ##################################################
     # TRANSFERING LEARNING & EVALUATION
@@ -254,7 +254,7 @@ if __name__ == '__main__':
         # TRANSFER LEARNING
         ##################################################
         
-        agent = ldZipPkl(args['file_path']+".pkl")
+        agent = ldZipPkl(args['file_path'])
         agent.policy_net = agent.policy_net.to(device)
         agent.target_net = agent.target_net.to(device)
     
