@@ -234,7 +234,11 @@ if __name__ == '__main__':
     
     agent.policy_net = agent.policy_net.to("cpu")
     agent.target_net = agent.target_net.to("cpu")
-    svZipPkl(agent, args['file_path'])
+    torch.save({'policy_net_state_dict': agent.policy_net.state_dict(),
+                'target_net_state_dict': agent.target_net.state_dict(),
+                'optimizer_state_dict': optimizer.state_dict(),
+                'loss': loss},
+               args['file_path'])
     
     ##################################################
     # TRANSFERING LEARNING & EVALUATION
@@ -253,20 +257,52 @@ if __name__ == '__main__':
         ##################################################
         # TRANSFER LEARNING
         ##################################################
-        
-        agent = ldZipPkl(args['file_path'])
-        agent.policy_net = agent.policy_net.to(device)
-        agent.target_net = agent.target_net.to(device)
-    
+
+        # New game
         game_train_params = {'lo':game['lo'],
                              'hi':game['hi'],
                              'n_idx':game['n_idx'],
                              'replace':game['replace'],
                              'reward_fn':rewardTopN,
                              'reward':{'pos':10, 'neg':-10, 'n':7}}
-        
         game_train = Game(**game_train_params)
-        
+
+        # Old agent
+        checkpoint = torch.load(args['file_path'])
+        inp_size, hid_size, drop_prob = args['net_params'].split('_')
+        net_params = {'inp_size': int(inp_size),
+                      'hid_size': int(hid_size),
+                      'out_size': 2,
+                      'drop_prob': float(drop_prob)}
+        policy_net = BasicDQN(**net_params).to(device)
+        target_net = BasicDQN(**net_params).to(device)
+        policy_net.load_state_dict(checkpoint['policy_net_state_dict'])
+        target_net.load_state_dict(checkpoint['target_net_state_dict'])
+        policy_net = policy_net.to(device)
+        target_net = target_net.to(device)
+        if args['optimizer'] == "adam":
+            optimizer = optim.Adam(policy_net.parameters())
+        elif args['optimizer'] == "rmsprop":
+            optimizer = optim.RMSprop(policy_net.parameters())
+        optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+        loss = checkpoint['loss']
+        dqa_params = {'batch_size': args['batch_size'],
+                      'gamma': args['gamma'],
+                      'eps': args['epsilon'],
+                      'eps_decay': args['eps_decay'],
+                      'target_update': args['target_update'],
+                      'p_to_s': p_to_s,
+                      'p_net': policy_net,
+                      't_net': target_net,
+                      'optimizer': optimizer,
+                      'loss': loss,
+                      'memory': memory,
+                      'v_fn': v_fn,
+                      'v_key': v_key,
+                      'device': device}
+        agent = DQAgent(**dqa_params)
+
+        # Train the old agent on the new game (10,000 times)
         trainer_train_params = {'game':game_train,
                                 'agent':agent,
                                 'n_games':10000,
@@ -274,7 +310,6 @@ if __name__ == '__main__':
                                 'delay':0,
                                 'curriculum':{'epoch':1000000000, 'params':{}},
                                 'device':device}
-        
         trainer.train(**trainer_train_params)
     
         ##################################################
