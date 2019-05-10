@@ -117,7 +117,8 @@ if __name__ == '__main__':
                    'n_idx':args['n_idx'],
                    'replace':args['replace'],
                    'reward_fn':reward_fn,
-                   'reward':reward}
+                   'reward':reward,
+                   'dist':'uniform'}
     
     game = Game(**game_params)
     
@@ -232,13 +233,14 @@ if __name__ == '__main__':
     # TRANSFER LEARNING & EVALUATION
     ##################################################
     
-    eval_games = [{'lo':1, 'hi':100000, 'n_idx':50, 'replace':False},
-                  {'lo':1, 'hi':1000, 'n_idx':50, 'replace':False},
-                  {'lo':1, 'hi':10000, 'n_idx':50, 'replace':False},
-                  {'lo':1, 'hi':1000000, 'n_idx':50, 'replace':False},
-                  {'lo':1, 'hi':100000, 'n_idx':25, 'replace':False},
-                  {'lo':1, 'hi':100000, 'n_idx':100, 'replace':False},
-                  {'lo':1, 'hi':100000, 'n_idx':50, 'replace':True}]
+    eval_games = [{'lo':1, 'hi':100000, 'n_idx':50, 'replace':False, 'dist':'uniform'},
+                  {'lo':1, 'hi':1000, 'n_idx':50, 'replace':False, 'dist':'uniform'},
+                  {'lo':1, 'hi':10000, 'n_idx':50, 'replace':False, 'dist':'uniform'},
+                  {'lo':1, 'hi':1000000, 'n_idx':50, 'replace':False, 'dist':'uniform'},
+                  {'lo':1, 'hi':100000, 'n_idx':25, 'replace':False, 'dist':'uniform'},
+                  {'lo':1, 'hi':100000, 'n_idx':100, 'replace':False, 'dist':'uniform'},
+                  {'lo':1, 'hi':100000, 'n_idx':50, 'replace':True, 'dist':'uniform'},
+                  {'lo':1, 'hi':100000, 'n_idx':50, 'replace':False, 'dist':'normal'}]
     
     for i, game in enumerate(eval_games):
         
@@ -253,7 +255,8 @@ if __name__ == '__main__':
                              'n_idx':game['n_idx'],
                              'replace':game['replace'],
                              'reward_fn':rewardTopN,
-                             'reward':{'pos':10, 'neg':-10, 'n':7}}
+                             'reward':{'pos':10, 'neg':-10, 'n':7},
+                             'dist':game['dist']}
         
         game_train = Game(**game_train_params)
     
@@ -275,7 +278,8 @@ if __name__ == '__main__':
                             'n_idx':game['n_idx'],
                             'replace':game['replace'],
                             'reward_fn':rewardScalar,
-                            'reward':{'pos':1, 'neg':-1}}
+                            'reward':{'pos':1, 'neg':-1},
+                            'dist':game['dist']}
         
         game_eval = Game(**game_eval_params)
     
