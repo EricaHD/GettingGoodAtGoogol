@@ -42,8 +42,6 @@ class Game():
                 while self.values[i] < self.lo or self.values[i] > self.hi:  # keep generating if outside [lo, hi]
                     self.values[i] = np.round_(np.random.normal(50000, 17000))
 
-        print(self.values)
-
         self.values_sorted = np.sort(self.values)[::-1]
         
         self.idx = 0
