@@ -68,7 +68,7 @@ if __name__ == '__main__':
                     help="#_# when reward_fn is scalar, #_#_# when reward_fn is topN")
     
     # Training Parameters
-    ap.add_argument("-ng", "--n_games", type=int, default=200000,
+    ap.add_argument("-ng", "--n_games", type=int, default=500000,
                     help="number of training games [q only]")
     ap.add_argument("-ne", "--n_episodes", type=int, default=200000,
                     help="number of Monte Carlo episodes [mc only]")
