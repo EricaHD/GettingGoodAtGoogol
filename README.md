@@ -1,4 +1,5 @@
-# Getting Good at Googol: Reinforcement Learning Meets Optimal Stopping Theory
+# Getting Good at Googol:
+# Reinforcement Learning Meets Optimal Stopping Theory
 #### DS3001 Computational Cognitive Modeling, Spring 2019
 
 Erica Dominic, Erica Detemmerman, and Isaac Haberman
