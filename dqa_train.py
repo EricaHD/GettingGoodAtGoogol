@@ -14,7 +14,7 @@ torch.manual_seed(1008)
 from trainer import *
 from game import Game
 from agent import *
-from utils import *
+from util.utils import *
 from networks import *
 
 if __name__ == '__main__':

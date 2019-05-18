@@ -6,7 +6,7 @@ from scipy.optimize import fmin
 from trainer import *
 from game import Game
 from agent import *
-from utils import *
+from util.utils import *
 
 if __name__ == '__main__':
 

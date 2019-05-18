@@ -11,7 +11,7 @@ import torch.nn.functional as F
 import torchvision.transforms as T
 
 from game import Game
-from utils import *
+from util.utils import *
 
 from IPython.display import clear_output
 
