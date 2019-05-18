@@ -26,5 +26,5 @@ python /home/ehd255/DeepGoogol/mc_train.py \
     --replace_eval False \
     --reward_fn_eval scalar \
     --reward_eval 1_1 \
-    --file_path /home/ehd255/DeepGoogol/agents/mc_train.pkl \
-    --sc_file_path /home/ehd255/DeepGoogol/agents/mc_sc.pkl
+    --file_path /home/ehd255/DeepGoogol/results/mc_train.pkl \
+    --sc_file_path /home/ehd255/DeepGoogol/results/mc_sc.pkl
