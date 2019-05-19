@@ -98,7 +98,7 @@ class QAgent(BasicAgent):
         #Middle of game update
         if not params['game_status']:
             #Get keys
-            q_key, a, r  = self.prev_q_key, 1, params['reward']
+            q_key, a, r = self.prev_q_key, 1, params['reward']
             q__key, a_ = self.q_key, 0
             
             #Update for SARSA
@@ -175,7 +175,6 @@ class MCMCAgent(BasicAgent):
         self.returns = defaultdict(lambda: {0:0, 1:0})
         self.counts = defaultdict(lambda: {0:0, 1:0})
 
-    
     def getAction(self, params):
         
         #Get new v
@@ -329,12 +328,12 @@ class DQAgent(BasicAgent):
         self.optimizer.step()
         
     def train(self):
-        self.mode="Train"
+        self.mode = "Train"
         self.policy_net.train()
         self.target_net.eval()
         
     def eval(self):
-        self.mode="Eval"
+        self.mode = "Eval"
         self.policy_net.eval()
     
     def updateNet(self, game_i):

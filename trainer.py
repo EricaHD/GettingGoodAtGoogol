@@ -15,9 +15,6 @@ from util.utils import *
 
 from IPython.display import clear_output
 
-
-#device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
 #########################################################################################
 # Basic Trainer
 #########################################################################################

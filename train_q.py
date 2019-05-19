@@ -253,4 +253,3 @@ if __name__ == '__main__':
             svZipPkl(stop_choices, args['sc_file_path'])
         else:
             trainer.eval(**trainer_eval_params)
-            

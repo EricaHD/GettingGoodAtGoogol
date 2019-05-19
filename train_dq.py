@@ -9,13 +9,13 @@ import torch.optim as optim
 import torch.nn.functional as F
 import torchvision.transforms as T
 
-torch.manual_seed(1008)
-
 from trainer import *
 from game import Game
 from agent import *
 from util.utils import *
 from networks import *
+
+torch.manual_seed(1008)
 
 if __name__ == '__main__':
 
@@ -23,8 +23,7 @@ if __name__ == '__main__':
     
     ap.add_argument("-dev", "--device", type=str, default="cuda",
                     help="Cuda Device")
-    
-    
+
     # Agent Parameters
     ap.add_argument("-net", "--net", type=str, default="basic",
                     help="Network")
@@ -161,8 +160,7 @@ if __name__ == '__main__':
         
     target_net.load_state_dict(policy_net.state_dict())
     target_net.eval()
-    
-    
+
     if args['p_to_s'] == "stateMax":
         p_to_s = stateMax
     elif args['p_to_s'] == "stateMaxV":
@@ -172,7 +170,6 @@ if __name__ == '__main__':
         optimizer = optim.Adam(policy_net.parameters())
     elif args['optimizer'] == "rmsprop":
         optimizer = optim.RMSprop(policy_net.parameters())
-    
     
     if args['loss'] == "mse":
         loss = nn.MSELoss()
