@@ -1,7 +1,7 @@
 import random
 from argparse import ArgumentParser
 import numpy as np
-from scipy.optimize import fmin
+from scipy.optimize import fmin  # can use fmin to tune hyperparameters
 
 from trainer import *
 from game import Game
@@ -148,47 +148,6 @@ if __name__ == '__main__':
     elif args['v_fn'] == 'vIdx':
         v_fn = vIdx
         v_key = 0
-    
-    ##################################################
-    # F-Min
-    ##################################################
-    
-    # def objective(_params):
-    #
-    #     [_a, _g, _e] = _params
-    #
-    #     print("Trying params " + str(_a) + " and " + str(_g) + " and " + str(_e))
-    #
-    #     agent_params = {'alpha':_a,
-    #                     'alpha_decay':args['alpha_decay'],
-    #                     'alpha_step':args['alpha_step'],
-    #                     'gamma':_g,
-    #                     'eps':_e,
-    #                     'eps_decay':args['eps_decay'],
-    #                     's_cost':args['s_cost'],
-    #                     'sarsa':args['q_learn'],
-    #                     'q_key_fn':q_key_fn,
-    #                     'q_key_params':q_key_params,
-    #                     'v_fn':v_fn,
-    #                     'v_key':v_key}
-    #
-    #     agent = QAgent(**agent_params)
-    #
-    #     trainer_train_params = {'game':game,
-    #                             'agent':agent,
-    #                             'n_games':args['n_games'],
-    #                             'n_print':args['n_print'],
-    #                             'delay':args['delay'],
-    #                             'curriculum':{'epoch':args['curr_epoch'], 'params':curr_params}}
-    #
-    #     trainer = QTrainer()
-    #
-    #     percent_wins = trainer.train(**trainer_train_params)
-    #     percent_losses = 1.0 - percent_wins
-    #     return percent_losses
-    #
-    # best_params = fmin(objective, [args['alpha'], args['gamma'], args['epsilon']], maxiter=0)  # set maxiter > 0 to use fmin
-    # print("BEST ALPHA, GAMMA, EPSILON:", best_params)
     
     ##################################################
     # SET UP Q-LEARNING AGENT

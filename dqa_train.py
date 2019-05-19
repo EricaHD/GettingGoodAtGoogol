@@ -1,7 +1,7 @@
 import random
 from argparse import ArgumentParser
 import numpy as np
-from scipy.optimize import fmin
+from scipy.optimize import fmin  # can use fmin to tune hyperparameters
 
 import torch
 import torch.nn as nn
@@ -217,12 +217,6 @@ if __name__ == '__main__':
                             'device':device}
         
     trainer = DQTrainer()
-    
-    ##################################################
-    # F-Min
-    ##################################################
-    
-    # Add in fmin
        
     ##################################################
     # TRAINING
