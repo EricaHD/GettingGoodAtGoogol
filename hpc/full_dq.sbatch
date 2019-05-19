@@ -1,15 +1,20 @@
 #!/bin/bash
 
-#SBATCH --job-name=dqa_train
+#SBATCH --job-name=dq
 #SBATCH --nodes=1
 #SBATCH --gres=gpu:1
-#SBATCH --cpus-per-task=4
-#SBATCH --mem=96000
-#SBATCH --time=2:00:00
-#SBATCH --output=slurm_dqa_train_%j.out
+#SBATCH --cpus-per-task=2
+#SBATCH --mem=32GB
+#SBATCH --time=8:00:00
+#SBATCH --output=slurm_dq_%j.out
+#SBATCH --mail-type=END
+#SBATCH --mail-user=ehd255@nyu.edu
 
-#Run.A
-PYTHONPATH=$PYTHONPATH:. python dqa_train.py \
+module purge
+module load python3/intel/3.6.3
+source /home/ehd255/pyenv/py3.6.3/bin/activate
+
+python /home/ehd255/DeepGoogol/train_dq.py \
     --device cuda \
     --net basic \
     --net_params 2_128_0.0 \
@@ -44,4 +49,5 @@ PYTHONPATH=$PYTHONPATH:. python dqa_train.py \
     --n_games_eval 10000 \
     --n_print_eval 1000 \
     --delay_eval 0 \
-    --file_path agents/dqa_train_5
+    --file_path /home/ehd255/DeepGoogol/results/dqa.pkl \
+    --sc_file_path /home/ehd255/DeepGoogol/results/dqa_sc.pkl

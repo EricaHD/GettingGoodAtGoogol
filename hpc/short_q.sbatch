@@ -1,11 +1,11 @@
 #!/bin/bash
 
-#SBATCH --job-name=q_train
+#SBATCH --job-name=q
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=2
 #SBATCH --mem=12GB
 #SBATCH --time=4:00:00
-#SBATCH --output=slurm_q_train_%j.out
+#SBATCH --output=slurm_q_%j.out
 #SBATCH --mail-type=END
 #SBATCH --mail-user=ehd255@nyu.edu
 
@@ -13,7 +13,7 @@ module purge
 module load python3/intel/3.6.3
 source /home/ehd255/pyenv/py3.6.3/bin/activate
 
-python /home/ehd255/DeepGoogol/q_train.py \
+python /home/ehd255/DeepGoogol/train_q.py \
     --lo 1 \
     --hi 100000 \
     --n_idx 50 \

@@ -13,7 +13,7 @@ module purge
 module load python3/intel/3.6.3
 source /home/ehd255/pyenv/py3.6.3/bin/activate
 
-python /home/ehd255/DeepGoogol/mc_train.py \
+python /home/ehd255/DeepGoogol/train_mc.py \
     --lo 1 \
     --hi 100000 \
     --n_idx 50 \
