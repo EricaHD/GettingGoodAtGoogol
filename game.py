@@ -15,7 +15,6 @@ class Game:
         self.reset()
     
     def step(self, action):  
-        
         if action == 0:
             self.setGameStatus()
             reward, self.win = self.reward_fn(self)
