@@ -65,16 +65,16 @@ class QAgent(BasicAgent):
         self.v_key = self.v_fn(params, params['val'], self.v_key)
         q_key = self.q_key_fn(params, params['idx'], self.v_key, self.q_key_params)
         
-        #Epsilon Greedy in Train Mode
+        # Epsilon greedy in train mode
         if self.mode == "Train":
-            #Epsilon
+            # Epsilon
             if random.random() < self.eps:
                 action =  random.randint(0, 1)
             else:
-                #Equal
+                # Equal
                 if self.Q[q_key][0] == self.Q[q_key][1]:
                     action =  random.randint(0, 1)
-                #Greedy
+                # Greedy
                 else:
                     action = max(self.Q[q_key], key=self.Q[q_key].get)
             
@@ -84,36 +84,34 @@ class QAgent(BasicAgent):
             self.q_key = q_key
             return action      
         else:
-            #Equal
+            # Equal
             if self.Q[q_key][0] == self.Q[q_key][1]:
                 action =  random.randint(0, 1)
-            #Greedy
+            # Greedy
             else:
                 action = max(self.Q[q_key], key=self.Q[q_key].get)
             
             return action
 
     def update(self, params):
-            
-        #Middle of game update
+        # Middle of game update
         if not params['game_status']:
-            #Get keys
+            # Get keys
             q_key, a, r = self.prev_q_key, 1, params['reward']
             q__key, a_ = self.q_key, 0
             
-            #Update for SARSA
+            # Update for SARSA
             if self.sarsa:
                 self.Q[q_key][a] += self.alpha * (r + self.gamma * self.Q[q_key][a_] - self.Q[q_key][a] - self.s_cost)
             else:
                 self.Q[q_key][a] += self.alpha * (r + self.gamma * max([self.Q[q__key][a2] for a2 in range(2)]) - self.Q[q_key][a] - self.s_cost)
-        #Game over update
+        # Game over update
         else:
             self.Q[self.q_key][0] += self.alpha * (params['reward'] - self.Q[self.q_key][0] - self.s_cost)
             
-            #Alpha decay
+            # Alpha decay
             if params['game_i'] % self.alpha_step == 0:
                 self.alpha *= (1 - self.alpha_decay)
-            
             
     def reset(self):
         self.v_key = self.orig_v_key
@@ -138,7 +136,6 @@ class OptimalAgent(BasicAgent):
         self.max_val = max_val
         
     def getAction(self, params):
-        
         if (params['val'] == params['hi']) or (params['idx'] == params['n_idx']-1):
             return 0
     
@@ -176,11 +173,10 @@ class MCMCAgent(BasicAgent):
         self.counts = defaultdict(lambda: {0:0, 1:0})
 
     def getAction(self, params):
-        
-        #Get new v
+        # Get new v
         self.v_key = self.v_fn(params, params['val'], self.v_key)
         
-        #Training mode is Epsilon-Greedy
+        # Training mode is epsilon-greedy
         if self.mode == "Train":
             #Auto-win or auto-stop
             if (params['idx'] == params['n_idx']-1) or (self.v_key == params['hi']):
@@ -193,12 +189,12 @@ class MCMCAgent(BasicAgent):
                 p_key = self.q_key_fn(params, params['idx'], self.v_key, self.q_key_params)
                 action = self.policy[p_key]
             
-            #Epsilon Decay
+            # Epsilon decay
             self.eps *= (1 - self.eps_decay)
             
             return action, self.v_key
         else:
-            #Auto-win or auto-stop
+            # Auto-win or auto-stop
             if (params['idx'] == params['n_idx']-1) or (self.v_key == params['hi']):
                 action = 0
             else:
@@ -208,7 +204,6 @@ class MCMCAgent(BasicAgent):
             return action
     
     def update(self, params, episode):
-        
         visited = defaultdict(lambda: {0:False, 1:False})
         
         for e in range(len(episode)):
@@ -263,8 +258,7 @@ class DQAgent(BasicAgent):
         self.device = device
 
     def getAction(self, params):
-        
-        #Get new v
+        # Get new v
         self.v_key = self.v_fn(params, params['val'], self.v_key)
         
         state = self.p_to_s(params, self.v_key).to(self.device)
@@ -296,21 +290,21 @@ class DQAgent(BasicAgent):
         transitions = self.memory.sample(self.batch_size)
         batch = Transition(*zip(*transitions))
     
-        #Compute masks for non-final games
+        # Compute masks for non-final games
         non_final_mask = torch.tensor(tuple(map(lambda s: s is not None,
                                               batch.next_state)), device=self.device, dtype=torch.uint8)
         non_final_next_states = torch.cat([s for s in batch.next_state
                                                     if s is not None]).to(self.device)
         
-        #Sep state, action, reward
+        # Sep state, action, reward
         state_batch = torch.cat(batch.state).to(self.device)
         action_batch = torch.cat(batch.action).to(self.device)
         reward_batch = torch.cat(batch.reward).to(self.device)
     
-        #Q(s_t, a)
+        # Q(s_t, a)
         state_action_values = self.policy_net(state_batch).gather(1, action_batch).to(self.device)
 
-        #V(s_{t+1})
+        # V(s_{t+1})
         next_state_values = torch.zeros(self.batch_size, device=self.device)
         next_state_values[non_final_mask] = self.target_net(non_final_next_states).max(1)[0].detach()
     
