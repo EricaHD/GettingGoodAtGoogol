@@ -1,7 +1,8 @@
 import numpy as np
 from tqdm import tqdm
 
-class Game():
+
+class Game:
     def __init__(self, lo, hi, n_idx, replace, reward_fn, reward, dist):
         self.lo = lo
         self.hi = hi

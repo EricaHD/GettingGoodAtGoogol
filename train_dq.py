@@ -117,26 +117,26 @@ if __name__ == '__main__':
     if 'scalar' in args['reward_fn']:
         reward_fn = rewardScalar
         pos, neg = args['reward'].split('_')
-        reward = {'pos':int(pos), 'neg':-int(neg)}
+        reward = {'pos': int(pos), 'neg': -int(neg)}
         
         c_pos, c_neg, c_op = args['curr_params'].split('_')
-        curr_params = {'pos':int(c_pos), 'neg':-int(c_neg), 'op':convertOp(c_op)}
+        curr_params = {'pos': int(c_pos), 'neg': -int(c_neg), 'op': convertOp(c_op)}
         
     elif 'topN' in args['reward_fn']:
         reward_fn = rewardTopN
         pos, neg, n = args['reward'].split('_')
-        reward = {'pos':int(pos), 'neg':-int(neg), 'n':int(n)} 
+        reward = {'pos': int(pos), 'neg': -int(neg), 'n': int(n)}
         
         c_pos, c_neg, c_n, c_op = args['curr_params'].split('_')
-        curr_params = {'pos':int(c_pos), 'neg':-int(c_neg), 'n':int(c_n), 'op':convertOp(c_op)}
+        curr_params = {'pos': int(c_pos), 'neg': -int(c_neg), 'n': int(c_n), 'op': convertOp(c_op)}
         
-    game_params = {'lo':args['lo'],
-                   'hi':args['hi'],
-                   'n_idx':args['n_idx'],
-                   'replace':args['replace'],
-                   'reward_fn':reward_fn,
-                   'reward':reward,
-                   'dist':'uniform'}
+    game_params = {'lo': args['lo'],
+                   'hi': args['hi'],
+                   'n_idx': args['n_idx'],
+                   'replace': args['replace'],
+                   'reward_fn': reward_fn,
+                   'reward': reward,
+                   'dist': 'uniform'}
     
     game = Game(**game_params)
     
@@ -149,11 +149,10 @@ if __name__ == '__main__':
     if args['net'] == "basic":
         inp_size, hid_size, drop_prob = args['net_params'].split('_')
         
-        net_params = {'inp_size':int(inp_size),
-                      'hid_size':int(hid_size),
-                      'out_size':2,
-                      'drop_prob':float(drop_prob)
-                     }
+        net_params = {'inp_size': int(inp_size),
+                      'hid_size': int(hid_size),
+                      'out_size': 2,
+                      'drop_prob': float(drop_prob)}
 
         policy_net = BasicDQN(**net_params).to(device)
         target_net = BasicDQN(**net_params).to(device)
@@ -187,31 +186,30 @@ if __name__ == '__main__':
         v_fn = vIdx
         v_key = 0
     
-    dqa_params = {'batch_size':args['batch_size'],
-                  'gamma':args['gamma'],
-                  'eps':args['epsilon'],
-                  'eps_decay':args['eps_decay'],
-                  'target_update':args['target_update'],
-                  'p_to_s':p_to_s,
-                  'p_net':policy_net,
-                  't_net':target_net,
-                  'optimizer':optimizer,
-                  'loss':loss,
-                  'memory':memory,
-                  'v_fn':v_fn,
-                  'v_key':v_key,
-                  'device':device
-                  }
+    dqa_params = {'batch_size': args['batch_size'],
+                  'gamma': args['gamma'],
+                  'eps': args['epsilon'],
+                  'eps_decay': args['eps_decay'],
+                  'target_update': args['target_update'],
+                  'p_to_s': p_to_s,
+                  'p_net': policy_net,
+                  't_net': target_net,
+                  'optimizer': optimizer,
+                  'loss': loss,
+                  'memory': memory,
+                  'v_fn': v_fn,
+                  'v_key': v_key,
+                  'device': device}
 
     agent = DQAgent(**dqa_params)
         
-    trainer_train_params = {'game':game,
-                            'agent':agent,
-                            'n_games':args['n_games'],
-                            'n_print':args['n_print'],
-                            'delay':args['delay'],
-                            'curriculum':{'epoch':args['curr_epoch'], 'params':curr_params},
-                            'device':device}
+    trainer_train_params = {'game': game,
+                            'agent': agent,
+                            'n_games': args['n_games'],
+                            'n_print': args['n_print'],
+                            'delay': args['delay'],
+                            'curriculum': {'epoch': args['curr_epoch'], 'params': curr_params},
+                            'device': device}
         
     trainer = DQTrainer()
        
@@ -236,14 +234,14 @@ if __name__ == '__main__':
     # TRANSFERING LEARNING & EVALUATION
     ##################################################
 
-    eval_games = [{'lo':1, 'hi':100000, 'n_idx':50, 'replace':False, 'dist':'uniform'},
-                  {'lo':1, 'hi':1000, 'n_idx':50, 'replace':False, 'dist':'uniform'},
-                  {'lo':1, 'hi':10000, 'n_idx':50, 'replace':False, 'dist':'uniform'},
-                  {'lo':1, 'hi':1000000, 'n_idx':50, 'replace':False, 'dist':'uniform'},
-                  {'lo':1, 'hi':100000, 'n_idx':25, 'replace':False, 'dist':'uniform'},
-                  {'lo':1, 'hi':100000, 'n_idx':100, 'replace':False, 'dist':'uniform'},
-                  {'lo':1, 'hi':100000, 'n_idx':50, 'replace':True, 'dist':'uniform'},
-                  {'lo': 1, 'hi':100000, 'n_idx':50, 'replace':False, 'dist':'normal'}]
+    eval_games = [{'lo': 1, 'hi': 100000, 'n_idx': 50, 'replace': False, 'dist': 'uniform'},
+                  {'lo': 1, 'hi': 1000, 'n_idx': 50, 'replace': False, 'dist': 'uniform'},
+                  {'lo': 1, 'hi': 10000, 'n_idx': 50, 'replace': False, 'dist': 'uniform'},
+                  {'lo': 1, 'hi': 1000000, 'n_idx': 50, 'replace': False, 'dist': 'uniform'},
+                  {'lo': 1, 'hi': 100000, 'n_idx': 25, 'replace': False, 'dist': 'uniform'},
+                  {'lo': 1, 'hi': 100000, 'n_idx': 100, 'replace': False, 'dist': 'uniform'},
+                  {'lo': 1, 'hi': 100000, 'n_idx': 50, 'replace': True, 'dist': 'uniform'},
+                  {'lo': 1, 'hi': 100000, 'n_idx': 50, 'replace': False, 'dist': 'normal'}]
     
     for i, game in enumerate(eval_games):
         
@@ -252,13 +250,13 @@ if __name__ == '__main__':
         ##################################################
 
         # New game
-        game_train_params = {'lo':game['lo'],
-                             'hi':game['hi'],
-                             'n_idx':game['n_idx'],
-                             'replace':game['replace'],
-                             'reward_fn':rewardTopN,
-                             'reward':{'pos':10, 'neg':-10, 'n':7},
-                             'dist':game['dist']}
+        game_train_params = {'lo': game['lo'],
+                             'hi': game['hi'],
+                             'n_idx': game['n_idx'],
+                             'replace': game['replace'],
+                             'reward_fn': rewardTopN,
+                             'reward': {'pos': 10, 'neg': -10, 'n': 7},
+                             'dist': game['dist']}
         game_train = Game(**game_train_params)
 
         # Old agent
@@ -297,35 +295,35 @@ if __name__ == '__main__':
         agent = DQAgent(**dqa_params)
 
         # Train the old agent on the new game (10,000 times)
-        trainer_train_params = {'game':game_train,
-                                'agent':agent,
-                                'n_games':10000,
-                                'n_print':1000,
-                                'delay':0,
-                                'curriculum':{'epoch':1000000000, 'params':{}},
-                                'device':device}
+        trainer_train_params = {'game': game_train,
+                                'agent': agent,
+                                'n_games': 10000,
+                                'n_print': 1000,
+                                'delay': 0,
+                                'curriculum': {'epoch': 1000000000, 'params': {}},
+                                'device': device}
         trainer.train(**trainer_train_params)
     
         ##################################################
         # EVALUATION
         ##################################################
         
-        game_eval_params = {'lo':game['lo'],
-                            'hi':game['hi'],
-                            'n_idx':game['n_idx'],
-                            'replace':game['replace'],
-                            'reward_fn':rewardScalar,
-                            'reward':{'pos':1, 'neg':-1},
-                            'dist':game['dist']}
+        game_eval_params = {'lo': game['lo'],
+                            'hi': game['hi'],
+                            'n_idx': game['n_idx'],
+                            'replace': game['replace'],
+                            'reward_fn': rewardScalar,
+                            'reward': {'pos': 1, 'neg': -1},
+                            'dist': game['dist']}
         
         game_eval = Game(**game_eval_params)
         
-        trainer_eval_params = {'game':game_eval,
-                               'agent':agent,
-                               'n_games':10000,
-                               'n_print':1000,
-                               'delay':0,
-                               'device':device}
+        trainer_eval_params = {'game': game_eval,
+                               'agent': agent,
+                               'n_games': 10000,
+                               'n_print': 1000,
+                               'delay': 0,
+                               'device': device}
         
         if i == 0:
             _, stop_choices = trainer.eval(**trainer_eval_params)

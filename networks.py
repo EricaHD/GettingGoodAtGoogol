@@ -6,6 +6,7 @@ import torch.optim as optim
 import torch.nn.functional as F
 import torchvision.transforms as T
 
+
 class BasicDQN(nn.Module):
 
     def __init__(self, inp_size, hid_size, out_size, drop_prob):

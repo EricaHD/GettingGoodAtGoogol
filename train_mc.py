@@ -91,26 +91,26 @@ if __name__ == '__main__':
     if 'scalar' in args['reward_fn']:
         reward_fn = rewardScalar
         pos, neg = args['reward'].split('_')
-        reward = {'pos':int(pos), 'neg':-int(neg)}
+        reward = {'pos': int(pos), 'neg': -int(neg)}
         
         c_pos, c_neg, c_op = args['curr_params'].split('_')
-        curr_params = {'pos':int(c_pos), 'neg':-int(c_neg), 'op':convertOp(c_op)}
+        curr_params = {'pos': int(c_pos), 'neg': -int(c_neg), 'op': convertOp(c_op)}
         
     elif 'topN' in args['reward_fn']:
         reward_fn = rewardTopN
         pos, neg, n = args['reward'].split('_')
-        reward = {'pos':int(pos), 'neg':-int(neg), 'n':int(n)} 
+        reward = {'pos': int(pos), 'neg': -int(neg), 'n': int(n)}
         
         c_pos, c_neg, c_n, c_op = args['curr_params'].split('_')
-        curr_params = {'pos':int(c_pos), 'neg':-int(c_neg), 'n':int(c_n), 'op':convertOp(c_op)}
+        curr_params = {'pos': int(c_pos), 'neg': -int(c_neg), 'n': int(c_n), 'op': convertOp(c_op)}
         
-    game_params = {'lo':args['lo'],
-                   'hi':args['hi'],
-                   'n_idx':args['n_idx'],
-                   'replace':args['replace'],
-                   'reward_fn':reward_fn,
-                   'reward':reward,
-                   'dist':'uniform'}
+    game_params = {'lo': args['lo'],
+                   'hi': args['hi'],
+                   'n_idx': args['n_idx'],
+                   'replace': args['replace'],
+                   'reward_fn': reward_fn,
+                   'reward': reward,
+                   'dist': 'uniform'}
     
     game = Game(**game_params)
     
@@ -121,15 +121,15 @@ if __name__ == '__main__':
     if 'bin' in args['q_key_fn']:
         i_bin, v_bin = args['q_key_params'].split('_')
         q_key_fn = qKeyMaxBin
-        q_key_params = {'i_bin':int(i_bin), 'v_bin':int(v_bin)}
+        q_key_params = {'i_bin': int(i_bin), 'v_bin': int(v_bin)}
     elif 'binV' in args['q_key_fn']:
         i_bin, v_bin = args['q_key_params'].split('_')
         q_key_fn = qKeyMaxBinV
-        q_key_params = {'i_bin':int(i_bin), 'v_bin':int(v_bin)}
+        q_key_params = {'i_bin': int(i_bin), 'v_bin': int(v_bin)}
     elif 'seq' in args['q_key_fn']:
         v_bin = args['q_key_params'].split('_')
         q_key_fn = qKeySeq
-        q_key_params = {'v_bin':int(v_bin[0])}
+        q_key_params = {'v_bin': int(v_bin[0])}
 
     if args['v_fn'] == 'vMax':
         v_fn = vMax
@@ -145,21 +145,21 @@ if __name__ == '__main__':
     # SET UP MONTE CARLO AGENT
     ##################################################
     
-    agent_params = {'gamma':args['gamma'],
-                    'eps':args['epsilon'],
-                    'eps_decay':args['eps_decay'], 
-                    's_cost':args['s_cost'],
-                    'q_key_fn':q_key_fn,
-                    'q_key_params':q_key_params,
-                    'v_fn':v_fn,
-                    'v_key':v_key}
+    agent_params = {'gamma': args['gamma'],
+                    'eps': args['epsilon'],
+                    'eps_decay': args['eps_decay'],
+                    's_cost': args['s_cost'],
+                    'q_key_fn': q_key_fn,
+                    'q_key_params': q_key_params,
+                    'v_fn': v_fn,
+                    'v_key': v_key}
         
     agent = MCMCAgent(**agent_params)
 
-    trainer_train_params = {'game':game,
-                            'agent':agent,
-                            'n_episodes':args['n_episodes'],
-                            'curriculum':{'epoch':args['curr_epoch'], 'params':curr_params}}
+    trainer_train_params = {'game': game,
+                            'agent': agent,
+                            'n_episodes': args['n_episodes'],
+                            'curriculum': {'epoch': args['curr_epoch'], 'params': curr_params}}
         
     trainer = MCMCTrainer()
         
@@ -178,14 +178,14 @@ if __name__ == '__main__':
     # TRANSFERING LEARNING & EVALUATION
     ##################################################
 
-    eval_games = [{'lo':1, 'hi':100000, 'n_idx':50, 'replace':False, 'dist':'uniform'},
-                  {'lo':1, 'hi':1000, 'n_idx':50, 'replace':False, 'dist':'uniform'},
-                  {'lo':1, 'hi':10000, 'n_idx':50, 'replace':False, 'dist':'uniform'},
-                  {'lo':1, 'hi':1000000, 'n_idx':50, 'replace':False, 'dist':'uniform'},
-                  {'lo':1, 'hi':100000, 'n_idx':25, 'replace':False, 'dist':'uniform'},
-                  {'lo':1, 'hi':100000, 'n_idx':100, 'replace':False, 'dist':'uniform'},
-                  {'lo':1, 'hi':100000, 'n_idx':50, 'replace':True, 'dist':'uniform'},
-                  {'lo':1, 'hi':100000, 'n_idx':50, 'replace':False, 'dist':'normal'}]
+    eval_games = [{'lo': 1, 'hi': 100000, 'n_idx': 50, 'replace': False, 'dist': 'uniform'},
+                  {'lo': 1, 'hi': 1000, 'n_idx': 50, 'replace': False, 'dist': 'uniform'},
+                  {'lo': 1, 'hi': 10000, 'n_idx': 50, 'replace': False, 'dist': 'uniform'},
+                  {'lo': 1, 'hi': 1000000, 'n_idx': 50, 'replace': False, 'dist': 'uniform'},
+                  {'lo': 1, 'hi': 100000, 'n_idx': 25, 'replace': False, 'dist': 'uniform'},
+                  {'lo': 1, 'hi': 100000, 'n_idx': 100, 'replace': False, 'dist': 'uniform'},
+                  {'lo': 1, 'hi': 100000, 'n_idx': 50, 'replace': True, 'dist': 'uniform'},
+                  {'lo': 1, 'hi': 100000, 'n_idx': 50, 'replace': False, 'dist': 'normal'}]
     
     for i, game in enumerate(eval_games):
         
@@ -195,20 +195,20 @@ if __name__ == '__main__':
         
         agent = ldZipPkl(args['file_path'])
         
-        game_train_params = {'lo':game['lo'],
-                             'hi':game['hi'],
-                             'n_idx':game['n_idx'],
-                             'replace':game['replace'],
-                             'reward_fn':rewardTopN,
-                             'reward':{'pos':10, 'neg':-10, 'n':7},
-                             'dist':game['dist']}
+        game_train_params = {'lo': game['lo'],
+                             'hi': game['hi'],
+                             'n_idx': game['n_idx'],
+                             'replace': game['replace'],
+                             'reward_fn': rewardTopN,
+                             'reward': {'pos': 10, 'neg': -10, 'n': 7},
+                             'dist': game['dist']}
         
         game_train = Game(**game_train_params)
         
-        trainer_train_params = {'game':game_train,
-                                'agent':agent,
-                                'n_episodes':10000,
-                                'curriculum':{'epoch':1000000000, 'params':{}}}
+        trainer_train_params = {'game': game_train,
+                                'agent': agent,
+                                'n_episodes': 10000,
+                                'curriculum': {'epoch': 1000000000, 'params': {}}}
         
         trainer.train(**trainer_train_params)
         
@@ -216,21 +216,21 @@ if __name__ == '__main__':
         # EVALUATION
         ##################################################
         
-        game_eval_params = {'lo':game['lo'],
-                            'hi':game['hi'],
-                            'n_idx':game['n_idx'],
-                            'replace':game['replace'],
-                            'reward_fn':rewardScalar,
-                            'reward':{'pos':1, 'neg':-1},
-                            'dist':game['dist']}
+        game_eval_params = {'lo': game['lo'],
+                            'hi': game['hi'],
+                            'n_idx': game['n_idx'],
+                            'replace': game['replace'],
+                            'reward_fn': rewardScalar,
+                            'reward': {'pos': 1, 'neg': -1},
+                            'dist': game['dist']}
             
         game_eval = Game(**game_eval_params)
         
-        trainer_eval_params = {'game':game_eval,
-                               'agent':agent,
-                               'n_games':10000,
-                               'n_print':1000,
-                               'delay':0}
+        trainer_eval_params = {'game': game_eval,
+                               'agent': agent,
+                               'n_games': 10000,
+                               'n_print': 1000,
+                               'delay': 0}
         
         if i == 0:
             _, stop_choices = trainer.eval(**trainer_eval_params)

@@ -19,7 +19,7 @@ from IPython.display import clear_output
 # Basic Trainer
 #########################################################################################
 
-class Trainer():
+class Trainer:
     def __init__(self):
         return
     
