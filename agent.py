@@ -9,7 +9,7 @@ import torch.optim as optim
 import torch.nn.functional as F
 import torchvision.transforms as T
 
-from util.utils import *
+from util import *
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 

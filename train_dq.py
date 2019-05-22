@@ -12,7 +12,7 @@ import torchvision.transforms as T
 from trainer import *
 from game import Game
 from agent import *
-from util.utils import *
+from util import *
 from networks import *
 
 torch.manual_seed(1008)

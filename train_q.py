@@ -6,7 +6,7 @@ from scipy.optimize import fmin  # can use fmin to tune hyperparameters
 from trainer import *
 from game import Game
 from agent import *
-from util.utils import *
+from util import *
 
 if __name__ == '__main__':
 

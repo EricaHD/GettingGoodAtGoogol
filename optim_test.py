@@ -8,7 +8,7 @@ from scipy import optimize
 from trainer import *
 from game import Game
 from agent import *
-from util.utils import *
+from util import *
 
 
 eval_games = [{'lo': 1, 'hi': 100000, 'n_idx': 50, 'replace': False, 'dist': 'uniform'},
