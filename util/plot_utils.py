@@ -1,11 +1,13 @@
 import matplotlib.pyplot as plt
 
+
 def setDefault(figsize=(20, 10)):
     plt.style.use(['dark_background', 'bmh'])
     plt.rc('axes', facecolor='k')
     plt.rc('figure', facecolor='k')
     plt.rc('figure', figsize=figsize)
-    
+
+
 def plotQValues(agent, value, n_states):
     keys = ["{}_{}".format(s, value) for s in range(n_states)]
     
