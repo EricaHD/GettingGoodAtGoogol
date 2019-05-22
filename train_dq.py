@@ -24,7 +24,7 @@ if __name__ == '__main__':
     ap.add_argument("-dev", "--device", type=str, default="cuda",
                     help="Cuda Device")
 
-    # Agent Parameters
+    # Agent parameters
     ap.add_argument("-net", "--net", type=str, default="basic",
                     help="Network")
     ap.add_argument("-netp", "--net_params", type=str, default="2_32_0.0",
@@ -52,7 +52,7 @@ if __name__ == '__main__':
     ap.add_argument("-vf", "--v_fn", type=str, default="vIdx",
                     help="V Fn")
     
-    # Training Game Parameters
+    # Training game parameters
     ap.add_argument("-lo", "--lo", type=int, default=1,
                     help="lowest value possible in training games")
     ap.add_argument("-hi", "--hi", type=int, default=100000,
@@ -66,7 +66,7 @@ if __name__ == '__main__':
     ap.add_argument("-rps", "--reward", type=str, default="100_100_7",
                     help="#_# when reward_fn is scalar, #_#_# when reward_fn is topN")
     
-    # Training Parameters
+    # Training parameters
     ap.add_argument("-ng", "--n_games", type=int, default=500000,
                     help="number of training games [q only]")
     ap.add_argument("-ne", "--n_episodes", type=int, default=200000,
@@ -80,7 +80,7 @@ if __name__ == '__main__':
     ap.add_argument("-crp", "--curr_params", type=str, default="0_0_10_-",
                     help="curriculum parameters, #_#_op when reward_fn is scalar, #_#_#_op when reward_fn is topN")    
     
-    # Evaluation Game Parameters
+    # Evaluation game parameters
     ap.add_argument("-loe", "--lo_eval", type=int, default=1,
                     help="lowest value possible in evaluation games")
     ap.add_argument("-hie", "--hi_eval", type=int, default=100000,
@@ -94,7 +94,7 @@ if __name__ == '__main__':
     ap.add_argument("-rpse", "--reward_eval", type=str, default="1_1",
                     help="#_# when reward_fn_eval is scalar, #_#_# when reward_fn_eval is topN")
     
-    # Evaluation Parameters
+    # Evaluation parameters
     ap.add_argument("-nge", "--n_games_eval", type=int, default=10000,
                     help="number of evaluation games")
     ap.add_argument("-npe", "--n_print_eval", type=int, default=1000,
@@ -102,7 +102,7 @@ if __name__ == '__main__':
     ap.add_argument("-de", "--delay_eval", type=int, default=0,
                     help="time delay in evaluation games")
     
-    # Save Path
+    # Save path
     ap.add_argument("-fp", "--file_path",
                     help="file path used for saving")
     ap.add_argument("-scfp", "--sc_file_path",
