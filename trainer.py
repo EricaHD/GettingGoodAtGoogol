@@ -33,7 +33,7 @@ class Trainer:
         stop_choices = [0] * game.n_idx
         agent.eval()
         
-        #Iterate through games
+        # Iterate through games
         for i in tqdm(range(n_games), leave=False):
             #Reset game and agent
             game.reset()
@@ -41,7 +41,7 @@ class Trainer:
             
             self.params = self.reset(game)
             
-            #Iterate through game
+            # Iterate through game
             while True:
                 
                 action = agent.getAction(self.params) 
@@ -57,7 +57,6 @@ class Trainer:
                 sleep(delay)
                 clear_output()
                 print("EVAL PCT: {:.2} |\t VICTORY PERCENTAGE: {:.2}".format(i/n_games, wins/i))
-            
         
         clear_output()
         print("EVAL COMPLETE |\t FINAL VICTORY PERCENTAGE: {:.2}".format(wins/n_games))
@@ -89,7 +88,7 @@ class QTrainer(Trainer):
         wins, games = 0, 0
         agent.train()
         
-        #Iterate through games
+        # Iterate through games
         for i in tqdm(range(n_games), leave=False):
             #Reset game and agent
             game.reset()
@@ -98,7 +97,7 @@ class QTrainer(Trainer):
             self.params = self.reset(game)
             self.params['game_i'] = i
             
-            #Iterate through game
+            # Iterate through game
             while True:
                 
                 self.params['action'] = agent.getAction(self.params) 
@@ -113,7 +112,7 @@ class QTrainer(Trainer):
                     self.params['idx'], self.params['val'], _, _ = game.step(self.params['action'])
                     agent.update(self.params)
                 
-            #Update Q-values 
+            # Update Q-values 
             agent.update(self.params)
             
             games += 1
@@ -124,17 +123,15 @@ class QTrainer(Trainer):
                 print("TRAIN PCT: {:.2} |\t VICTORY PERCENTAGE: {:.2}".format(i/n_games, wins/games))
                 
                 
-            if (i%curriculum['epoch'] == 0) & (i > 0):
+            if (i % curriculum['epoch'] == 0) & (i > 0):
                 wins, games = 0, 0
                 for k, v in game.reward.items():
                     v_ = eval("{} {} {}".format(v, curriculum['params']['op'], curriculum['params'][k]))
                     game.reward[k] = v_
                     
                 print("ADJUSTING REWARDS")
-                
-                
-                    
-        clear_output()
+                 
+         clear_output()
         print("TRAINING COMPLETE |\t FINAL VICTORY PERCENTAGE: {:.2}".format(wins/games))
     
         return wins/games
@@ -247,13 +244,12 @@ class DQTrainer(Trainer):
             agent.updateNet(game_i)
             games += 1
 
-            if (game_i%n_print == 0) & (game_i > 0):
+            if (game_i % n_print == 0) & (game_i > 0):
                 sleep(delay)
                 clear_output()
                 print("TRAIN PCT: {:.2} |\t VICTORY PERCENTAGE: {:.2}".format(game_i/n_games, wins/games))
 
-
-            if (game_i%curriculum['epoch'] == 0) & (game_i > 0):
+            if (game_i % curriculum['epoch'] == 0) & (game_i > 0):
                 wins, games = 0, 0
                 for k, v in game.reward.items():
                     if v == 0:
