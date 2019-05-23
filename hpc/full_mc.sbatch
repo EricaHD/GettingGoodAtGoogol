@@ -27,7 +27,7 @@ python /home/ehd255/DeepGoogol/train_mc.py \
     --replace False \
     --reward_fn topN \
     --reward 10_10_10 \
-    --n_episodes 100000 \
+    --n_games 100000 \
     --n_print 10000 \
     --delay 0 \
     --curr_epoch 10000 \
