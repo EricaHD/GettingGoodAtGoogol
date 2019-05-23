@@ -43,8 +43,8 @@ if __name__ == '__main__':
                     help="#_# when reward_fn is scalar, #_#_# when reward_fn is topN")
     
     # Training parameters
-    ap.add_argument("-ne", "--n_episodes", type=int, default=500000,
-                    help="number of Monte Carlo episodes [mc only]")
+    ap.add_argument("-ne", "--n_games", type=int, default=500000,
+                    help="number of Monte Carlo episodes")
     ap.add_argument("-np", "--n_print", type=int, default=10000,
                     help="when to print [q only]")
     ap.add_argument("-d", "--delay", type=int, default=0,
@@ -158,7 +158,7 @@ if __name__ == '__main__':
 
     trainer_train_params = {'game': game,
                             'agent': agent,
-                            'n_episodes': args['n_episodes'],
+                            'n_games': args['n_games'],
                             'curriculum': {'epoch': args['curr_epoch'], 'params': curr_params}}
         
     trainer = MCMCTrainer()
@@ -207,7 +207,7 @@ if __name__ == '__main__':
         
         trainer_train_params = {'game': game_train,
                                 'agent': agent,
-                                'n_episodes': 10000,
+                                'n_games': 10000,
                                 'curriculum': {'epoch': 1000000000, 'params': {}}}
         
         trainer.train(**trainer_train_params)
