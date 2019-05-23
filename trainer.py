@@ -156,12 +156,12 @@ class MCMCTrainer(Trainer):
         super().__init__()
         return
         
-    def train(self, game, agent, n_episodes, curriculum):
+    def train(self, game, agent, n_games, curriculum):
         
         wins, games = 0, 0
         agent.train()
         
-        for i in tqdm(range(n_episodes), leave=False):
+        for i in tqdm(range(n_games), leave=False):
             game.reset()
             agent.reset()
             self.params = self.reset(game)
