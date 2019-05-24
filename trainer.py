@@ -35,7 +35,7 @@ class Trainer:
         
         # Iterate through games
         for i in tqdm(range(n_games), leave=False):
-            #Reset game and agent
+            # Reset game and agent
             game.reset()
             agent.reset()
             
@@ -53,7 +53,7 @@ class Trainer:
                     wins += game.win
                     break
             
-            if (i%n_print == 0) & (i > 0):
+            if (i % n_print == 0) & (i > 0):
                 sleep(delay)
                 clear_output()
                 print("EVAL PCT: {:.2} |\t VICTORY PERCENTAGE: {:.2}".format(i/n_games, wins/i))
@@ -82,7 +82,7 @@ class QTrainer(Trainer):
         super().__init__()
         return
 
-    def train(self, game, agent, n_games, n_print, delay, curriculum):
+    def train(self, game, agent, n_games, n_print, delay):
         """Train an agent over n_games"""
         
         wins, games = 0, 0
@@ -117,19 +117,10 @@ class QTrainer(Trainer):
             
             games += 1
             
-            if (i%n_print == 0) & (i > 0):
+            if (i % n_print == 0) & (i > 0):
                 sleep(delay)
                 clear_output()
                 print("TRAIN PCT: {:.2} |\t VICTORY PERCENTAGE: {:.2}".format(i/n_games, wins/games))
-                
-                
-            if (i % curriculum['epoch'] == 0) & (i > 0):
-                wins, games = 0, 0
-                for k, v in game.reward.items():
-                    v_ = eval("{} {} {}".format(v, curriculum['params']['op'], curriculum['params'][k]))
-                    game.reward[k] = v_
-                    
-                print("ADJUSTING REWARDS")
                  
          clear_output()
         print("TRAINING COMPLETE |\t FINAL VICTORY PERCENTAGE: {:.2}".format(wins/games))
@@ -156,7 +147,7 @@ class MCMCTrainer(Trainer):
         super().__init__()
         return
         
-    def train(self, game, agent, n_games, curriculum):
+    def train(self, game, agent, n_games):
         
         wins, games = 0, 0
         agent.train()
@@ -173,14 +164,6 @@ class MCMCTrainer(Trainer):
             games += 1
             
             agent.update(self.params, episode)
-            
-            if (i%curriculum['epoch'] == 0) & (i > 0):
-                for k, v in game.reward.items():
-                    v_ = eval("{} {} {}".format(v, curriculum['params']['op'], curriculum['params'][k]))
-                    game.reward[k] = v_
-                    print(k, v, v_)
-                    
-                print("ADJUSTING REWARDS")
         
         return wins/games
     
@@ -211,7 +194,7 @@ class DQTrainer(Trainer):
         super().__init__()
         return
     
-    def train(self, game, agent, n_games, n_print, delay, curriculum, device):
+    def train(self, game, agent, n_games, n_print, delay, device):
         """Train a DQAgent over n_games"""
         
         wins, games = 0, 0
@@ -248,18 +231,7 @@ class DQTrainer(Trainer):
                 sleep(delay)
                 clear_output()
                 print("TRAIN PCT: {:.2} |\t VICTORY PERCENTAGE: {:.2}".format(game_i/n_games, wins/games))
-
-            if (game_i % curriculum['epoch'] == 0) & (game_i > 0):
-                wins, games = 0, 0
-                for k, v in game.reward.items():
-                    if v == 0:
-                        continue
-                    else:
-                        v_ = eval("{} {} {}".format(v, curriculum['params']['op'], curriculum['params'][k]))
-                        game.reward[k] = v_
-
-                print("ADJUSTING REWARDS")
-                       
+                
         clear_output()
         print("TRAINING COMPLETE |\t FINAL VICTORY PERCENTAGE: {:.2}".format(wins/games))
         return wins/games
@@ -291,11 +263,10 @@ class DQTrainer(Trainer):
                     
             games += 1
 
-            if (game_i%n_print == 0) & (game_i > 0):
+            if (game_i % n_print == 0) & (game_i > 0):
                 sleep(delay)
                 clear_output()
                 print("TRAIN PCT: {:.2} |\t VICTORY PERCENTAGE: {:.2}".format(game_i/n_games, wins/games))
-
                        
         clear_output()
         print("TRAINING COMPLETE |\t FINAL VICTORY PERCENTAGE: {:.2}".format(wins/games))
