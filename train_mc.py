@@ -48,11 +48,7 @@ if __name__ == '__main__':
     ap.add_argument("-np", "--n_print", type=int, default=10000,
                     help="when to print [q only]")
     ap.add_argument("-d", "--delay", type=int, default=0,
-                    help="time delay in training games [q only]")
-    ap.add_argument("-cre", "--curr_epoch", type=int, default=1000000000,
-                    help="curriculum epoch")     
-    ap.add_argument("-crp", "--curr_params", type=str, default="0_0_10_-",
-                    help="curriculum parameters, #_#_op when reward_fn is scalar, #_#_#_op when reward_fn is topN")    
+                    help="time delay in training games [q only]")   
     
     # Evaluation game parameters
     ap.add_argument("-loe", "--lo_eval", type=int, default=1,
@@ -93,16 +89,10 @@ if __name__ == '__main__':
         pos, neg = args['reward'].split('_')
         reward = {'pos': int(pos), 'neg': -int(neg)}
         
-        c_pos, c_neg, c_op = args['curr_params'].split('_')
-        curr_params = {'pos': int(c_pos), 'neg': -int(c_neg), 'op': convertOp(c_op)}
-        
     elif 'topN' in args['reward_fn']:
         reward_fn = rewardTopN
         pos, neg, n = args['reward'].split('_')
         reward = {'pos': int(pos), 'neg': -int(neg), 'n': int(n)}
-        
-        c_pos, c_neg, c_n, c_op = args['curr_params'].split('_')
-        curr_params = {'pos': int(c_pos), 'neg': -int(c_neg), 'n': int(c_n), 'op': convertOp(c_op)}
         
     game_params = {'lo': args['lo'],
                    'hi': args['hi'],
@@ -158,8 +148,7 @@ if __name__ == '__main__':
 
     trainer_train_params = {'game': game,
                             'agent': agent,
-                            'n_games': args['n_games'],
-                            'curriculum': {'epoch': args['curr_epoch'], 'params': curr_params}}
+                            'n_games': args['n_games']}
         
     trainer = MCMCTrainer()
         
@@ -207,8 +196,7 @@ if __name__ == '__main__':
         
         trainer_train_params = {'game': game_train,
                                 'agent': agent,
-                                'n_games': 10000,
-                                'curriculum': {'epoch': 1000000000, 'params': {}}}
+                                'n_games': 10000}
         
         trainer.train(**trainer_train_params)
         
