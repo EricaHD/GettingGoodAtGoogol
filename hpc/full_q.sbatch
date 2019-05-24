@@ -34,8 +34,6 @@ python /home/ehd255/DeepGoogol/train_q.py \
     --n_games 10000 \
     --n_print 5000 \
     --delay 0 \
-    --curr_epoch 2000 \
-    --curr_params 0_0_1_minus \
     --lo_eval 1 \
     --hi_eval 500 \
     --n_idx_eval 100 \
